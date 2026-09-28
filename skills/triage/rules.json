@@ -1,64 +1,101 @@
 {
-  "version": 1,
-  "tiers": {
-    "quick": {
-      "agent": "triage-quick",
-      "model": "haiku",
-      "effort": "n/a",
+  "_note": "Clinics are ordered from cheapest to strongest. A request goes to the strongest clinic whose min_score it reaches. Which model serves each clinic depends on the provider (see providers.json).",
+  "version": 2,
+  "clinics": [
+    {
+      "id": "quick",
       "label_zh": "快速门诊",
       "label_en": "Quick clinic",
+      "min_score": null,
+      "effort": null,
       "expected_output_tokens": 600,
-      "_note": "Claude Haiku 4.5 has no effort parameter; it is already the fastest tier."
+      "suits_zh": "寒暄、翻译润色、错别字、重命名、简单问答",
+      "overrides": [
+        "@quick",
+        "--quick",
+        "@haiku",
+        "用haiku",
+        "用 haiku",
+        "快速回答"
+      ],
+      "suits_en": "chit-chat, translation and polishing, typos, renames, short factual questions",
+      "color": "green"
     },
-    "standard": {
-      "agent": "triage-standard",
-      "model": "sonnet",
-      "effort": "medium",
+    {
+      "id": "standard",
       "label_zh": "普通门诊",
       "label_en": "Standard clinic",
-      "expected_output_tokens": 2500
+      "min_score": 2,
+      "effort": "medium",
+      "expected_output_tokens": 2500,
+      "suits_zh": "写函数/脚本、常规 bug、写测试、单模块重构、代码审查",
+      "overrides": [
+        "@standard",
+        "--standard",
+        "@sonnet",
+        "用sonnet",
+        "用 sonnet"
+      ],
+      "suits_en": "writing functions and scripts, ordinary bugs with a clear error, tests, single-module refactors, code review",
+      "color": "blue"
     },
-    "deep": {
-      "agent": "triage-deep",
-      "model": "opus",
-      "effort": "high",
+    {
+      "id": "deep",
       "label_zh": "专家门诊",
       "label_en": "Specialist clinic",
-      "expected_output_tokens": 8000
+      "min_score": 5,
+      "effort": "medium",
+      "expected_output_tokens": 6000,
+      "suits_zh": "单个疑难点：架构设计、方案权衡、证明、偶发 bug、跨模块迁移",
+      "overrides": [
+        "@deep",
+        "--deep",
+        "@opus",
+        "用opus",
+        "用 opus",
+        "深度思考",
+        "think hard"
+      ],
+      "suits_en": "one hard problem: an architecture or design question, a trade-off, a proof, an intermittent bug, a cross-module migration",
+      "color": "purple"
+    },
+    {
+      "id": "deep-max",
+      "label_zh": "特需门诊",
+      "label_en": "Senior specialist",
+      "min_score": 8,
+      "effort": "max",
+      "expected_output_tokens": 12000,
+      "suits_zh": "多个疑难点叠加：分布式/并发架构、并发 bug 排查、全仓库安全审计",
+      "overrides": [
+        "@deep-max",
+        "--deep-max",
+        "@opus-max",
+        "ultrathink"
+      ],
+      "suits_en": "several hard aspects at once: distributed or concurrent architecture, concurrency bugs, codebase-wide security audits",
+      "color": "red"
+    },
+    {
+      "id": "frontier",
+      "label_zh": "名医会诊",
+      "label_en": "Frontier consult",
+      "min_score": 12,
+      "effort": "max",
+      "expected_output_tokens": 16000,
+      "suits_zh": "疑难信号大量叠加的超难问题",
+      "overrides": [
+        "@frontier",
+        "--frontier",
+        "@fable",
+        "用fable",
+        "用 fable"
+      ],
+      "suits_en": "the hardest problems, where many hard signals stack up",
+      "color": "orange"
     }
-  },
-  "thresholds": {
-    "standard": 2,
-    "deep": 5
-  },
+  ],
   "base_context_tokens": 3000,
-  "overrides": {
-    "quick": [
-      "@quick",
-      "--quick",
-      "@haiku",
-      "用haiku",
-      "用 haiku",
-      "快速回答"
-    ],
-    "standard": [
-      "@standard",
-      "--standard",
-      "@sonnet",
-      "用sonnet",
-      "用 sonnet"
-    ],
-    "deep": [
-      "@deep",
-      "--deep",
-      "@opus",
-      "用opus",
-      "用 opus",
-      "深度思考",
-      "ultrathink",
-      "think hard"
-    ]
-  },
   "signals": [
     {
       "id": "chitchat",
@@ -223,8 +260,9 @@
         "微服务",
         "\\barchitect",
         "\\bsystem design\\b",
-        "\\bdesign (a|an|the) (system|service|platform|schema|database)",
-        "\\bmicroservices?\\b"
+        "\\bmicroservices?\\b",
+        "设计(一个|一套|个)?.{0,16}(系统|架构|平台|服务|方案)",
+        "\\bdesign (a|an|the|our) (\\w+[ -]){0,3}(system|service|platform|schema|database|scheduler|architecture|pipeline|backend|infrastructure)"
       ]
     },
     {
@@ -422,5 +460,9 @@
       "weight": 1,
       "min_items": 5
     }
+  },
+  "desk": {
+    "model_clinic": "quick",
+    "_note": "The triage desk runs on the provider's model for this clinic (Claude: Haiku 4.5). It never answers; it only routes."
   }
 }

@@ -1,5 +1,5 @@
 {
-  "_note": "Benchmark settings. Models, endpoints and prices live in skills/triage/providers.json. Strategy names are '<provider>:<tier>' (always that model) or '<provider>:triage' (route per task).",
+  "_note": "Benchmark settings. Models, endpoints and prices live in skills/triage/providers.json. Strategy names are '<provider>:<clinic>' (always that clinic's model and effort) or '<provider>:triage' (route per task).",
   "providers": ["claude"],
   "judge": { "target": "claude/deep", "effort": "medium" },
   "max_tokens": 16000,

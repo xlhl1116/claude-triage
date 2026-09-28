@@ -33,10 +33,21 @@ class Strategies(unittest.TestCase):
     def setUp(self):
         self.config = run_bench.load_config()
 
-    def test_third_party_effort_is_dropped(self):
-        self.assertEqual(run_bench.resolve_strategy(self.config, "deepseek:deep", None), ("deepseek/deep", None))
-        self.assertEqual(run_bench.resolve_strategy(self.config, "claude:deep", None), ("claude/deep", "high"))
-        self.assertEqual(run_bench.resolve_strategy(self.config, "claude:quick", None), ("claude/quick", None))
+    def test_exact_model_and_effort(self):
+        r = lambda name, row=None: run_bench.resolve_strategy(self.config, name, row)
+        self.assertEqual(r("claude:deep"), ("claude/deep", "medium"))
+        self.assertEqual(r("claude:deep-max"), ("claude/deep-max", "max"))
+        self.assertEqual(r("claude:quick"), ("claude/quick", None))
+        self.assertEqual(r("claude:triage", {"clinic": "frontier"}), ("claude/frontier", "max"))
+        self.assertEqual(self.config["targets"]["claude/frontier"]["id"], "claude-fable-5-1")
+        # third-party depth goes through extra_body, not a Claude effort value
+        self.assertEqual(r("deepseek:deep-max"), ("deepseek/deep-max", None))
+        self.assertEqual(self.config["targets"]["deepseek/deep-max"]["extra"]["reasoning_effort"], "max")
+
+    def test_identical_requests_share_a_generation(self):
+        k = lambda target, effort: run_bench.gen_key(self.config, target, effort, "t", 0)
+        self.assertEqual(k("deepseek/deep-max", None), k("deepseek/frontier", None))
+        self.assertNotEqual(k("claude/deep", "medium"), k("claude/deep-max", "max"))
 
     def test_intl_region_switches_bench_endpoint(self):
         intl = run_bench.load_config(region="intl")
@@ -99,7 +110,7 @@ class MockRun(unittest.TestCase):
                                  "--difficulty", "easy,hard"])
             summary = json.loads(Path(tmp, "t", "summary.json").read_text(encoding="utf-8"))
         self.assertEqual(rc, 0)
-        self.assertEqual(summary["strategies"]["kimi:deep"]["pass_rate"], 1.0)
+        self.assertEqual(summary["strategies"]["kimi:frontier"]["pass_rate"], 1.0)
         self.assertIn("kimi", summary["routing_confusion"])
 
 

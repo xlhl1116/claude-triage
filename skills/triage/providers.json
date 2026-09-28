@@ -1,5 +1,5 @@
 {
-  "_note": "Provider registry shared by the triage slip, use_provider.py and the benchmark. models.<tier>.id is the real model behind each clinic; extra_body is sent with benchmark requests; pricing is optional (USD per million tokens). Fields listed in `unverified` could not be confirmed against the live official docs on 2026-09-28.",
+  "_note": "Provider registry shared by the triage slip, use_provider.py and the benchmark. models.<tier>.id is the real model behind each clinic; extra_body is sent with benchmark requests; pricing is optional (USD per million tokens). Fields listed in `unverified` could not be confirmed against the live official docs on 2026-09-28. `effort` is the Claude Code effort level written into the clinic agent; for third-party providers it is passed through to their Anthropic-compatible endpoint and whether they honour it is unverified (effort_verified=false). `api_effort` describes what the benchmark sends through extra_body.",
   "claude": {
     "label_en": "Anthropic Claude",
     "label_zh": "Anthropic Claude",
@@ -16,6 +16,7 @@
     "models": {
       "quick": {
         "id": "claude-haiku-4-5",
+        "name": "Claude Haiku 4.5",
         "pricing": {
           "input": 1.0,
           "output": 5.0,
@@ -25,26 +26,55 @@
       },
       "standard": {
         "id": "claude-sonnet-5",
-        "supports_effort": true,
+        "name": "Claude Sonnet 5",
+        "effort": "medium",
         "pricing": {
           "input": 2.0,
           "output": 10.0,
           "cache_write": 2.5,
           "cache_read": 0.2
-        }
+        },
+        "supports_effort": true
       },
       "deep": {
-        "id": "claude-opus-5",
-        "supports_effort": true,
+        "id": "claude-opus-5-5",
+        "name": "Claude Opus 5.5",
+        "effort": "medium",
         "pricing": {
-          "input": 5.0,
-          "output": 25.0,
-          "cache_write": 6.25,
-          "cache_read": 0.5
-        }
+          "input": 4.0,
+          "output": 20.0,
+          "cache_write": 5.0,
+          "cache_read": 0.2
+        },
+        "supports_effort": true
+      },
+      "deep-max": {
+        "id": "claude-opus-5-5",
+        "name": "Claude Opus 5.5",
+        "effort": "max",
+        "pricing": {
+          "input": 4.0,
+          "output": 20.0,
+          "cache_write": 5.0,
+          "cache_read": 0.2
+        },
+        "supports_effort": true
+      },
+      "frontier": {
+        "id": "claude-fable-5-1",
+        "name": "Claude Fable 5.1",
+        "effort": "max",
+        "pricing": {
+          "input": 10.0,
+          "output": 50.0,
+          "cache_write": 12.5,
+          "cache_read": 0.25
+        },
+        "supports_effort": true
       }
     },
-    "unverified": []
+    "unverified": [],
+    "effort_verified": true
   },
   "deepseek": {
     "label_en": "DeepSeek",
@@ -55,12 +85,7 @@
     ],
     "docs": "https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code",
     "claude_code": {
-      "base_url": "https://api.deepseek.com/anthropic",
-      "models": {
-        "quick": "deepseek-flash",
-        "standard": "deepseek-flash",
-        "deep": "deepseek-v4-pro"
-      }
+      "base_url": "https://api.deepseek.com/anthropic"
     },
     "bench": {
       "api": "openai",
@@ -69,32 +94,66 @@
     "models": {
       "quick": {
         "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
-        }
+        },
+        "api_effort": "thinking off",
+        "effort": "low"
       },
       "standard": {
         "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "low"
-        }
+        },
+        "api_effort": "reasoning_effort=low",
+        "effort": "medium"
       },
       "deep": {
         "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "high"
-        }
+        },
+        "api_effort": "reasoning_effort=high",
+        "effort": "high"
+      },
+      "deep-max": {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
+      },
+      "frontier": {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
       }
     },
-    "unverified": []
+    "unverified": [],
+    "effort_verified": false
   },
   "kimi": {
     "label_en": "Moonshot Kimi",
@@ -107,12 +166,7 @@
     "docs": "https://platform.kimi.ai/docs/guide/claude-code-kimi",
     "claude_code": {
       "base_url": "https://api.moonshot.cn/anthropic",
-      "base_url_intl": "https://api.moonshot.ai/anthropic",
-      "models": {
-        "quick": "kimi-k2.7-code-highspeed",
-        "standard": "kimi-k2.6",
-        "deep": "kimi-k3"
-      }
+      "base_url_intl": "https://api.moonshot.ai/anthropic"
     },
     "bench": {
       "api": "openai",
@@ -121,22 +175,50 @@
     },
     "models": {
       "quick": {
-        "id": "kimi-k2.7-code-highspeed"
+        "id": "kimi-k2.7-code-highspeed",
+        "name": "Kimi K2.7 Code HighSpeed",
+        "api_effort": "default",
+        "effort": "low"
       },
       "standard": {
-        "id": "kimi-k2.6"
+        "id": "kimi-k2.6",
+        "name": "Kimi K2.6",
+        "api_effort": "default",
+        "effort": "medium"
       },
       "deep": {
         "id": "kimi-k3",
+        "name": "Kimi K3",
         "extra_body": {
           "reasoning_effort": "high"
-        }
+        },
+        "api_effort": "reasoning_effort=high",
+        "effort": "high"
+      },
+      "deep-max": {
+        "id": "kimi-k3",
+        "name": "Kimi K3",
+        "extra_body": {
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
+      },
+      "frontier": {
+        "id": "kimi-k3",
+        "name": "Kimi K3",
+        "extra_body": {
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
       }
     },
     "unverified": [
       "claude_code.base_url (China endpoint)",
       "bench.base_url (China endpoint, third-party sources only)"
-    ]
+    ],
+    "effort_verified": false
   },
   "zhipu": {
     "label_en": "Zhipu GLM",
@@ -150,11 +232,6 @@
     "claude_code": {
       "base_url": "https://open.bigmodel.cn/api/anthropic",
       "base_url_intl": "https://api.z.ai/api/anthropic",
-      "models": {
-        "quick": "glm-5.3-flash",
-        "standard": "glm-5.3",
-        "deep": "glm-5.3"
-      },
       "env": {
         "API_TIMEOUT_MS": "3000000",
         "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
@@ -167,24 +244,52 @@
     },
     "models": {
       "quick": {
-        "id": "glm-5.3-flash"
+        "id": "glm-5.3-flash",
+        "name": "GLM-5.3-Flash",
+        "api_effort": "default",
+        "effort": "low"
       },
       "standard": {
-        "id": "glm-5.3"
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "api_effort": "default",
+        "effort": "medium"
       },
       "deep": {
         "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "api_effort": "default",
+        "effort": "high"
+      },
+      "deep-max": {
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "max"
-        }
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
+      },
+      "frontier": {
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max",
+        "effort": "max"
       }
     },
     "unverified": [
       "glm-5.3 availability on the China (BigModel) endpoint"
-    ]
+    ],
+    "effort_verified": false
   },
   "xiaomi": {
     "label_en": "Xiaomi MiMo",
@@ -196,12 +301,7 @@
     "docs": "https://mimo.mi.com/docs/en-US/integration/claudecode",
     "claude_code": {
       "base_url": "https://api.xiaomimimo.com/anthropic",
-      "base_url_token_plan": "https://token-plan-cn.xiaomimimo.com/anthropic",
-      "models": {
-        "quick": "mimo-v2.5",
-        "standard": "mimo-v2.6-pro",
-        "deep": "mimo-v2.6-pro"
-      }
+      "base_url_token_plan": "https://token-plan-cn.xiaomimimo.com/anthropic"
     },
     "bench": {
       "api": "openai",
@@ -210,31 +310,63 @@
     "models": {
       "quick": {
         "id": "mimo-v2.5",
+        "name": "MiMo V2.5",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
-        }
+        },
+        "api_effort": "thinking off",
+        "effort": "low"
       },
       "standard": {
         "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
-        }
+        },
+        "api_effort": "thinking off",
+        "effort": "medium"
       },
       "deep": {
         "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           }
-        }
+        },
+        "api_effort": "thinking on",
+        "effort": "high"
+      },
+      "deep-max": {
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          }
+        },
+        "api_effort": "thinking on",
+        "effort": "max"
+      },
+      "frontier": {
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          }
+        },
+        "api_effort": "thinking on",
+        "effort": "max"
       }
     },
     "unverified": [
       "mimo-v2.6-pro model ID (model page + OpenRouter only)"
-    ]
+    ],
+    "effort_verified": false
   }
 }

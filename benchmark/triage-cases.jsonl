@@ -23,19 +23,25 @@
 {"id": "en-s-04", "expected": "standard", "prompt": "Refactor this function to remove the nested if statements:\n```js\nfunction f(a){ if(a){ if(a.b){ return a.b.c; } } return null; }\n```"}
 {"id": "en-s-05", "expected": "standard", "prompt": "Implement pagination for the /users endpoint"}
 {"id": "en-s-06", "expected": "quick", "prompt": "Summarize this design doc and list the open questions:\n- goal: reduce onboarding time\n- owner: platform team"}
-{"id": "zh-d-01", "expected": "deep", "prompt": "帮我设计一个支持百万级 QPS 的分布式任务调度系统，给出架构图思路和关键组件的权衡"}
+{"id": "zh-d-01", "expected": "deep-max", "prompt": "帮我设计一个支持百万级 QPS 的分布式任务调度系统，给出架构图思路和关键组件的权衡"}
 {"id": "zh-d-02", "expected": "deep", "prompt": "线上服务偶发 502，只在生产环境出现，日志里没有明显异常，帮我找出根因"}
 {"id": "zh-d-03", "expected": "deep", "prompt": "我们要把整个项目从 Python 2 迁移到 Python 3，评估风险并制定分阶段方案"}
-{"id": "zh-d-04", "expected": "deep", "prompt": "这段 Go 代码在高并发下有竞态条件和偶尔的死锁，帮我分析原因并修复"}
+{"id": "zh-d-04", "expected": "deep-max", "prompt": "这段 Go 代码在高并发下有竞态条件和偶尔的死锁，帮我分析原因并修复"}
 {"id": "zh-d-05", "expected": "deep", "prompt": "证明这个贪心算法能得到最优解，并分析时间复杂度"}
-{"id": "zh-d-06", "expected": "deep", "prompt": "对整个代码库做一次安全审计，找出潜在漏洞并给出修复优先级"}
-{"id": "zh-d-07", "expected": "deep", "prompt": "单体应用要拆成微服务，数据库怎么拆？如何保证数据一致性？"}
+{"id": "zh-d-06", "expected": "deep-max", "prompt": "对整个代码库做一次安全审计，找出潜在漏洞并给出修复优先级"}
+{"id": "zh-d-07", "expected": "deep-max", "prompt": "单体应用要拆成微服务，数据库怎么拆？如何保证数据一致性？"}
 {"id": "en-d-01", "expected": "deep", "prompt": "Design the architecture for a multi-tenant SaaS billing platform and compare the trade-offs of event sourcing vs CRUD"}
 {"id": "en-d-02", "expected": "deep", "prompt": "We have an intermittent memory leak in our Node service that only shows up after ~3 days in production. Help me find the root cause."}
 {"id": "en-d-03", "expected": "deep", "prompt": "Refactor the authentication flow across the entire codebase to support OAuth and SSO without breaking existing sessions"}
-{"id": "en-d-04", "expected": "deep", "prompt": "Prove that this lock-free queue is linearizable, or find a counterexample with a race condition"}
-{"id": "en-d-05", "expected": "deep", "prompt": "Our p99 latency doubled after the migration to the new ORM. Profile the bottleneck and propose a fix, considering the pros and cons of each option."}
+{"id": "en-d-04", "expected": "deep-max", "prompt": "Prove that this lock-free queue is linearizable, or find a counterexample with a race condition"}
+{"id": "en-d-05", "expected": "deep-max", "prompt": "Our p99 latency doubled after the migration to the new ORM. Profile the bottleneck and propose a fix, considering the pros and cons of each option."}
 {"id": "ov-01", "expected": "deep", "prompt": "@deep 把这句话翻译成英文：你好世界"}
 {"id": "ov-02", "expected": "quick", "prompt": "@quick 帮我设计一个分布式系统的架构"}
 {"id": "ov-03", "expected": "standard", "prompt": "用 sonnet 回答：什么是闭包"}
 {"id": "en-d-06", "expected": "deep", "prompt": "Our Node service leaks memory, but only after ~3 days in production"}
+{"id": "zh-f-01", "expected": "frontier", "prompt": "对整个代码库做一次安全审计，重点排查分布式锁在高并发下的竞态条件，并给出架构层面的重构方案"}
+{"id": "en-f-01", "expected": "frontier", "prompt": "Design a distributed consensus-based architecture for our payment ledger, prove the consistency guarantees, and audit the current implementation for race conditions across the entire codebase"}
+{"id": "ov-04", "expected": "deep-max", "prompt": "@deep-max 看看这个函数有没有问题"}
+{"id": "ov-05", "expected": "frontier", "prompt": "@fable 解释一下什么是闭包"}
+{"id": "ov-06", "expected": "deep", "prompt": "用 opus 写一个快速排序"}
+{"id": "en-d-07", "expected": "deep-max", "prompt": "Design a distributed job scheduler for 1M QPS and handle concurrency and consistency"}

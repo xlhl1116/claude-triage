@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "skills" / "triage" / "scripts"))
 
-from triage import DEFAULT_RULES, TIER_ORDER, load_rules, triage  # noqa: E402
+from triage import DEFAULT_RULES, clinic_ids, load_rules, triage  # noqa: E402
 
 CASES = Path(__file__).resolve().parent / "triage-cases.jsonl"
 
@@ -22,20 +22,21 @@ def load_cases(path: Path = CASES) -> list[dict]:
 
 def main() -> int:
     rules = load_rules(DEFAULT_RULES)
+    TIER_ORDER = clinic_ids(rules)
     cases = load_cases()
     matrix = {e: {p: 0 for p in TIER_ORDER} for e in TIER_ORDER}
     misses = []
     nurse = 0
     for c in cases:
         r = triage(c["prompt"], rules)
-        matrix[c["expected"]][r["tier"]] += 1
-        nurse += r["needs_nurse"]
-        if r["tier"] != c["expected"]:
-            misses.append((c["id"], c["expected"], r["tier"], r["score"], c["prompt"][:60]))
+        matrix[c["expected"]][r["clinic"]] += 1
+        nurse += r["needs_second_opinion"]
+        if r["clinic"] != c["expected"]:
+            misses.append((c["id"], c["expected"], r["clinic"], r["score"], c["prompt"][:60]))
 
     correct = sum(matrix[t][t] for t in TIER_ORDER)
     print(f"accuracy: {correct}/{len(cases)} = {correct / len(cases):.1%}")
-    print(f"sent to nurse (low confidence): {nurse}/{len(cases)}\n")
+    print(f"needs a second opinion (low confidence): {nurse}/{len(cases)}\n")
     print("expected \\ predicted  " + "  ".join(f"{t:>8}" for t in TIER_ORDER))
     for e in TIER_ORDER:
         print(f"{e:>20}  " + "  ".join(f"{matrix[e][p]:>8}" for p in TIER_ORDER))

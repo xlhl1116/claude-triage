@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quality-vs-cost benchmark: fixed tiers vs. triage routing, for each provider.
+"""Quality-vs-cost benchmark: fixed clinics vs. triage routing, for each provider.
 
     # 1. prove every grader and test is correct (no API calls)
     python3 benchmark/run_bench.py --check-references
@@ -14,12 +14,12 @@
     #    other providers need the key env var named in skills/triage/providers.json.
     python3 benchmark/run_bench.py --backend live --providers claude,deepseek --run-id first --yes
 
-Strategies are '<provider>:<tier>' (always that tier's model, e.g. 'claude:deep')
-and '<provider>:triage' (the rule engine picks the tier per task; when it is not
-confident, the nurse prompt runs on that provider's quick model). Every unique
-(model, effort, task, repeat) is generated once and shared, so a triage
-strategy's quality and cost differ from the fixed tiers only through the
-routing decision (plus nurse calls).
+Strategies are '<provider>:<clinic>' (always that clinic's exact model and effort,
+e.g. 'claude:deep-max' = Claude Opus 5.5 at max) and '<provider>:triage' (the rule
+engine picks the clinic per task; when it is not confident, the desk model gives
+a second opinion). Every unique (model, effort, task, repeat) is generated once
+and shared, so a triage strategy's quality and cost differ from the fixed
+clinics only through the routing decision (plus second-opinion calls).
 """
 
 from __future__ import annotations
@@ -42,11 +42,19 @@ sys.path.insert(0, str(ROOT / "skills" / "triage" / "scripts"))
 
 import graders  # noqa: E402
 from tasks import TASKS  # noqa: E402
-from triage import DEFAULT_RULES, TIER_ORDER, estimate_tokens, load_providers, load_rules, triage  # noqa: E402
+from triage import DEFAULT_RULES, clinic_ids, estimate_tokens, load_providers, load_rules, triage  # noqa: E402
 
 CONFIG_PATH = HERE / "models.json"
 RESULTS_DIR = HERE / "results"
-NURSE_PROMPT = (ROOT / "agents" / "triage-nurse.md").read_text(encoding="utf-8").split("---", 2)[2].strip()
+RULES = load_rules(DEFAULT_RULES)
+CLINICS = clinic_ids(RULES)
+SECOND_OPINION_PROMPT = """You are a triage desk. You do not solve the request; you only decide which clinic should handle it.
+
+Clinics, cheapest first:
+""" + "\n".join(f"- `{c['id']}`: {c['suits_en']}" for c in RULES["clinics"]) + """
+
+Pick the cheapest clinic that can clearly do the job well; go higher only when a wrong answer would be costly.
+Reply with exactly one JSON object and nothing else: {"clinic": "<id>", "reason": "<one short sentence>"}"""
 JUDGE_SYSTEM = """You are a strict grader. You will see a task, a candidate answer, and a numbered rubric.
 For each rubric item decide whether the answer clearly satisfies it. Be strict: vague mentions do not count.
 Reply with exactly one JSON object: {"met": [true/false for each item, in order], "reason": "<one sentence>"}"""
@@ -59,7 +67,7 @@ def load_config(path: Path = CONFIG_PATH, region: str = "cn") -> dict:
         config = json.load(f)
     config["provider_defs"] = load_providers()
     config["targets"] = build_targets(config["provider_defs"], region)
-    config["rules"] = load_rules(DEFAULT_RULES)
+    config["rules"] = RULES
     return config
 
 
@@ -70,32 +78,31 @@ def build_targets(providers: dict, region: str = "cn") -> dict:
         bench = dict(p["bench"])
         if region == "intl" and bench.get("base_url_intl"):
             bench["base_url"] = bench["base_url_intl"]
-        for tier in TIER_ORDER:
-            m = p["models"][tier]
-            targets[f"{pname}/{tier}"] = {
-                "provider": pname, "tier": tier, "id": m["id"], "api": bench["api"],
-                "base_url": bench["base_url"], "key_env": p["key_env"],
-                "supports_effort": m.get("supports_effort", False),
-                "effort_param": m.get("effort_param"), "extra": m.get("extra_body", {}),
-                "pricing": m.get("pricing"),
+        for cid in CLINICS:
+            m = p["models"][cid]
+            targets[f"{pname}/{cid}"] = {
+                "provider": pname, "clinic": cid, "id": m["id"], "name": m.get("name", m["id"]),
+                "api": bench["api"], "base_url": bench["base_url"], "key_env": p["key_env"],
+                "effort": m.get("effort") if m.get("supports_effort") else None,
+                "extra": m.get("extra_body", {}), "pricing": m.get("pricing"),
+                "label": m.get("name", m["id"]) + (
+                    f" · {m['effort']}" if m.get("supports_effort") and m.get("effort")
+                    else f" · {m['api_effort']}" if m.get("api_effort") else ""),
             }
     return targets
 
 
 def strategy_names(config: dict, providers: list[str]) -> list[str]:
-    return [f"{p}:{t}" for p in providers for t in TIER_ORDER + ["triage"]]
+    return [f"{p}:{c}" for p in providers for c in CLINICS + ["triage"]]
 
 
 def resolve_strategy(config: dict, name: str, routing_row: dict | None) -> tuple[str, str | None]:
-    """Strategy name -> (target key, effort) for one task."""
+    """Strategy name -> (target key, effort) for one task. Third-party clinics express depth
+    through extra_body in providers.json, so they carry no Claude effort value."""
     provider, kind = name.split(":")
-    tier = routing_row["tier"] if kind == "triage" else kind
-    target = f"{provider}/{tier}"
-    t = config["targets"][target]
-    effort = config["rules"]["tiers"][tier]["effort"]
-    if effort in (None, "n/a") or not (t["supports_effort"] or t["effort_param"]):
-        effort = None  # third-party tiers express depth through extra_body instead
-    return target, effort
+    cid = routing_row["clinic"] if kind == "triage" else kind
+    target = f"{provider}/{cid}"
+    return target, config["targets"][target]["effort"]
 
 
 def cost_of(usage: dict, pricing: dict | None) -> float | None:
@@ -127,7 +134,7 @@ def call_anthropic(target: dict, effort: str | None, system: str, prompt: str, m
     client = anthropic.Anthropic(api_key=key, base_url=target["base_url"], max_retries=4)
     kwargs = {"model": target["id"], "max_tokens": max_tokens, "system": system,
               "messages": [{"role": "user", "content": prompt}]}
-    if effort and target["supports_effort"]:
+    if effort:
         kwargs["output_config"] = {"effort": effort}
     kwargs.update(target["extra"])
     with client.messages.stream(**kwargs) as stream:
@@ -147,8 +154,6 @@ def call_openai_compat(target: dict, effort: str | None, system: str, prompt: st
         raise RuntimeError(f"{target['key_env']} is not set")
     body = {"model": target["id"], "max_tokens": max_tokens,
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
-    if effort and target["effort_param"]:
-        body[target["effort_param"]] = effort
     body.update(target["extra"])
     req = urllib.request.Request(
         target["base_url"].rstrip("/") + "/chat/completions", data=json.dumps(body).encode(),
@@ -190,19 +195,19 @@ class MockBackend:
     """Deterministic fake answers for testing the pipeline offline. NOT real model output."""
 
     name = "mock"
-    STRENGTH = {"quick": 1, "standard": 2, "deep": 3}
+    STRENGTH = {"quick": 1, "standard": 2, "deep": 3, "deep-max": 3, "frontier": 3}
     DIFFICULTY = {"easy": 1, "medium": 2, "hard": 3}
-    OUTPUT = {"quick": 300, "standard": 900, "deep": 2400}
+    OUTPUT = {"quick": 300, "standard": 900, "deep": 2400, "deep-max": 5000, "frontier": 7000}
 
     def __init__(self, config: dict):
         self.config = config
 
     def call(self, target_key: str, effort: str | None, system: str, prompt: str, task: dict | None = None,
              max_tokens: int | None = None) -> dict:
-        tier = self.config["targets"][target_key]["tier"]
+        tier = self.config["targets"][target_key]["clinic"]
         usage = {"input_tokens": estimate_tokens(system + prompt), "output_tokens": self.OUTPUT[tier]}
-        if system == NURSE_PROMPT:
-            text = json.dumps({"tier": {"easy": "quick", "medium": "standard", "hard": "deep"}[task["difficulty"]],
+        if system == SECOND_OPINION_PROMPT:
+            text = json.dumps({"clinic": {"easy": "quick", "medium": "standard", "hard": "deep"}[task["difficulty"]],
                                "reason": "mock"})
             usage["output_tokens"] = 40
         elif system == JUDGE_SYSTEM:
@@ -220,28 +225,35 @@ BACKENDS = {"live": LiveBackend, "mock": MockBackend}
 
 # --------------------------------------------------------------------------- routing
 
-def route(provider: str, task: dict, backend, config: dict, use_nurse: bool = True) -> dict:
+def route(provider: str, task: dict, backend, config: dict, use_second_opinion: bool = True) -> dict:
+    """Rule engine first; when it is not confident, the desk model (the provider's quick
+    clinic model, as in Claude Code) gives the second opinion."""
     rules = config["rules"]
     r = triage(task["prompt"], rules)
     record = {"key": f"{provider}|{task['id']}", "provider": provider, "task_id": task["id"],
-              "difficulty": task["difficulty"], "rule_tier": r["tier"], "score": r["score"],
-              "confidence": r["confidence"], "tier": r["tier"], "nurse": None, "nurse_cost_usd": 0.0}
-    if use_nurse and r["needs_nurse"]:
-        nurse_target = f"{provider}/quick"
+              "difficulty": task["difficulty"], "rule_clinic": r["clinic"], "score": r["score"],
+              "confidence": r["confidence"], "clinic": r["clinic"], "second_opinion": None,
+              "second_opinion_cost_usd": 0.0}
+    if use_second_opinion and r["needs_second_opinion"]:
+        desk = f"{provider}/{rules['desk']['model_clinic']}"
         try:
-            out = backend.call(nurse_target, None, NURSE_PROMPT, task["prompt"], task=task, max_tokens=300)
-            record["nurse_cost_usd"] = cost_of(out["usage"], config["targets"][nurse_target]["pricing"])
+            out = backend.call(desk, None, SECOND_OPINION_PROMPT, task["prompt"], task=task, max_tokens=300)
+            record["second_opinion_cost_usd"] = cost_of(out["usage"], config["targets"][desk]["pricing"])
             verdict = parse_json_object(out["text"])
-            if verdict.get("tier") in rules["tiers"]:
-                record["tier"] = verdict["tier"]
-            record["nurse"] = verdict
-        except Exception as e:  # nurse failure: keep the rule verdict
-            record["nurse"] = {"error": str(e)[:300]}
+            if verdict.get("clinic") in CLINICS:
+                record["clinic"] = verdict["clinic"]
+            record["second_opinion"] = verdict
+        except Exception as e:  # keep the rule verdict
+            record["second_opinion"] = {"error": str(e)[:300]}
     return record
 
 
-def gen_key(target: str, effort: str | None, task_id: str, repeat: int) -> str:
-    return f"{target}|{effort or '-'}|{task_id}|{repeat}"
+def gen_key(config: dict, target: str, effort: str | None, task_id: str, repeat: int) -> str:
+    """Identical requests share one generation, e.g. two clinics that use the same
+    model with the same settings."""
+    t = config["targets"][target]
+    extra = json.dumps(t["extra"], sort_keys=True) if t["extra"] else "-"
+    return f"{t['provider']}|{t['id']}|{effort or '-'}|{extra}|{task_id}|{repeat}"
 
 
 # --------------------------------------------------------------------------- run
@@ -285,7 +297,7 @@ def run(args, config: dict, tasks: list[dict]) -> Path:
     meta = {"backend": args.backend, "providers": args.providers, "strategies": args.strategies,
             "repeats": args.repeats, "task_ids": [t["id"] for t in tasks],
             "models": {k: config["targets"][k]["id"] for k in used_targets},
-            "judge": config["judge"], "nurse": not args.no_nurse,
+            "judge": config["judge"], "second_opinion": not args.no_second_opinion,
             "region": args.region,
             "started": time.strftime("%Y-%m-%dT%H:%M:%S")}
     (run_dir / "meta.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -296,7 +308,7 @@ def run(args, config: dict, tasks: list[dict]) -> Path:
     for provider in {s.split(":")[0] for s in args.strategies if s.endswith(":triage")}:
         for t in tasks:
             if f"{provider}|{t['id']}" not in routing.rows:
-                routing.add(route(provider, t, backend, config, use_nurse=not args.no_nurse))
+                routing.add(route(provider, t, backend, config, use_second_opinion=not args.no_second_opinion))
 
     needed = {}
     for t in tasks:
@@ -304,7 +316,7 @@ def run(args, config: dict, tasks: list[dict]) -> Path:
             for name in args.strategies:
                 row = routing.rows.get(f"{name.split(':')[0]}|{t['id']}")
                 target, effort = resolve_strategy(config, name, row)
-                needed[gen_key(target, effort, t["id"], rep)] = (target, effort, t, rep)
+                needed[gen_key(config, target, effort, t["id"], rep)] = (target, effort, t, rep)
 
     todo = [v for k, v in needed.items() if k not in gens.rows]
     print(f"{len(needed)} unique generations, {len(needed) - len(todo)} cached, {len(todo)} to run")
@@ -316,7 +328,7 @@ def run(args, config: dict, tasks: list[dict]) -> Path:
             out = {"text": "", "usage": {}, "latency_s": 0.0, "stop_reason": f"error: {e}"[:300]}
         judge_costs: list[float] = []
         grade = graders.grade(task, out["text"], judge=make_judge(backend, config, task, judge_costs))
-        return {"key": gen_key(target, effort, task["id"], rep), "target": target,
+        return {"key": gen_key(config, target, effort, task["id"], rep), "target": target,
                 "model_id": config["targets"][target]["id"], "effort": effort,
                 "task_id": task["id"], "difficulty": task["difficulty"], "repeat": rep,
                 "cost_usd": cost_of(out["usage"], config["targets"][target]["pricing"]),
@@ -340,27 +352,27 @@ def estimate(config: dict, tasks: list[dict], strategies: list[str], repeats: in
     rules = config["rules"]
     keys, total, unpriced = set(), 0.0, set()
     for t in tasks:
-        tier = triage(t["prompt"], rules)["tier"]
+        cid = triage(t["prompt"], rules)["clinic"]
         for name in strategies:
-            target, effort = resolve_strategy(config, name, {"tier": tier})
+            target, effort = resolve_strategy(config, name, {"clinic": cid})
             for rep in range(repeats):
-                k = gen_key(target, effort, t["id"], rep)
+                k = gen_key(config, target, effort, t["id"], rep)
                 if k in keys:
                     continue
                 keys.add(k)
                 usage = {"input_tokens": estimate_tokens(config["system_prompt"] + t["prompt"]),
-                         "output_tokens": rules["tiers"][target.split("/")[1]]["expected_output_tokens"]}
+                         "output_tokens": next(c for c in rules["clinics"] if c["id"] == target.split("/")[1])["expected_output_tokens"]}
                 c = cost_of(usage, config["targets"][target]["pricing"])
                 if c is None:
                     unpriced.add(target)
                 else:
                     total += c
     by_id = {t["id"]: t for t in tasks}
-    judged = sum(1 for k in keys if by_id[k.split("|")[2]]["grader"]["type"] == "judge")
+    judged = sum(1 for k in keys if by_id[k.split("|")[-2]]["grader"]["type"] == "judge")
     jp = config["targets"][config["judge"]["target"]]["pricing"]
     judge_cost = judged * (cost_of({"input_tokens": 6000, "output_tokens": 1500}, jp) or 0.0)
     print(f"{len(tasks)} tasks × {repeats} repeat(s), strategies: {', '.join(strategies)}")
-    print(f"unique generations: {len(keys)} (triage reuses fixed-tier generations)")
+    print(f"unique generations: {len(keys)} (identical requests, including triage's, are shared)")
     print(f"estimated generation cost: ${total:.2f}")
     print(f"estimated judge cost:      ${judge_cost:.2f} ({judged} judged generations)")
     print(f"estimated total:           ${total + judge_cost:.2f}")
@@ -404,11 +416,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--difficulty", help="comma-separated: easy,medium,hard")
     ap.add_argument("--repeats", type=int, default=1)
     ap.add_argument("--concurrency", type=int, default=4)
-    ap.add_argument("--no-nurse", action="store_true", help="route on rules alone")
+    ap.add_argument("--no-second-opinion", action="store_true", help="route on rules alone")
     ap.add_argument("--estimate", action="store_true", help="print a cost estimate and exit")
     ap.add_argument("--check-references", action="store_true", help="grade reference answers and exit")
     ap.add_argument("--yes", action="store_true", help="confirm spending money with --backend live")
-    ap.add_argument("--judge", help="judge model as '<provider>/<tier>' (default from models.json, e.g. claude/deep)")
+    ap.add_argument("--judge", help="judge model as '<provider>/<clinic>' (default from models.json)")
     ap.add_argument("--region", choices=["cn", "intl"], default="cn",
                     help="which endpoint to use for providers that have both")
     ap.add_argument("--config", type=Path, default=CONFIG_PATH)
@@ -419,7 +431,7 @@ def main(argv: list[str] | None = None) -> int:
     config = load_config(args.config, args.region)
     if args.judge:
         if args.judge not in config["targets"]:
-            sys.exit(f"unknown judge target {args.judge!r}; expected '<provider>/<quick|standard|deep>'")
+            sys.exit(f"unknown judge target {args.judge!r}; expected '<provider>/<clinic>'")
         config["judge"] = {"target": args.judge, "effort": config["judge"].get("effort")}
     args.providers = args.providers.split(",") if args.providers else config["providers"]
     unknown = [p for p in args.providers if p not in config["provider_defs"]]
@@ -428,8 +440,8 @@ def main(argv: list[str] | None = None) -> int:
     args.strategies = args.strategies.split(",") if args.strategies else strategy_names(config, args.providers)
     for s in args.strategies:
         p, _, kind = s.partition(":")
-        if p not in config["provider_defs"] or kind not in TIER_ORDER + ["triage"]:
-            sys.exit(f"bad strategy {s!r}; expected '<provider>:<quick|standard|deep|triage>'")
+        if p not in config["provider_defs"] or kind not in CLINICS + ["triage"]:
+            sys.exit(f"bad strategy {s!r}; expected '<provider>:<{'|'.join(CLINICS)}|triage>'")
     args.providers = sorted({s.split(":")[0] for s in args.strategies})
     tasks = select_tasks(args)
 
