@@ -1,0 +1,14 @@
+{
+  "name": "claude-triage",
+  "displayName": "Claude Triage",
+  "description": "Triage desk for Claude Code: auto-pick the right model and thinking effort for each request, with an explainable triage slip.",
+  "version": "0.1.0",
+  "author": {
+    "name": "xlhl1116",
+    "url": "https://github.com/xlhl1116"
+  },
+  "homepage": "https://github.com/xlhl1116/claude-triage",
+  "repository": "https://github.com/xlhl1116/claude-triage",
+  "license": "MIT",
+  "keywords": ["routing", "model-selection", "cost", "effort", "triage", "haiku", "sonnet", "opus"]
+}

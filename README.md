@@ -1,2 +1,112 @@
-# claude-triage
-Triage desk for Claude Code: auto-pick the right model and thinking effort for each request, with an explainable triage slip. / 为 Claude Code 自动选择合适的模型与思考深度
+<div align="center">
+
+# 🏥 claude-triage
+
+**A triage desk for Claude Code: every request gets the right model and thinking effort — and a slip that explains why.**
+
+English | [简体中文](README.zh-CN.md)
+
+[![tests](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml/badge.svg)](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+</div>
+
+<!-- TODO: replace with a real demo GIF (docs/assets/demo.gif) -->
+> 🎬 *Demo GIF coming soon.* Until then, this is what you see:
+
+```text
+> /claude-triage:triage Our Node service leaks memory, but only after ~3 days in production
+
+🏥 Triage slip
+────────────────────────────
+Clinic      Specialist clinic · triage-deep
+Model       opus · effort high
+Confidence  medium (score 5; standard≥2, deep≥5)
+Why         + Hard-to-reproduce bug (+5)
+Est. cost   ≈ $0.215 (always-opus ≈ $0.215, saves 0%)
+Override    add @quick / @standard / @deep to your request
+```
+
+## Install
+
+```text
+/plugin marketplace add xlhl1116/claude-triage
+/plugin install claude-triage@claude-triage
+```
+
+Then: `/claude-triage:triage <your request>`
+
+## Why
+
+Most requests don't need your most expensive model. Some really do. Picking by hand every time is tedious, and "always Opus" burns quota on "translate this sentence" while "always Sonnet" under-thinks the one bug that matters.
+
+claude-triage sits in front of your request like a hospital triage desk:
+
+1. **Screens** it with a transparent rule table (task type, length, code, architecture / concurrency / proof / hard-debug signals).
+2. **Asks a nurse** (Haiku) for a cheap second opinion only when the rules aren't sure.
+3. **Prints a slip**: chosen model + effort, the signals behind it, and an estimated cost vs. always-Opus.
+4. **Dispatches** to one of three clinic subagents, and **escalates** automatically if the clinic finds the case harder than it looked.
+
+You can always overrule it: add `@quick`, `@standard` or `@deep` to the request.
+
+## Clinics
+
+| Clinic | Subagent | Model · effort | Typical requests |
+|---|---|---|---|
+| Quick | `triage-quick` | haiku · — | chit-chat, translation, typos, renames, short lookups |
+| Standard | `triage-standard` | sonnet · medium | write a function, fix a clear bug, add tests, refactor a module, review a PR |
+| Specialist | `triage-deep` | opus · high | architecture, trade-offs, proofs, concurrency, production-only bugs, security audits, repo-wide migrations |
+| *(nurse)* | `triage-nurse` | haiku | second opinion on low-confidence cases; never does the task |
+
+The full rule table lives in [`docs/triage-rules.md`](docs/triage-rules.md); the source of truth is [`skills/triage/rules.json`](skills/triage/rules.json).
+
+## How it compares
+
+| | **claude-triage** | OpenRouter Auto | RouteLLM | `opusplan` (built into Claude Code) |
+|---|---|---|---|---|
+| Where it runs | Inside Claude Code, as a plugin | Hosted API gateway | Self-hosted server / library | Inside Claude Code |
+| Decides per… | request | request | request | mode (Opus to plan, Sonnet to execute) |
+| Picks thinking effort | ✅ | ❌ | ❌ | ❌ |
+| Explains the decision | ✅ slip with signals and scores | ❌ | ❌ | n/a |
+| Cost estimate before running | ✅ | ❌ | ❌ | ❌ |
+| One-word manual override | ✅ `@quick` / `@deep` | model param | threshold param | switch model |
+| Editable, readable rules | ✅ JSON + tests | ❌ | trained router | ❌ |
+| Cross-provider models | ❌ (roadmap) | ✅ | ✅ | ❌ |
+| Extra API key / infra | none | OpenRouter account | your own deployment | none |
+
+*Comparison reflects public docs as of 2026-09; corrections welcome.*
+
+## Try the rule engine on its own
+
+The engine is a single standard-library Python file:
+
+```bash
+echo "Prove this lock-free queue is linearizable" | python3 skills/triage/scripts/triage.py --format slip
+python3 skills/triage/scripts/triage.py --format json --text "Translate 'see you' into French"
+```
+
+Run the tests and the seed benchmark:
+
+```bash
+python3 -m unittest discover -s tests
+python3 benchmark/eval_rules.py
+```
+
+> ⚠️ The 41 seed cases in `benchmark/triage-cases.jsonl` were written alongside the rules, so their 100% accuracy is a regression check, not a quality claim. A real benchmark is on the roadmap — contributions of real, anonymised prompts are very welcome.
+
+## Roadmap
+
+- [x] Rule table, rule engine, explainable slip, cost estimate
+- [x] Three clinic subagents + nurse, manual override, automatic escalation
+- [ ] **Benchmark**: quality vs. cost against always-Opus / always-Sonnet on a public task set, with charts
+- [ ] **Learn from feedback**: record overrides and escalations, suggest weight changes
+- [ ] Hook mode: triage every prompt automatically, not only via the slash command
+- [ ] **Cross-provider routing** (phase 2): GPT, Gemini, local models behind the same slip
+
+## Contributing
+
+Issues and PRs welcome — especially misrouted examples. Add the prompt to `benchmark/triage-cases.jsonl` with the tier you expected, tweak `rules.json`, and make sure `python3 -m unittest discover -s tests` passes.
+
+## License
+
+[MIT](LICENSE)

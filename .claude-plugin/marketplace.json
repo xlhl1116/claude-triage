@@ -1,0 +1,15 @@
+{
+  "name": "claude-triage",
+  "owner": {
+    "name": "xlhl1116",
+    "url": "https://github.com/xlhl1116"
+  },
+  "description": "Triage desk for Claude Code",
+  "plugins": [
+    {
+      "name": "claude-triage",
+      "source": "./",
+      "description": "Auto-pick the right model and thinking effort for each request, with an explainable triage slip."
+    }
+  ]
+}
