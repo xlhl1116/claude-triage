@@ -1,468 +1,216 @@
 {
-  "_note": "Clinics are ordered from cheapest to strongest. A request goes to the strongest clinic whose min_score it reaches. Which model serves each clinic depends on the provider (see providers.json).",
-  "version": 2,
-  "clinics": [
+  "_note": "Routing rules. The taxonomy (taxonomy.json) picks the category and its default tier; the modifiers below adjust it in the background; providers.json maps each tier to an exact model and effort. Tiers are internal: users only ever see the category, the model and the reason.",
+  "version": 3,
+  "tiers": [
     {
-      "id": "quick",
-      "label_zh": "快速门诊",
-      "label_en": "Quick clinic",
-      "min_score": null,
-      "effort": null,
-      "expected_output_tokens": 600,
-      "suits_zh": "寒暄、翻译润色、错别字、重命名、简单问答",
-      "overrides": [
-        "@quick",
-        "--quick",
-        "@haiku",
-        "用haiku",
-        "用 haiku",
-        "快速回答"
-      ],
-      "suits_en": "chit-chat, translation and polishing, typos, renames, short factual questions",
-      "color": "green"
+      "id": "t1",
+      "note": "fastest (Claude: Haiku 4.5)"
     },
     {
-      "id": "standard",
-      "label_zh": "普通门诊",
-      "label_en": "Standard clinic",
-      "min_score": 2,
-      "effort": "medium",
-      "expected_output_tokens": 2500,
-      "suits_zh": "写函数/脚本、常规 bug、写测试、单模块重构、代码审查",
-      "overrides": [
-        "@standard",
-        "--standard",
-        "@sonnet",
-        "用sonnet",
-        "用 sonnet"
-      ],
-      "suits_en": "writing functions and scripts, ordinary bugs with a clear error, tests, single-module refactors, code review",
-      "color": "blue"
+      "id": "t2",
+      "note": "Claude: Sonnet 5 low"
     },
     {
-      "id": "deep",
-      "label_zh": "专家门诊",
-      "label_en": "Specialist clinic",
-      "min_score": 5,
-      "effort": "medium",
-      "expected_output_tokens": 6000,
-      "suits_zh": "单个疑难点：架构设计、方案权衡、证明、偶发 bug、跨模块迁移",
-      "overrides": [
-        "@deep",
-        "--deep",
-        "@opus",
-        "用opus",
-        "用 opus",
-        "深度思考",
-        "think hard"
-      ],
-      "suits_en": "one hard problem: an architecture or design question, a trade-off, a proof, an intermittent bug, a cross-module migration",
-      "color": "purple"
+      "id": "t3",
+      "note": "Claude: Sonnet 5 medium"
     },
     {
-      "id": "deep-max",
-      "label_zh": "特需门诊",
-      "label_en": "Senior specialist",
-      "min_score": 8,
-      "effort": "max",
-      "expected_output_tokens": 12000,
-      "suits_zh": "多个疑难点叠加：分布式/并发架构、并发 bug 排查、全仓库安全审计",
-      "overrides": [
-        "@deep-max",
-        "--deep-max",
-        "@opus-max",
-        "ultrathink"
-      ],
-      "suits_en": "several hard aspects at once: distributed or concurrent architecture, concurrency bugs, codebase-wide security audits",
-      "color": "red"
+      "id": "t4",
+      "note": "Claude: Sonnet 5 high"
     },
     {
-      "id": "frontier",
-      "label_zh": "名医会诊",
-      "label_en": "Frontier consult",
-      "min_score": 12,
-      "effort": "max",
-      "expected_output_tokens": 16000,
-      "suits_zh": "疑难信号大量叠加的超难问题",
-      "overrides": [
-        "@frontier",
-        "--frontier",
-        "@fable",
-        "用fable",
-        "用 fable"
-      ],
-      "suits_en": "the hardest problems, where many hard signals stack up",
-      "color": "orange"
+      "id": "t5",
+      "note": "Claude: Opus 5.5 medium"
+    },
+    {
+      "id": "t6",
+      "note": "Claude: Opus 5.5 high"
+    },
+    {
+      "id": "t7",
+      "note": "Claude: Opus 5.5 max"
+    },
+    {
+      "id": "t8",
+      "note": "Claude: Fable 5.1 max; only reached by stacking modifiers (+2 from t6 or above) or by override"
     }
   ],
-  "base_context_tokens": 3000,
-  "signals": [
-    {
-      "id": "chitchat",
-      "label_zh": "寒暄/闲聊",
-      "label_en": "Chit-chat",
-      "weight": -3,
-      "patterns": [
-        "^\\s*(hi|hello|hey|thanks|thank you|你好|您好|谢谢|早上好|晚安)[\\s!！。.,，]*$"
-      ]
-    },
-    {
-      "id": "translate",
-      "label_zh": "翻译/润色",
-      "label_en": "Translate / polish",
-      "weight": -2,
-      "patterns": [
-        "翻译",
-        "译成",
-        "\\btranslat",
-        "into (english|chinese|japanese)",
-        "润色",
-        "\\bproofread"
-      ]
-    },
-    {
-      "id": "trivial_edit",
-      "label_zh": "琐碎修改",
-      "label_en": "Trivial edit",
-      "weight": -2,
-      "patterns": [
-        "拼写",
-        "错别字",
-        "\\btypos?\\b",
-        "\\bspelling\\b",
-        "改个名",
-        "重命名(变量|函数)?",
-        "\\brename (this|the|a) (variable|function|file)",
-        "格式化",
-        "\\bformat (this|the) (json|yaml|code)",
-        "大小写",
-        "加个?注释",
-        "\\badd (a )?comments?\\b"
-      ]
-    },
-    {
-      "id": "simple_fact",
-      "label_zh": "简单问答",
-      "label_en": "Simple lookup",
-      "weight": -1,
-      "patterns": [
-        "^\\s*(什么是|啥是|what is|what's|who is|define|定义)",
-        "(是什么意思|什么意思)[?？]?\\s*$",
-        "^\\s*how do (i|you) (say|spell)",
-        "(怎么读|缩写)"
-      ]
-    },
-    {
-      "id": "code_write",
-      "label_zh": "编写代码",
-      "label_en": "Write code",
-      "weight": 2,
-      "patterns": [
-        "写(一个|个)?(函数|脚本|类|接口|组件|程序|代码)",
-        "实现(一个|个)?",
-        "\\bimplement\\b",
-        "\\bwrite (a|an|the) (\\w+ ){0,2}(function|script|class|component|program|cli|endpoint)",
-        "\\bbuild (a|an) "
-      ]
-    },
-    {
-      "id": "bug_fix",
-      "label_zh": "排查/修复 bug",
-      "label_en": "Debug / fix",
-      "weight": 2,
-      "patterns": [
-        "\\bbugs?\\b",
-        "报错",
-        "异常",
-        "\\berror\\b",
-        "\\bexception\\b",
-        "traceback",
-        "stack ?trace",
-        "修复",
-        "\\bfix\\b",
-        "不工作",
-        "跑不起来",
-        "\\bdoesn'?t work\\b",
-        "\\bfails?\\b"
-      ]
-    },
-    {
-      "id": "tests",
-      "label_zh": "编写测试",
-      "label_en": "Write tests",
-      "weight": 2,
-      "patterns": [
-        "单元测试",
-        "测试用例",
-        "\\bunit tests?\\b",
-        "\\bwrite tests?\\b",
-        "\\btest cases?\\b"
-      ]
-    },
-    {
-      "id": "refactor",
-      "label_zh": "重构",
-      "label_en": "Refactor",
-      "weight": 2,
-      "patterns": [
-        "重构",
-        "\\brefactor",
-        "\\bclean ?up\\b",
-        "优化(一下)?(这段)?代码"
-      ]
-    },
-    {
-      "id": "code_review",
-      "label_zh": "代码审查",
-      "label_en": "Code review",
-      "weight": 2,
-      "patterns": [
-        "代码审查",
-        "审查",
-        "\\bcode review\\b",
-        "\\breview (this|my|the) (code|pr|diff|change)"
-      ]
-    },
-    {
-      "id": "explain_code",
-      "label_zh": "解释代码",
-      "label_en": "Explain code",
-      "weight": 1,
-      "patterns": [
-        "解释(一下)?(这段)?代码",
-        "这段代码",
-        "\\bexplain (this|the|what this) (code|function|snippet)",
-        "\\bwhat does this (code|function) do\\b"
-      ]
-    },
-    {
-      "id": "summarize",
-      "label_zh": "总结归纳",
-      "label_en": "Summarize",
-      "weight": 1,
-      "patterns": [
-        "总结",
-        "概括",
-        "摘要",
-        "\\bsummari[sz]e\\b",
-        "\\btl;?dr\\b"
-      ]
-    },
-    {
-      "id": "architecture",
-      "label_zh": "架构/系统设计",
-      "label_en": "Architecture / system design",
-      "weight": 5,
-      "patterns": [
-        "架构",
-        "系统设计",
-        "技术选型",
-        "微服务",
-        "\\barchitect",
-        "\\bsystem design\\b",
-        "\\bmicroservices?\\b",
-        "设计(一个|一套|个)?.{0,16}(系统|架构|平台|服务|方案)",
-        "\\bdesign (a|an|the|our) (\\w+[ -]){0,3}(system|service|platform|schema|database|scheduler|architecture|pipeline|backend|infrastructure)"
-      ]
-    },
-    {
-      "id": "tradeoff",
-      "label_zh": "方案权衡",
-      "label_en": "Trade-off analysis",
-      "weight": 2,
-      "patterns": [
-        "权衡",
-        "优缺点",
-        "利弊",
-        "方案对比",
-        "哪个方案",
-        "\\btrade-?offs?\\b",
-        "\\bpros and cons\\b",
-        "\\bcompare (the )?(approaches|options|designs)"
-      ]
-    },
-    {
-      "id": "proof",
-      "label_zh": "证明/推导",
-      "label_en": "Proof / derivation",
-      "weight": 5,
-      "patterns": [
-        "证明",
-        "推导",
-        "\\bprove\\b",
-        "\\bproof\\b",
-        "\\bderive\\b",
-        "\\blinearizab"
-      ]
-    },
-    {
-      "id": "algorithms",
-      "label_zh": "算法/复杂度",
-      "label_en": "Algorithms / complexity",
-      "weight": 2,
-      "patterns": [
-        "时间复杂度",
-        "空间复杂度",
-        "复杂度",
-        "算法设计",
-        "最优解",
-        "\\bcomplexity\\b",
-        "\\boptimal\\b",
-        "\\bnp-hard\\b",
-        "\\bdynamic programming\\b",
-        "动态规划"
-      ]
-    },
-    {
-      "id": "concurrency",
-      "label_zh": "并发/分布式",
-      "label_en": "Concurrency / distributed",
-      "weight": 4,
-      "patterns": [
-        "并发",
-        "竞态",
-        "死锁",
-        "分布式",
-        "一致性",
-        "\\bconcurren",
-        "\\brace condition",
-        "\\bdeadlock",
-        "\\bdistributed\\b",
-        "\\bconsistency\\b",
-        "\\bconsensus\\b"
-      ]
-    },
-    {
-      "id": "hard_debug",
-      "label_zh": "疑难杂症排查",
-      "label_en": "Hard-to-reproduce bug",
-      "weight": 5,
-      "patterns": [
-        "偶发",
-        "间歇",
-        "偶尔",
-        "随机失败",
-        "根因",
-        "内存泄漏",
-        "\\bintermittent",
-        "\\bflaky\\b",
-        "\\broot cause\\b",
-        "\\bmemory leak\\b",
-        "\\bheisenbug\\b",
-        "\\bonly in production\\b",
-        "只在(线上|生产)",
-        "\\bleak(s|ing|ed)?\\b",
-        "\\bin production\\b",
-        "泄漏",
-        "泄露"
-      ]
-    },
-    {
-      "id": "security",
-      "label_zh": "安全审计",
-      "label_en": "Security audit",
-      "weight": 4,
-      "patterns": [
-        "安全审计",
-        "漏洞",
-        "威胁建模",
-        "\\bsecurity (audit|review)\\b",
-        "\\bvulnerab",
-        "\\bthreat model"
-      ]
-    },
-    {
-      "id": "performance",
-      "label_zh": "性能优化",
-      "label_en": "Performance",
-      "weight": 2,
-      "patterns": [
-        "性能",
-        "瓶颈",
-        "延迟",
-        "\\bperformance\\b",
-        "\\bbottleneck",
-        "\\blatency\\b",
-        "\\bprofil(e|ing)\\b"
-      ]
-    },
-    {
-      "id": "migration",
-      "label_zh": "迁移/重写",
-      "label_en": "Migration / rewrite",
-      "weight": 2,
-      "patterns": [
-        "迁移",
-        "重写",
-        "升级到",
-        "\\bmigrat",
-        "\\brewrite\\b",
-        "\\bport (this|the|it) (to|from)\\b"
-      ]
-    },
-    {
-      "id": "multi_file",
-      "label_zh": "跨文件/全仓库",
-      "label_en": "Multi-file / whole repo",
-      "weight": 3,
-      "patterns": [
-        "整个(项目|仓库|代码库|系统)",
-        "全(仓库|项目)",
-        "多个文件",
-        "所有文件",
-        "\\b(entire|whole) (codebase|repo|repository|project)\\b",
-        "\\bacross (the )?(codebase|repo|files|modules)\\b",
-        "\\bmultiple files\\b"
-      ]
-    },
-    {
-      "id": "multi_step",
-      "label_zh": "多步骤任务",
-      "label_en": "Multi-step task",
-      "weight": 1,
-      "patterns": [
-        "首先.{0,80}然后",
-        "第一步",
-        "分步",
-        "\\bstep[- ]by[- ]step\\b",
-        "\\bfirst\\b.{0,80}\\bthen\\b"
-      ]
-    }
-  ],
-  "computed": {
-    "short_prompt": {
-      "label_zh": "请求很短",
-      "label_en": "Very short request",
-      "weight": -1,
-      "max_chars": 40,
-      "_note": "only applied when no positive keyword signal matched"
-    },
-    "has_code": {
-      "label_zh": "包含代码",
-      "label_en": "Contains code",
-      "weight": 1
-    },
-    "long_input": {
-      "label_zh": "输入较长",
-      "label_en": "Long input",
-      "weight": 1,
-      "min_chars": 2000
-    },
-    "very_long_input": {
-      "label_zh": "输入很长",
-      "label_en": "Very long input",
-      "weight": 2,
-      "min_chars": 8000
-    },
-    "many_requirements": {
-      "label_zh": "需求条目多",
-      "label_en": "Many requirements",
-      "weight": 1,
-      "min_items": 5
+  "adjustment": {
+    "max_up": 2,
+    "max_down": 1,
+    "top_tier_needs": {
+      "min_default": "t6",
+      "min_up": 2
     }
   },
   "desk": {
-    "model_clinic": "quick",
-    "_note": "The triage desk runs on the provider's model for this clinic (Claude: Haiku 4.5). It never answers; it only routes."
+    "tier": "t1"
+  },
+  "toolsets": {
+    "code": {
+      "tools": null,
+      "label_zh": "读写文件、执行命令、联网",
+      "label_en": "files, shell and web"
+    },
+    "write": {
+      "tools": "Read, Write, Edit, Grep, Glob, WebSearch, WebFetch",
+      "label_zh": "读写文件、联网（不执行命令）",
+      "label_en": "files and web, no shell"
+    },
+    "read": {
+      "tools": "Read, Grep, Glob, WebSearch, WebFetch",
+      "label_zh": "只读文件、联网",
+      "label_en": "read-only files and web"
+    }
+  },
+  "overrides": {
+    "t1": [
+      "@haiku",
+      "--haiku",
+      "@quick",
+      "--quick",
+      "用haiku",
+      "用 haiku",
+      "快速回答"
+    ],
+    "t3": [
+      "@sonnet",
+      "--sonnet",
+      "@standard",
+      "--standard",
+      "用sonnet",
+      "用 sonnet"
+    ],
+    "t5": [
+      "@opus",
+      "--opus",
+      "@deep",
+      "--deep",
+      "用opus",
+      "用 opus",
+      "深度思考",
+      "think hard"
+    ],
+    "t7": [
+      "@opus-max",
+      "--opus-max",
+      "@deep-max",
+      "--deep-max",
+      "ultrathink"
+    ],
+    "t8": [
+      "@fable",
+      "--fable",
+      "@frontier",
+      "--frontier",
+      "用fable",
+      "用 fable"
+    ]
+  },
+  "classification": {
+    "high_min_score": 2,
+    "min_margin": 0.5
+  },
+  "base_context_tokens": 3000,
+  "expected_output_tokens": {
+    "t1": 600,
+    "t2": 1500,
+    "t3": 2500,
+    "t4": 4000,
+    "t5": 6000,
+    "t6": 9000,
+    "t7": 12000,
+    "t8": 16000
+  },
+  "modifiers": [
+    {
+      "id": "scale",
+      "label_zh": "规模大",
+      "label_en": "Large scope",
+      "delta": 1,
+      "patterns": [
+        "整个(项目|仓库|代码库|系统|工程)",
+        "全(仓库|项目|站)",
+        "多个(服务|模块|仓库|系统)",
+        "(上|几)万行",
+        "所有(文件|模块|服务)",
+        "\\b(entire|whole) (codebase|repo|repository|project|system)\\b",
+        "\\bacross (the )?(codebase|repo|services)\\b",
+        "\\bmonorepo\\b"
+      ]
+    },
+    {
+      "id": "risk",
+      "label_zh": "风险高",
+      "label_en": "High stakes",
+      "delta": 1,
+      "patterns": [
+        "生产环境",
+        "支付|资金|交易系统",
+        "数据迁移",
+        "不可(回滚|逆)|无法回滚",
+        "正式(发布|上线)|对外发布",
+        "(医疗|金融)系统",
+        "\\b(in )?production( system| database| environment)?\\b",
+        "\\bpayments?\\b",
+        "\\birreversible\\b"
+      ]
+    },
+    {
+      "id": "hard_constraints",
+      "label_zh": "有复杂度或规模约束",
+      "label_en": "Hard constraints",
+      "delta": 1,
+      "patterns": [
+        "\\bO\\((n|log)",
+        "10\\^\\d",
+        "时间限制|复杂度要求|必须在.{0,6}(秒|毫秒)内",
+        "\\bmust run in\\b|\\btime limit\\b",
+        "\\bP99\\b.{0,6}<|延迟.{0,4}(小于|低于|<)"
+      ]
+    },
+    {
+      "id": "vague",
+      "label_zh": "需求模糊",
+      "label_en": "Open-ended",
+      "delta": 1,
+      "patterns": [
+        "怎么做(比较|才)?好",
+        "最佳(方案|实践|做法)",
+        "有什么(好的)?(建议|思路|办法)",
+        "帮我(看看|想想)(该)?怎么",
+        "不知道(该)?怎么",
+        "\\bbest way to\\b",
+        "\\bwhat would you (suggest|recommend)\\b",
+        "\\bnot sure how\\b"
+      ]
+    },
+    {
+      "id": "explicit",
+      "label_zh": "步骤明确",
+      "label_en": "Explicit steps",
+      "delta": -1,
+      "patterns": [
+        "按(照)?(以下|下面|这个|如下)(的)?(步骤|示例|格式|要求)",
+        "步骤如下",
+        "参照(下面|以下|这个)(的)?(例子|示例)",
+        "\\bfollow (these|the following) steps\\b",
+        "\\bexactly as (follows|below)\\b"
+      ]
+    }
+  ],
+  "computed_modifiers": {
+    "long_input": {
+      "label_zh": "输入很长",
+      "label_en": "Long input",
+      "delta": 1,
+      "min_chars": 3000
+    },
+    "many_requirements": {
+      "label_zh": "要求条目多",
+      "label_en": "Many requirements",
+      "delta": 1,
+      "min_items": 5
+    }
   }
 }

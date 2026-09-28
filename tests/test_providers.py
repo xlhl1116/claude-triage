@@ -10,10 +10,12 @@ SCRIPTS = ROOT / "skills" / "triage" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 from gen_agents import generate  # noqa: E402
-from triage import DEFAULT_RULES, clinic_ids, detect_provider, load_providers, load_rules, render_slip, triage  # noqa: E402
+from triage import detect_provider, load_providers, load_rules, load_taxonomy, render_slip, triage  # noqa: E402
 
 PROVIDERS = load_providers()
-RULES = load_rules(DEFAULT_RULES)
+RULES = load_rules()
+TAX = load_taxonomy()
+TIERS = RULES["_tier_ids"]
 EFFORTS = {"low", "medium", "high", "xhigh", "max"}
 
 
@@ -29,7 +31,7 @@ class Registry(unittest.TestCase):
 
     def test_every_model_is_exact(self):
         for name, p in PROVIDERS.items():
-            for cid in clinic_ids(RULES):
+            for cid in TIERS:
                 m = p["models"][cid]
                 with self.subTest(f"{name}/{cid}"):
                     self.assertTrue(m["id"] and m["name"])
@@ -37,14 +39,17 @@ class Registry(unittest.TestCase):
                     if m.get("effort") is not None:
                         self.assertIn(m["effort"], EFFORTS)
 
-    def test_claude_roster(self):
-        got = {cid: (m["id"], m.get("effort")) for cid, m in PROVIDERS["claude"]["models"].items()}
+    def test_claude_ladder(self):
+        got = {t: (m["id"], m.get("effort")) for t, m in PROVIDERS["claude"]["models"].items()}
         self.assertEqual(got, {
-            "quick": ("claude-haiku-4-5", None),
-            "standard": ("claude-sonnet-5", "medium"),
-            "deep": ("claude-opus-5-5", "medium"),
-            "deep-max": ("claude-opus-5-5", "max"),
-            "frontier": ("claude-fable-5-1", "max"),
+            "t1": ("claude-haiku-4-5", None),
+            "t2": ("claude-sonnet-5", "low"),
+            "t3": ("claude-sonnet-5", "medium"),
+            "t4": ("claude-sonnet-5", "high"),
+            "t5": ("claude-opus-5-5", "medium"),
+            "t6": ("claude-opus-5-5", "high"),
+            "t7": ("claude-opus-5-5", "max"),
+            "t8": ("claude-fable-5-1", "max"),
         })
 
 
@@ -70,8 +75,9 @@ class Detection(unittest.TestCase):
 
 class Slip(unittest.TestCase):
     def test_third_party_slip(self):
-        r = triage("帮我设计一个分布式任务调度系统，处理并发和一致性", RULES, PROVIDERS, "deepseek")
-        self.assertEqual((r["clinic"], r["model_id"], r["agent"]), ("deep-max", "deepseek-v4-pro", "triage-deep-max-deepseek"))
+        r = triage("这段 Go 代码在高并发下会死锁，帮我分析原因", RULES, TAX, PROVIDERS, "deepseek")
+        self.assertEqual((r["category"], r["model_id"], r["agent"]),
+                         ("software.concurrency-bug", "deepseek-v4-pro", "triage-t7-code-deepseek"))
         slip = render_slip(r, RULES, "zh")
         self.assertIn("DeepSeek V4 Pro（deepseek-v4-pro", slip)
         self.assertIn("未验证", slip)
@@ -83,24 +89,40 @@ class Agents(unittest.TestCase):
         out = subprocess.run([sys.executable, str(SCRIPTS / "gen_agents.py"), "--check"], capture_output=True, text=True)
         self.assertEqual(out.returncode, 0, out.stdout)
 
-    def test_generated_agents_use_exact_models(self):
+    def test_docs_are_up_to_date(self):
+        out = subprocess.run([sys.executable, str(SCRIPTS / "gen_docs.py"), "--check"], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stdout)
+
+    def test_every_routed_agent_exists(self):
+        for provider in PROVIDERS:
+            files = generate(provider, RULES, TAX, PROVIDERS)
+            names = {f[:-3] for f in files}
+            for c in TAX["_by_id"].values():
+                if c.get("handler") == "desk":
+                    continue
+                for text in filter(None, (c.get("example"), "整个项目 生产环境 " + (c.get("example") or ""), "@fable x", "@haiku x")):
+                    r = triage(text, RULES, TAX, PROVIDERS, provider, c["id"])
+                    self.assertIn(r["agent"].split(":")[-1], names, f"{provider} {c['id']} {r['agent']}")
+
+    def test_executors_use_exact_models(self):
         for provider, p in PROVIDERS.items():
-            files = generate(provider, RULES, PROVIDERS)
-            self.assertEqual(len(files), len(RULES["clinics"]) + 1)
-            for cid in clinic_ids(RULES):
-                suffix = "" if provider == "claude" else f"-{provider}"
-                fields, _ = parse_agent(files[f"triage-{cid}{suffix}.md"])
-                with self.subTest(f"{provider}/{cid}"):
-                    self.assertEqual(fields["model"], p["models"][cid]["id"])
-                    self.assertEqual(fields.get("effort"), p["models"][cid].get("effort"))
+            files = generate(provider, RULES, TAX, PROVIDERS)
+            suffix = "" if provider == "claude" else f"-{provider}"
+            for tier in TIERS:
+                for ts, spec in RULES["toolsets"].items():
+                    fields, _ = parse_agent(files[f"triage-{tier}-{ts}{suffix}.md"])
+                    with self.subTest(f"{provider}/{tier}/{ts}"):
+                        self.assertEqual(fields["model"], p["models"][tier]["id"])
+                        self.assertEqual(fields.get("effort"), p["models"][tier].get("effort"))
+                        self.assertEqual(fields.get("tools"), spec["tools"])
 
     def test_desk_only_routes(self):
-        fields, body = parse_agent(generate("claude", RULES, PROVIDERS)["triage-desk.md"])
+        fields, body = parse_agent(generate("claude", RULES, TAX, PROVIDERS)["triage-desk.md"])
         self.assertEqual(fields["model"], "claude-haiku-4-5")
-        self.assertEqual(fields["tools"], "Agent, Skill, Bash")
-        for cid in clinic_ids(RULES):
-            self.assertIn(f"claude-triage:triage-{cid}", body)
-        self.assertIn("Never answer the request yourself", body)
+        self.assertEqual(fields["tools"], "Agent, Skill, Bash, Read, Glob, Grep")
+        self.assertIn("never answer", body.lower())
+        for cid in TAX["_by_id"]:
+            self.assertIn(f"`{cid}`", body)
 
     def test_plugin_runs_desk_as_main_thread(self):
         self.assertEqual(json.loads((ROOT / "settings.json").read_text())["agent"], "triage-desk")
@@ -118,6 +140,7 @@ class UseProvider(unittest.TestCase):
         self.assertEqual(cfg["agent"], "triage-desk-kimi")
         self.assertEqual(cfg["env"]["ANTHROPIC_BASE_URL"], "https://api.moonshot.cn/anthropic")
         self.assertEqual(cfg["env"]["ANTHROPIC_DEFAULT_HAIKU_MODEL"], "kimi-k2.7-code-highspeed")
+        self.assertEqual(cfg["env"]["ANTHROPIC_DEFAULT_OPUS_MODEL"], "kimi-k3")
 
     def test_intl_endpoint(self):
         cfg = json.loads(self.run_script("zhipu", "--intl", check=True).stdout)
@@ -141,7 +164,7 @@ class UseProvider(unittest.TestCase):
         self.assertNotIn("CLAUDE_CODE_SUBAGENT_MODEL", settings["env"])
         self.assertNotIn("ANTHROPIC_MODEL", settings["env"])
         self.assertEqual(settings["env"]["KEEP_ME"], "1")
-        self.assertEqual(len(agents), len(RULES["clinics"]) + 1)
+        self.assertEqual(len(agents), len(TIERS) * len(RULES["toolsets"]) + 1)
         self.assertIn("model: mimo-v2.5", desk)
         self.assertNotIn("agent", back)
         self.assertEqual(back["env"], {"KEEP_ME": "1"})

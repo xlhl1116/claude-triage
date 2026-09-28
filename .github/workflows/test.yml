@@ -19,6 +19,7 @@ jobs:
       - run: python benchmark/eval_rules.py
       - run: python benchmark/run_bench.py --check-references
       - run: python skills/triage/scripts/gen_agents.py --check
+      - run: python skills/triage/scripts/gen_docs.py --check
       - name: Validate plugin manifests
         run: |
-          python -c "import json; [json.load(open(p)) for p in ('.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', 'skills/triage/rules.json', 'skills/triage/providers.json', 'settings.json', 'hooks/hooks.json')]"
+          python -c "import json; [json.load(open(p)) for p in ('.claude-plugin/plugin.json', '.claude-plugin/marketplace.json', 'skills/triage/rules.json', 'skills/triage/taxonomy.json', 'skills/triage/providers.json', 'settings.json', 'hooks/hooks.json')]"

@@ -2,7 +2,7 @@
 
 # 🏥 claude-triage
 
-**Claude Code 的 AI 导诊台：由一个便宜的导诊模型读每条请求，挂到它需要的精确型号和思考深度，并附一张讲清楚“为什么”的挂号单。**
+**Claude Code 的 AI 导诊台：由一个便宜的导诊模型读每条请求，从 120 个细类里认出它是哪类需求，再交给这类需求需要的精确型号和思考深度，并附一张讲清楚“为什么”的挂号单。**
 
 [English](README.md) | 简体中文
 
@@ -15,20 +15,20 @@
 > 🎬 *演示 GIF 制作中。* 先看看效果：
 
 ```text
-> 帮我设计一个分布式任务调度系统，处理并发和一致性
+> 这段 Go 代码在高并发下会死锁，线上已经出现两次，帮我分析原因并修复
 
 🏥 分诊挂号单
 ────────────────────────────
-科室      特需门诊
+类别      💻 软件开发 › 并发、竞态、死锁
 模型      Claude Opus 5.5（claude-opus-5-5，Anthropic Claude）
 思考深度  max
-置信度    中（得分 9；standard≥2，deep≥5，deep-max≥8，frontier≥12）
-依据      + 架构/系统设计 (+5)  + 并发/分布式 (+4)
-预估成本  ≈ $0.252（全部走最高档 ≈ $0.830，省 70%）
-改挂      在请求里加 @quick / @standard / @deep / @deep-max / @frontier 即可推翻本次分诊
+理由      命中 “并发”、“死锁”
+置信度    高
+预估成本  ≈ $0.252（全部用最强配置 ≈ $0.830，省 70%）
+改挂      在消息里加 @haiku / @sonnet / @opus / @opus-max / @fable 可直接指定模型
 
 ……Claude Opus 5.5（effort max）给出的回答……
-— 特需门诊 · Claude Opus 5.5 · effort max
+— 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max
 ```
 
 ## 安装
@@ -43,61 +43,70 @@
 ## 工作原理
 
 ```
-你的消息 ──► hook：规则引擎打分，附上 <triage-slip> 挂号单
+你的消息 ──► hook：规则引擎识别类别，附上 <triage-slip> 挂号单   （不调用模型）
                   │
                   ▼
            导诊台（Claude Haiku 4.5，主会话）
            · 自己从不回答问题
-           · 规则拿不准时，由它复核
+           · 拿不准时由它判定类别（可只读查看仓库来判断改动范围）
            · 展示挂号单
                   │  用 Agent 工具派单
                   ▼
-   ┌───────────┬───────────┬────────────┬─────────────┬─────────────┐
-   │ 快速门诊  │ 普通门诊  │ 专家门诊   │ 特需门诊    │ 名医会诊    │
-   │ Haiku 4.5 │ Sonnet 5  │ Opus 5.5   │ Opus 5.5    │ Fable 5.1   │
-   │  默认     │  medium   │  medium    │   max       │    max      │
-   └───────────┴───────────┴────────────┴─────────────┴─────────────┘
-                  │  回答（或 TRIAGE_ESCALATE → 转上一级）
+   执行 agent = 精确型号 + 思考深度 + 工具权限，例如
+   Claude Haiku 4.5 · Claude Sonnet 5 low / medium / high · Claude Opus 5.5 medium / high / max · Claude Fable 5.1 max
+                  │  回答（或 TRIAGE_ESCALATE → 转给更强的模型）
                   ▼
-           导诊台转给你，并注明型号和思考深度
+           导诊台转给你，并注明类别、型号和思考深度
 ```
 
-1. **hook 初筛每条消息**：用一张公开透明的规则表打分（任务类型、长度、是否含代码、是否涉及架构 / 并发 / 证明 / 疑难排查），附上挂号单。这一步不调用模型，不花 token。
-2. **导诊台只用一个便宜模型**（Claude Haiku 4.5）：它从不自己答题；规则拿不准时，由它来决定挂哪个科。
-3. **每个科室固定一个精确型号 + 思考深度**，写在 agent 配置里，例如 `model: claude-opus-5-5` + `effort: max`。不用 opus 这类别名，挂号单上写的就是实际运行的版本。
-4. **专科可以转诊**：发现病情比预想的重，会转到上一级科室。
+1. **识别需求类型，而不是让你选档位。** 大多数人分不清自己的问题该挂普通号还是专家号，所以没人需要做这个选择。hook 会把每条消息和 **17 个大类、120 个细类**对照：从“改个变量名”到“分布式架构”，从“合同审查”到“用药咨询”，然后附上挂号单。这一步不调用模型，不花 token。
+2. **类别决定模型。** 每个细类都有默认的型号、思考深度和工具权限。日常翻译交给 Claude Haiku 4.5，跨模块的大型重构交给 Claude Opus 5.5 · max。健康、法律、金融类设了最低配置，不会落到便宜模型上，并附带专属指令，比如健康类会提醒就医。
+3. **后台微调。** 涉及整个仓库、生产环境或支付、需求模糊、输入很长、有复杂度约束时自动上调；给了明确步骤时下调。最强的 Claude Fable 5.1 只有在多个信号叠加时才会用到。
+4. **导诊台只用一个便宜模型**（Claude Haiku 4.5），自己从不答题。规则拿不准时，由它来判定类别，必要时只读看一眼仓库来判断改动范围。
+5. **执行 agent 可以转诊**：发现任务比预想的难，会转给更强的模型。
 
-随时可以推翻分诊：在消息里加 `@quick`、`@standard`、`@deep`、`@deep-max` 或 `@frontier`（也可以用 `@haiku`、`@sonnet`、`@opus`、`@opus-max`、`@fable`）。
+想自己指定模型，在消息里加 `@haiku`、`@sonnet`、`@opus`、`@opus-max` 或 `@fable` 即可。旧的 `@quick`、`@deep` 口令仍然有效。
 
-## 科室
+## 分类表
 
-| 科室 | 模型（精确版本） | 思考深度 | 得分 | 典型请求 |
-|---|---|---|---|---|
-| 导诊台 | Claude Haiku 4.5 `claude-haiku-4-5` | — | — | 给每条消息分诊，从不答题 |
-| 快速门诊 `quick` | Claude Haiku 4.5 `claude-haiku-4-5` | 默认¹ | < 2 | 寒暄、翻译润色、错别字、重命名、简单问答 |
-| 普通门诊 `standard` | Claude Sonnet 5 `claude-sonnet-5` | medium | 2–4 | 写函数、修明确的 bug、补测试、重构单个模块、审 PR |
-| 专家门诊 `deep` | Claude Opus 5.5 `claude-opus-5-5` | medium | 5–7 | 单个疑难点：架构设计、方案权衡、证明、偶发 bug、跨模块迁移 |
-| 特需门诊 `deep-max` | Claude Opus 5.5 `claude-opus-5-5` | max | 8–11 | 多个疑难点叠加：分布式/并发架构、并发 bug、全仓库安全审计 |
-| 名医会诊 `frontier` | Claude Fable 5.1 `claude-fable-5-1` | max | ≥ 12 | 疑难信号大量叠加的超难问题 |
+| 大类 | 细类数 | 示例 → 默认模型 |
+|---|---:|---|
+| 💻 软件开发 | 40 | 改名 / 格式化 → Haiku 4.5 · UI 组件 → Sonnet 5 medium · 跨模块功能 → Opus 5.5 medium · 框架迁移 → Opus 5.5 high · 大型重构、偶发 bug、并发、安全审计、分布式架构 → Opus 5.5 max |
+| 📊 数据与数学 | 8 | 计算 → Haiku 4.5 · Excel 公式 → Sonnet 5 low · 统计分析 → Opus 5.5 medium · 数学证明 → Opus 5.5 max |
+| ✍️ 写作 | 10 | 润色、邮件、摘要 → Sonnet 5 low · 公文报告、小说 → Opus 5.5 medium · 学术论文 → Opus 5.5 high |
+| 🌐 语言 | 4 | 日常翻译、语法 → Haiku 4.5 · 法律 / 医学 / 长文翻译 → Opus 5.5 medium |
+| 🔎 信息查询 | 5 | 常识 → Haiku 4.5 · 产品比较 → Sonnet 5 medium · 深度调研报告 → Opus 5.5 high |
+| 🎓 教育学习 | 4 | 概念讲解、作业辅导 → Sonnet 5 medium |
+| 🧭 实用建议 | 4 | 设备设置、办事流程、家居维修 → Sonnet 5 low |
+| 🩺 健康 | 6 | 症状、心理健康 → Opus 5.5 medium · 用药、检查报告 → Opus 5.5 high（最低 Opus 5.5 medium） |
+| ⚖️ 法律 | 4 | 法律咨询、合同起草 → Opus 5.5 medium · 合同审查、合规 → Opus 5.5 high（最低 Opus 5.5 medium） |
+| 💰 金融财务 | 4 | 个人理财 → Sonnet 5 medium · 投资分析、财务建模 → Opus 5.5 high（最低 Opus 5.5 medium） |
+| 💼 职场与商业 | 8 | 会议纪要 → Sonnet 5 low · 简历、面试 → Sonnet 5 medium · 商业计划 → Opus 5.5 high |
+| 🔬 科研 | 5 | 文献综述、实验设计 → Opus 5.5 high · 理论推导 → Opus 5.5 max |
+| 🎨 设计与多媒体 | 5 | 生图提示词 → Haiku 4.5 · UX、品牌、视频脚本 → Sonnet 5 medium |
+| 💡 创意与娱乐 | 4 | 起名、角色扮演 → Sonnet 5 low · 头脑风暴、诗词 → Sonnet 5 medium |
+| 🏠 生活 | 4 | 菜谱 → Haiku 4.5 · 旅行、育儿 → Sonnet 5 medium |
+| 💬 闲聊与情感 | 3 | 寒暄 → Haiku 4.5 · 情感关系 → Sonnet 5 medium |
+| 🗂️ 其他 | 2 | 询问分诊本身（导诊台直接回答） · 需求不清 |
 
-¹ Claude Haiku 4.5 没有 effort 参数。
+大类的划分参考了公开的真实使用研究：OpenAI / NBER《How People Use ChatGPT》（2025）、Anthropic 的 Clio 和 Economic Index（2024–2026）、Microsoft《Copilot Usage Report 2025》。软件开发是 Claude 最主要的用途，也是 Claude Code 的核心场景，所以分得最细。
 
-科室名单在 [`skills/triage/rules.json`](skills/triage/rules.json)（科室、分数段、改挂口令），每个科室对应的精确型号在 [`skills/triage/providers.json`](skills/triage/providers.json)。改完运行 `python3 skills/triage/scripts/gen_agents.py`，agent 配置会自动重新生成。完整规则表见 [`docs/triage-rules.md`](docs/triage-rules.md)。
+**全部 120 个细类**及其型号、思考深度、工具权限和最低配置，见 **[`docs/taxonomy.md`](docs/taxonomy.md)**。这份文档由 [`skills/triage/taxonomy.json`](skills/triage/taxonomy.json)（类别和关键词）、[`rules.json`](skills/triage/rules.json)（后台微调和改挂口令）、[`providers.json`](skills/triage/providers.json)（精确型号）自动生成。发现漏了哪类需求？往 `taxonomy.json` 里加一个细类，提个 PR 就行。
 
 不想让导诊台当主会话？在 `~/.claude/settings.json` 里设置你自己的 `"agent"`（用户设置优先于插件），设 `CLAUDE_TRIAGE=off` 关掉 hook，需要时再用 `/claude-triage:triage <请求>` 单次分诊。
 
 ## 第三方厂商：DeepSeek、Kimi、智谱 GLM、小米 MiMo
 
-Claude Code 同一时间只连一家的 Anthropic 兼容接口。切换到其他厂商时，导诊台和各科室会按该厂商的精确模型 ID 重新生成：
+Claude Code 同一时间只连一家的 Anthropic 兼容接口。切换到其他厂商时，导诊台和执行 agent 会按该厂商的精确模型 ID 重新生成：
 
-| 科室 | DeepSeek | 月之暗面 Kimi | 智谱 GLM | 小米 MiMo |
+| Claude | DeepSeek | 月之暗面 Kimi | 智谱 GLM | 小米 MiMo |
 |---|---|---|---|---|
-| 导诊台 / 快速门诊 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.7 Code HighSpeed `kimi-k2.7-code-highspeed` | GLM-5.3-Flash `glm-5.3-flash` | MiMo V2.5 `mimo-v2.5` |
-| 普通门诊 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 `kimi-k2.6` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
-| 专家门诊 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
-| 特需门诊 / 名医会诊 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
+| Claude Haiku 4.5（导诊台） | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.7 Code HighSpeed `kimi-k2.7-code-highspeed` | GLM-5.3-Flash `glm-5.3-flash` | MiMo V2.5 `mimo-v2.5` |
+| Claude Sonnet 5 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 / K2.7 Code | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
+| Claude Opus 5.5 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
+| Claude Fable 5.1 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 
-各科室的思考深度（low → max）会传给厂商接口，但各家是否真的支持**尚未验证**，挂号单上会注明。
+每一档的精确思考深度见 [`docs/taxonomy.md`](docs/taxonomy.md) 的“模型阶梯”一节。思考深度会传给厂商接口，但各家是否真的支持**尚未验证**，挂号单上会注明。
 
 ```bash
 python3 skills/triage/scripts/use_provider.py deepseek                            # 预览
@@ -106,18 +115,19 @@ python3 skills/triage/scripts/use_provider.py zhipu --intl --write ~/.claude/set
 python3 skills/triage/scripts/use_provider.py claude --write ~/.claude/settings.json          # 切回 Claude
 ```
 
-`--write` 会写入接口地址和 key，把该厂商的导诊台和科室 agent 写到 `~/.claude/agents/`，并把该厂商的导诊台设为主会话。部分厂商的官方教程会设置 `CLAUDE_CODE_SUBAGENT_MODEL`，它会把所有科室强制成同一个模型，脚本会把它清掉。模型 ID 于 2026-09-28 对照各家文档核对过，个别未能完全确认的列在 `providers.json` 的 `unverified` 字段里。
+`--write` 会写入接口地址和 key，把该厂商的导诊台和执行 agent 写到 `~/.claude/agents/`，并把该厂商的导诊台设为主会话。部分厂商的官方教程会设置 `CLAUDE_CODE_SUBAGENT_MODEL`，它会把所有执行 agent 强制成同一个模型，脚本会把它清掉。模型 ID 于 2026-09-28 对照各家文档核对过，个别未能完全确认的列在 `providers.json` 的 `unverified` 字段里。
 
 ## 与同类方案对比
 
 | | **claude-triage** | OpenRouter Auto | RouteLLM | `opusplan`（Claude Code 内置） |
 |---|---|---|---|---|
 | 运行位置 | Claude Code 插件 | 托管 API 网关 | 自建服务 / 库 | Claude Code 内 |
-| 决策粒度 | 每个请求 | 每个请求 | 每个请求 | 按模式（规划用 Opus，执行用 Sonnet） |
+| 决策粒度 | 每个请求，按 120 个细类 | 每个请求 | 每个请求 | 按模式（规划用 Opus，执行用 Sonnet） |
 | 选择思考深度 | ✅ | ❌ | ❌ | ❌ |
-| 解释决策 | ✅ 挂号单列出信号和得分 | ❌ | ❌ | 不适用 |
+| 解释决策 | ✅ 类别、命中信号、微调原因 | ❌ | ❌ | 不适用 |
 | 执行前预估成本 | ✅ | ❌ | ❌ | ❌ |
-| 一键手动推翻 | ✅ `@deep-max` | 指定 model 参数 | 调阈值 | 手动切模型 |
+| 领域护栏 | ✅ 健康、法律、金融设最低配置和专属指令 | ❌ | ❌ | ❌ |
+| 一键手动推翻 | ✅ `@opus-max` | 指定 model 参数 | 调阈值 | 手动切模型 |
 | 规则可读可改 | ✅ JSON + 测试 | ❌ | 训练出的路由器 | ❌ |
 | 非 Anthropic 模型 | ✅ DeepSeek、Kimi、智谱、小米 MiMo（一次用一家） | ✅ | ✅ | ❌ |
 | 额外 API key / 基础设施 | 无 | OpenRouter 账号 | 自己部署 | 无 |
@@ -127,37 +137,45 @@ python3 skills/triage/scripts/use_provider.py claude --write ~/.claude/settings.
 ## 单独试用规则引擎
 
 ```bash
-echo "帮我设计一个分布式任务调度系统" | python3 skills/triage/scripts/triage.py --format slip
-python3 skills/triage/scripts/triage.py --format json --provider kimi --text "把这句话翻译成英文：明天见"
+echo "线上服务偶发 502，本地复现不了，帮我找根因" | python3 skills/triage/scripts/triage.py --format slip
+python3 skills/triage/scripts/triage.py --format json --provider kimi --text "帮我审查这份租房合同有没有坑"
+python3 skills/triage/scripts/triage.py --list-categories
 ```
 
-运行测试和分诊回归用例：
+运行测试和分诊回归检查：
 
 ```bash
 python3 -m unittest discover -s tests
 python3 benchmark/eval_rules.py
 ```
 
-> ⚠️ `benchmark/triage-cases.jsonl` 里的 47 条种子用例是和规则一起写的，100% 准确率只是回归检查，不代表真实效果。
+> ⚠️ 分诊回归检查（每个细类的示例 + 64 条人工标注的请求，目前全部通过）是和关键词一起写的，只能当回归检查，不代表真实流量下的准确率。最有价值的贡献是真实的“分错科”例子。
 
 ## Benchmark：质量与成本
 
-`benchmark/run_bench.py` 用 30 道自动评分的题（简单 / 中等 / 困难各 10 道），分别测“固定用某个科室”和“按分诊路由”的表现，任何厂商都能测，并和“全部走最强科室”对比通过率与成本。用法见 [`benchmark/README.md`](benchmark/README.md)，真实跑分结果即将公布。
+`benchmark/run_bench.py` 用 30 道自动评分的题（简单 / 中等 / 困难各 10 道），分别测“固定用某个模型”和“按分诊路由”的表现，任何厂商都能测，并和“全部用最强模型”对比通过率与成本。用法见 [`benchmark/README.md`](benchmark/README.md)，真实跑分结果即将公布。
 
 ## 路线图
 
-- [x] 分诊规则表、规则引擎、可解释挂号单、成本预估
-- [x] 导诊台固定用一个便宜模型并作为主会话；五个科室各有精确型号 + 思考深度；逐级转诊
+- [x] 规则引擎、可解释挂号单、成本预估
+- [x] 导诊台固定用一个便宜模型并作为主会话；每个执行 agent 有精确型号 + 思考深度；逐级转诊
+- [x] 基于公开使用研究的 120 类分类表；后台微调；健康、法律、金融设最低配置
 - [x] 第三方厂商：DeepSeek、Kimi、智谱 GLM、小米 MiMo
 - [x] Benchmark 框架：30 道自动评分题、按厂商分策略、离线 mock 模式
-- [ ] **Benchmark 结果**：公布真实跑分并出图
+- [ ] **Benchmark 结果**：公布真实跑分并出图；按大类补题
 - [ ] 验证各厂商是否支持 Claude Code 的 effort 设置
-- [ ] **从反馈中学习**：记录改挂和转诊，自动建议调整权重
-- [ ] **混合路由**：同一会话里不同科室用不同厂商；接入 GPT、Gemini、本地模型
+- [ ] **从反馈中学习**：记录改挂、导诊台复核和转诊，自动建议调整关键词和默认配置
+- [ ] **混合路由**：同一会话里不同类别用不同厂商；接入 GPT、Gemini、本地模型
 
 ## 参与贡献
 
-欢迎 issue 和 PR，尤其是“分错科”的例子：把提示词和你期望的科室加进 `benchmark/triage-cases.jsonl`，调整 `rules.json`；如果改了科室或型号，运行 `python3 skills/triage/scripts/gen_agents.py`；确保 `python3 -m unittest discover -s tests` 通过即可。
+欢迎 issue 和 PR，尤其是“分错科”的例子：把提示词和你期望的类别加进 `benchmark/triage-cases.jsonl`，调整 `taxonomy.json` 里的关键词，然后运行：
+
+```bash
+python3 skills/triage/scripts/gen_agents.py   # 改了型号、档位或工具权限时
+python3 skills/triage/scripts/gen_docs.py     # 刷新 docs/taxonomy.md
+python3 -m unittest discover -s tests
+```
 
 ## 许可证
 

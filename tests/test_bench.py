@@ -35,24 +35,29 @@ class Strategies(unittest.TestCase):
 
     def test_exact_model_and_effort(self):
         r = lambda name, row=None: run_bench.resolve_strategy(self.config, name, row)
-        self.assertEqual(r("claude:deep"), ("claude/deep", "medium"))
-        self.assertEqual(r("claude:deep-max"), ("claude/deep-max", "max"))
-        self.assertEqual(r("claude:quick"), ("claude/quick", None))
-        self.assertEqual(r("claude:triage", {"clinic": "frontier"}), ("claude/frontier", "max"))
-        self.assertEqual(self.config["targets"]["claude/frontier"]["id"], "claude-fable-5-1")
+        self.assertEqual(r("claude:t5"), ("claude/t5", "medium"))
+        self.assertEqual(r("claude:t7"), ("claude/t7", "max"))
+        self.assertEqual(r("claude:t1"), ("claude/t1", None))
+        self.assertEqual(r("claude:triage", {"tier": "t8"}), ("claude/t8", "max"))
+        self.assertEqual(self.config["targets"]["claude/t8"]["id"], "claude-fable-5-1")
         # third-party depth goes through extra_body, not a Claude effort value
-        self.assertEqual(r("deepseek:deep-max"), ("deepseek/deep-max", None))
-        self.assertEqual(self.config["targets"]["deepseek/deep-max"]["extra"]["reasoning_effort"], "max")
+        self.assertEqual(r("deepseek:t7"), ("deepseek/t7", None))
+        self.assertEqual(self.config["targets"]["deepseek/t7"]["extra"]["reasoning_effort"], "max")
 
     def test_identical_requests_share_a_generation(self):
         k = lambda target, effort: run_bench.gen_key(self.config, target, effort, "t", 0)
-        self.assertEqual(k("deepseek/deep-max", None), k("deepseek/frontier", None))
-        self.assertNotEqual(k("claude/deep", "medium"), k("claude/deep-max", "max"))
+        self.assertEqual(k("deepseek/t7", None), k("deepseek/t8", None))
+        self.assertNotEqual(k("claude/t5", "medium"), k("claude/t7", "max"))
+
+    def test_routing_uses_the_taxonomy(self):
+        task = next(t for t in TASKS if t["id"] == "hard-shared-default-bug")
+        rec = run_bench.route("claude", task, run_bench.MockBackend(self.config), self.config)
+        self.assertEqual((rec["category"], rec["tier"]), ("software.hard-debug", "t7"))
 
     def test_intl_region_switches_bench_endpoint(self):
         intl = run_bench.load_config(region="intl")
-        self.assertEqual(intl["targets"]["kimi/deep"]["base_url"], "https://api.moonshot.ai/v1")
-        self.assertEqual(self.config["targets"]["kimi/deep"]["base_url"], "https://api.moonshot.cn/v1")
+        self.assertEqual(intl["targets"]["kimi/t7"]["base_url"], "https://api.moonshot.ai/v1")
+        self.assertEqual(self.config["targets"]["kimi/t7"]["base_url"], "https://api.moonshot.cn/v1")
 
 
 class FakeChat(BaseHTTPRequestHandler):
@@ -80,7 +85,7 @@ class OpenAICompat(unittest.TestCase):
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             config = run_bench.load_config()
-            target = dict(config["targets"]["deepseek/deep"], base_url=f"http://127.0.0.1:{server.server_port}")
+            target = dict(config["targets"]["deepseek/t7"], base_url=f"http://127.0.0.1:{server.server_port}")
             with mock.patch.dict("os.environ", {"DEEPSEEK_API_KEY": "sk-test", "NO_PROXY": "127.0.0.1"}):
                 out = run_bench.call_openai_compat(target, None, "sys", "What port?", 100)
         finally:
@@ -99,7 +104,7 @@ class OpenAICompat(unittest.TestCase):
         config = run_bench.load_config()
         with mock.patch.dict("os.environ", {}, clear=True):
             with self.assertRaisesRegex(RuntimeError, "MIMO_API_KEY"):
-                run_bench.call_openai_compat(config["targets"]["xiaomi/deep"], None, "s", "p", 10)
+                run_bench.call_openai_compat(config["targets"]["xiaomi/t7"], None, "s", "p", 10)
 
 
 class MockRun(unittest.TestCase):
@@ -110,7 +115,7 @@ class MockRun(unittest.TestCase):
                                  "--difficulty", "easy,hard"])
             summary = json.loads(Path(tmp, "t", "summary.json").read_text(encoding="utf-8"))
         self.assertEqual(rc, 0)
-        self.assertEqual(summary["strategies"]["kimi:frontier"]["pass_rate"], 1.0)
+        self.assertEqual(summary["strategies"]["kimi:t8"]["pass_rate"], 1.0)
         self.assertIn("kimi", summary["routing_confusion"])
 
 

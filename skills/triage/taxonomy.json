@@ -1,0 +1,2108 @@
+{
+  "_note": "Request taxonomy: domains -> categories. Each category sets the default tier (see rules.json tiers), the tool profile, optional floor/ceiling, recognition keywords (regex, case-insensitive, ASCII word boundaries) and one example that the rule engine must classify correctly (checked by tests). Grounded in public usage studies: OpenAI/NBER 'How People Use ChatGPT' (2025-09), Anthropic Clio and Economic Index (2024-12 to 2026-06), Microsoft Copilot Usage Report 2025.",
+  "version": 1,
+  "domains": [
+    {
+      "id": "software",
+      "emoji": "💻",
+      "label_zh": "软件开发",
+      "label_en": "Software development",
+      "categories": [
+        {
+          "id": "software.explain-snippet",
+          "label_zh": "代码片段解释",
+          "label_en": "Explain a code snippet",
+          "tier": "t2",
+          "tools": "read",
+          "group_zh": "理解问答",
+          "keywords": [
+            "解释(一下)?(这段|这个|下面的?)?代码",
+            "这段代码(是|在)?(做|干)(什么|啥)",
+            "代码.{0,6}什么意思",
+            "\\bexplain (this|the|what this) (code|snippet|function)",
+            "\\bwhat does this (code|function|snippet) do"
+          ],
+          "example": "解释一下这段代码在做什么：```python\nprint(sum(x * x for x in range(10)))\n```"
+        },
+        {
+          "id": "software.explain-error",
+          "label_zh": "报错信息解读",
+          "label_en": "Explain an error message",
+          "tier": "t2",
+          "tools": "read",
+          "group_zh": "理解问答",
+          "keywords": [
+            "(报错|错误|异常|error|exception|warning).{0,30}(什么意思|是啥意思|啥意思|\\bmean)",
+            "什么意思|是啥意思",
+            "(这个|该|这条)(报错|错误|异常)"
+          ],
+          "example": "TypeError: 'NoneType' object is not subscriptable 这个报错是什么意思？"
+        },
+        {
+          "id": "software.api-usage",
+          "label_zh": "API / 库用法问答",
+          "label_en": "Library / API usage question",
+          "tier": "t2",
+          "tools": "read",
+          "group_zh": "理解问答",
+          "keywords": [
+            "(函数|方法|API|接口|SDK|库|包|模块|参数).{0,12}(怎么|如何)(用|调用|传|配置)",
+            "(怎么|如何)(用|调用).{0,12}(函数|方法|API|接口|SDK|库)",
+            "\\bhow (do i|to) (use|call) .{0,40}(api|function|method|library|sdk)",
+            "\\busage of\\b"
+          ],
+          "example": "pandas 的 merge 函数怎么用？"
+        },
+        {
+          "id": "software.understand-codebase",
+          "label_zh": "读懂陌生代码库",
+          "label_en": "Understand an unfamiliar codebase",
+          "tier": "t5",
+          "tools": "read",
+          "group_zh": "理解问答",
+          "keywords": [
+            "梳理(一下)?.{0,8}(项目|代码|仓库|架构|调用链|模块)",
+            "读懂.{0,6}(项目|代码库|仓库|源码)",
+            "调用链",
+            "(项目|代码库|仓库|源码).{0,6}(结构|架构)(是怎样|是什么|介绍|讲讲)",
+            "\\bwalk me through (the|this) (codebase|repo)",
+            "\\bexplain (the|this) (codebase|repo)",
+            "\\bonboard(ing)? (to|onto) (the|this) (codebase|repo)"
+          ],
+          "example": "帮我梳理一下这个项目的整体架构和主要调用链"
+        },
+        {
+          "id": "software.rename-format",
+          "label_zh": "改名 / 格式化 / 加注释",
+          "label_en": "Rename, format, add comments",
+          "tier": "t1",
+          "tools": "code",
+          "group_zh": "小改动",
+          "keywords": [
+            "重命名",
+            "改(个|一下)?名(字)?(为|成)",
+            "格式化",
+            "加(个|上|一些|点)?注释",
+            "\\brename\\b",
+            "\\breformat\\b",
+            "\\bformat (the|this) (code|file|json|yaml)",
+            "\\badd (some )?comments?\\b",
+            "\\bpretty-?print|\\bconvert (this|it) (to|into) (valid )?(json|yaml|csv)\\b|转(成|为)\\s*(json|yaml|csv)"
+          ],
+          "example": "把变量 usr_nm 重命名为 username"
+        },
+        {
+          "id": "software.config-change",
+          "label_zh": "改配置、常量、文案",
+          "label_en": "Change config, constants, copy",
+          "tier": "t1",
+          "tools": "code",
+          "group_zh": "小改动",
+          "keywords": [
+            "改(一下)?.{0,4}(配置|常量|文案|端口|超时|版本号|环境变量)",
+            "(配置|config|端口|超时时间|常量|文案).{0,12}改(成|为)",
+            "\\bchange the (port|timeout|config|constant|copy|text)\\b",
+            "\\bbump (the )?version\\b"
+          ],
+          "example": "把配置里的端口从 8080 改成 9090"
+        },
+        {
+          "id": "software.one-liner",
+          "label_zh": "正则、Shell 一行命令",
+          "label_en": "Regex or shell one-liner",
+          "tier": "t1",
+          "tools": "code",
+          "group_zh": "小改动",
+          "keywords": [
+            "正则",
+            "一行命令",
+            "(bash|shell|awk|sed|grep|find|终端) ?(命令|command)",
+            "\\bregex\\b",
+            "\\bregular expression",
+            "\\bone-?liner\\b"
+          ],
+          "example": "写个正则匹配 5 位数字的邮编"
+        },
+        {
+          "id": "software.small-edit",
+          "label_zh": "单个函数内的小修改",
+          "label_en": "Small edit inside one function",
+          "tier": "t2",
+          "tools": "code",
+          "group_zh": "小改动",
+          "keywords": [
+            "小改动",
+            "稍微改(一下)?",
+            "(在|给)(这个|那个)?.{0,12}函数(里|中)?(加|改|增加)",
+            "加(一)?个参数",
+            "把(这个)?(返回值|判断|条件|默认值).{0,6}改(成|为)",
+            "\\btweak\\b",
+            "\\bsmall change\\b",
+            "\\badd (a|an) (parameter|argument)\\b"
+          ],
+          "example": "在 parse 函数里加个参数，允许传入默认值"
+        },
+        {
+          "id": "software.write-function",
+          "label_zh": "写单个函数 / 脚本",
+          "label_en": "Write a single function or script",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "写(一个|个)?.{0,10}(函数|脚本|方法|小工具)",
+            "实现(一个|个)?.{0,6}(函数|方法)",
+            "\\bwrite (a|an) (\\w+ ){0,2}(function|script|method|cli)\\b",
+            "实现(一个|个)?.{0,16}(缓存|队列|类|工具|解析器|限流器|装饰器)"
+          ],
+          "example": "用 Python 写一个函数，读取 CSV 并按日期分组求和"
+        },
+        {
+          "id": "software.ui-component",
+          "label_zh": "UI 组件开发",
+          "label_en": "UI component development",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "(写|做|实现|开发)(一个|个)?.{0,10}(组件|页面|表单|弹窗|导航栏|下拉|按钮)",
+            "(组件|页面|表单|弹窗|导航栏).{0,10}(实现|开发)",
+            "\\b(react|vue|svelte|tailwind|css|jsx|tsx)\\b",
+            "\\bcomponent\\b",
+            "\\blanding page\\b"
+          ],
+          "example": "用 React 写一个带搜索框的下拉选择组件"
+        },
+        {
+          "id": "software.module-feature",
+          "label_zh": "单模块功能",
+          "label_en": "Feature within one module",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "(给|在|往).{0,12}(模块|类|服务|文件)(里|中)?(加|新增|增加|实现)(一个|个)?.{0,8}(功能|接口|方法)",
+            "新增(一个)?接口",
+            "\\badd (a )?(feature|endpoint) to (the|this|our) (module|file|class|service)",
+            "\\bendpoint\\b"
+          ],
+          "example": "给 user 模块加一个修改密码的接口"
+        },
+        {
+          "id": "software.cross-module-feature",
+          "label_zh": "跨模块功能",
+          "label_en": "Feature across modules",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "前后端",
+            "(多个|几个|好几个)(文件|模块|服务)",
+            "联动",
+            "前端.{0,12}后端",
+            "\\bfull-?stack\\b",
+            "\\bacross (the )?(frontend and backend|modules|services)\\b",
+            "\\bend-to-end feature\\b"
+          ],
+          "example": "做一个导出订单的功能，前端加按钮，后端加接口和异步任务"
+        },
+        {
+          "id": "software.scaffold",
+          "label_zh": "从零搭建项目 / 脚手架",
+          "label_en": "Scaffold a new project",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "从零(开始)?(搭建|创建|写|做)",
+            "(搭建|初始化|新建|创建)(一个)?.{0,12}(项目|工程|脚手架|仓库)",
+            "脚手架",
+            "\\bscaffold",
+            "\\bbootstrap (a|the|new) (project|app)",
+            "\\bfrom scratch\\b",
+            "\\bnew project\\b"
+          ],
+          "example": "从零搭建一个 Next.js + Prisma 的项目脚手架"
+        },
+        {
+          "id": "software.vague-feature",
+          "label_zh": "需求模糊的功能",
+          "label_en": "Feature with unclear requirements",
+          "tier": "t6",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "需求(还)?不(太)?(明确|清楚|清晰)",
+            "还没想(清楚|好)",
+            "不知道(该)?(怎么|如何)(做|实现|设计|下手)",
+            "帮我(想想|规划)(一下)?(怎么|如何)(做|实现)",
+            "大概想(要|做)",
+            "\\bnot sure how to (build|implement|approach|design)",
+            "\\bhow should i (build|implement|approach|structure)"
+          ],
+          "example": "我想做一个类似 Notion 的协作功能，但还没想清楚该怎么实现"
+        },
+        {
+          "id": "software.ai-app",
+          "label_zh": "AI / LLM 应用开发",
+          "label_en": "AI / LLM application development",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "新功能",
+          "keywords": [
+            "提示词工程|prompt engineering",
+            "\\bagents?\\b|智能体",
+            "\\bRAG\\b|检索增强",
+            "向量(数据库|检索)|\\bembeddings?\\b",
+            "大模型|\\bLLM\\b",
+            "(Claude|OpenAI|GPT|DeepSeek|模型) ?API",
+            "\\bMCP\\b|function calling|tool use",
+            "微调|fine-?tun"
+          ],
+          "example": "帮我用 Claude API 做一个带 RAG 检索的问答 Agent"
+        },
+        {
+          "id": "software.debug-clear-error",
+          "label_zh": "明确报错、可复现",
+          "label_en": "Bug with a clear error",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "报错|报了?(个)?错",
+            "\\btraceback\\b|stack ?trace",
+            "\\bexception\\b|抛(出)?(了)?异常",
+            "跑不起来|编译(失败|不过)|启动失败",
+            "修复|\\bfix\\b",
+            "\\b(throws?|crash(es|ed)?|fails? with)\\b",
+            "\\w+Error:"
+          ],
+          "example": "运行 npm test 报错 TypeError: Cannot read properties of undefined，帮我修复"
+        },
+        {
+          "id": "software.logic-bug",
+          "label_zh": "逻辑错误（结果不对但不报错）",
+          "label_en": "Logic bug: wrong result, no error",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "结果(不对|有误|错了|不正确|有问题)",
+            "(输出|返回|计算|算出来)的?.{0,8}(不对|错误|有问题)",
+            "没(有)?报错.{0,12}(但|可是|却)",
+            "\\bwrong (result|output|answer|value)",
+            "\\bno error,? but\\b",
+            "\\breturns? (the )?wrong\\b"
+          ],
+          "example": "这个函数没有报错，但算出来的折扣金额不对"
+        },
+        {
+          "id": "software.leak",
+          "label_zh": "内存 / 资源泄漏",
+          "label_en": "Memory or resource leak",
+          "tier": "t6",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "内存(一直|持续|不断)?(涨|增长|上涨|飙升)",
+            "泄漏|泄露",
+            "\\bOOM\\b|out of memory",
+            "\\bmemory leak|\\bleak(s|ing|ed)?\\b",
+            "(句柄|连接|文件描述符).{0,6}(耗尽|打满|泄漏)"
+          ],
+          "example": "Node 服务内存一直涨，跑几天就 OOM"
+        },
+        {
+          "id": "software.performance",
+          "label_zh": "性能定位与优化",
+          "label_en": "Performance profiling and tuning",
+          "tier": "t6",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "性能",
+            "太慢|很慢|变慢|卡顿",
+            "瓶颈",
+            "延迟(高|大|很高)|\\bp9[59]\\b",
+            "吞吐",
+            "\\blatency\\b|\\bslow\\b|\\bbottleneck",
+            "\\bprofil(e|ing)\\b|\\bthroughput\\b"
+          ],
+          "example": "这个接口响应太慢了，p99 要 2 秒，帮我找瓶颈"
+        },
+        {
+          "id": "software.hard-debug",
+          "label_zh": "偶发 / 只在线上出现",
+          "label_en": "Intermittent or production-only bug",
+          "tier": "t7",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "偶发|偶尔|间歇|时好时坏",
+            "随机(失败|出错|报错)",
+            "只在(线上|生产)",
+            "本地(正常|没问题|复现不了|好好的)",
+            "(难以|无法|没法)?复现不了|难以复现",
+            "\\bintermittent|\\bflaky\\b|\\bheisenbug\\b",
+            "\\bonly (happens )?in production\\b|can'?t reproduce",
+            "根因|\\broot cause\\b"
+          ],
+          "example": "线上服务偶发 502，本地复现不了，帮我找根因"
+        },
+        {
+          "id": "software.concurrency-bug",
+          "label_zh": "并发、竞态、死锁",
+          "label_en": "Concurrency, race or deadlock bug",
+          "tier": "t7",
+          "tools": "code",
+          "group_zh": "调试排错",
+          "keywords": [
+            "并发",
+            "竞态|竞争条件|数据竞争",
+            "死锁",
+            "线程(不)?安全",
+            "\\brace condition|\\bdata race\\b",
+            "\\bdeadlock",
+            "\\bthread-?safe",
+            "\\bconcurren(cy|t)\\b"
+          ],
+          "example": "这段 Go 代码在高并发下会死锁，帮我分析原因并修复"
+        },
+        {
+          "id": "software.local-refactor",
+          "label_zh": "局部重构（单函数 / 单文件）",
+          "label_en": "Local refactor (one function or file)",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "重构",
+          "keywords": [
+            "重构(一下)?(这个|这段)?.{0,10}(函数|方法|文件|类|组件)",
+            "简化(一下)?(这段|这个)?.{0,4}(代码|函数|逻辑)",
+            "可读性",
+            "\\brefactor (this|the) (function|method|file|class)",
+            "\\bclean ?up (this|the) (code|function)",
+            "抽(成|出|离)",
+            "\\brefactor(ing)?\\b",
+            "去掉.{0,6}嵌套|嵌套.{0,6}(太深|太多)"
+          ],
+          "example": "重构一下这个函数，去掉嵌套的 if，提高可读性"
+        },
+        {
+          "id": "software.module-refactor",
+          "label_zh": "模块级重构（接口不变）",
+          "label_en": "Module-level refactor (same interface)",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "重构",
+          "keywords": [
+            "重构.{0,8}模块|模块.{0,8}重构",
+            "(对外)?接口(保持)?不变",
+            "\\brefactor (the|this) module",
+            "\\bwithout changing (the )?(interface|api|public api)"
+          ],
+          "example": "把 payment 模块重构一下，对外接口保持不变"
+        },
+        {
+          "id": "software.migration",
+          "label_zh": "框架、语言或大版本迁移",
+          "label_en": "Framework, language or major-version migration",
+          "tier": "t6",
+          "tools": "code",
+          "group_zh": "重构",
+          "keywords": [
+            "迁移",
+            "升级到|升到",
+            "从.{1,20}(迁|换|升级|切换)到",
+            "大版本",
+            "\\bmigrat",
+            "\\bupgrade (to|from)\\b",
+            "\\bport (it|this|the \\w+) to\\b",
+            "python ?2.{0,8}python ?3"
+          ],
+          "example": "把项目从 Vue 2 升级到 Vue 3"
+        },
+        {
+          "id": "software.large-refactor",
+          "label_zh": "大型项目重构（跨模块、会改接口）",
+          "label_en": "Large refactor across modules",
+          "tier": "t7",
+          "tools": "code",
+          "group_zh": "重构",
+          "keywords": [
+            "大(型|规模)重构|重构.{0,12}(整个|全)(项目|仓库|代码库|系统)|(整个|全)(项目|仓库|代码库|系统).{0,12}重构",
+            "拆(分|成).{0,10}(独立的?)?(包|服务|模块)",
+            "接口.{0,6}(重新设计|也要改|要变)",
+            "\\blarge-?scale refactor|\\brearchitect",
+            "\\brefactor .{0,60}(entire|whole) (codebase|project|system)",
+            "\\bacross (the )?(entire|whole)\\b|(整个|全部)(项目|代码库|系统)"
+          ],
+          "example": "对整个项目做大规模重构，拆分成几个独立的包，接口也要重新设计"
+        },
+        {
+          "id": "software.module-design",
+          "label_zh": "模块、接口、数据结构设计",
+          "label_en": "Module, interface and data-structure design",
+          "tier": "t5",
+          "tools": "read",
+          "group_zh": "架构设计",
+          "keywords": [
+            "(设计|定义)(一下)?.{0,10}(模块|接口|API|类|数据结构|抽象|插件系统)",
+            "接口(应该)?(怎么|如何)设计",
+            "\\bAPI 设计\\b",
+            "\\bdesign (the|an?) (api|interface|class|module|data structure|plugin system)",
+            "插件|扩展点|接口和数据结构"
+          ],
+          "example": "帮我设计一下这个插件系统的接口和数据结构"
+        },
+        {
+          "id": "software.db-schema",
+          "label_zh": "数据库表结构设计",
+          "label_en": "Database schema design",
+          "tier": "t5",
+          "tools": "read",
+          "group_zh": "架构设计",
+          "keywords": [
+            "表结构",
+            "数据库(设计|建模)",
+            "建表",
+            "\\bschema\\b",
+            "\\bER ?图",
+            "字段(怎么|如何)?设计",
+            "数据模型",
+            "\\bdatabase design\\b|\\bdata model\\b"
+          ],
+          "example": "设计一个电商系统的数据库表结构"
+        },
+        {
+          "id": "software.tech-review",
+          "label_zh": "技术方案评审、方案权衡",
+          "label_en": "Design review and trade-offs",
+          "tier": "t6",
+          "tools": "read",
+          "group_zh": "架构设计",
+          "keywords": [
+            "方案(对比|评审|比较|选择|权衡)",
+            "评审",
+            "权衡",
+            "(方案|技术|架构).{0,10}(优缺点|利弊)|(优缺点|利弊).{0,10}(方案|技术|架构)",
+            "方案 ?[AB一二12]",
+            "\\btrade-?offs?\\b",
+            "\\bpros and cons\\b",
+            "\\bcompare (the )?(approaches|options|designs)\\b"
+          ],
+          "example": "方案 A 用消息队列，方案 B 用定时任务，帮我评审一下优缺点"
+        },
+        {
+          "id": "software.system-architecture",
+          "label_zh": "系统架构设计（技术选型、服务拆分）",
+          "label_en": "System architecture and tech selection",
+          "tier": "t6",
+          "tools": "read",
+          "group_zh": "架构设计",
+          "keywords": [
+            "系统(架构)?设计|架构设计",
+            "技术选型",
+            "微服务|单体|服务拆分",
+            "设计(一个|一套|个)?.{0,16}(系统|平台|架构|服务)(?!.{0,4}(表|数据库))",
+            "\\barchitect(ure)?\\b",
+            "\\bsystem design\\b",
+            "\\bdesign (a|an|the|our) (\\w+[ -]){0,3}(system|platform|architecture|backend)",
+            "单体.{0,10}(拆|微服务)",
+            "整体架构|架构(图|方案)"
+          ],
+          "example": "设计一个在线教育平台的系统架构，并给出技术选型"
+        },
+        {
+          "id": "software.distributed-architecture",
+          "label_zh": "分布式、高并发、高可用架构",
+          "label_en": "Distributed, high-concurrency, high-availability architecture",
+          "tier": "t7",
+          "tools": "read",
+          "group_zh": "架构设计",
+          "keywords": [
+            "分布式",
+            "高并发",
+            "高可用",
+            "(百万|千万|亿)级|\\bQPS\\b|日均.{0,8}(万|亿)|\\d+ ?亿次",
+            "容灾|多活|异地",
+            "分片|分库分表",
+            "一致性",
+            "\\bdistributed\\b",
+            "\\bhigh availability\\b|\\bfault-?toleran",
+            "\\bsharding\\b|\\breplication\\b|\\bconsensus\\b"
+          ],
+          "example": "设计一个支持百万 QPS 的分布式任务调度系统，保证高可用"
+        },
+        {
+          "id": "software.unit-tests",
+          "label_zh": "写单元测试",
+          "label_en": "Write unit tests",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "质量保障",
+          "keywords": [
+            "单元测试|单测",
+            "测试用例",
+            "写(一些|几个|点)?测试",
+            "覆盖率",
+            "\\bunit tests?\\b",
+            "\\btest cases?\\b",
+            "\\b(pytest|jest|vitest|junit)\\b"
+          ],
+          "example": "给 utils/date.ts 里的 formatDate 写单元测试"
+        },
+        {
+          "id": "software.integration-tests",
+          "label_zh": "集成 / 端到端测试",
+          "label_en": "Integration and end-to-end tests",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "质量保障",
+          "keywords": [
+            "集成测试",
+            "端到端",
+            "\\be2e\\b",
+            "\\bend-to-end tests?\\b|\\bintegration tests?\\b",
+            "\\b(playwright|cypress|selenium)\\b"
+          ],
+          "example": "用 Playwright 给登录流程写端到端测试"
+        },
+        {
+          "id": "software.review-small",
+          "label_zh": "代码审查：小 PR",
+          "label_en": "Code review: small PR",
+          "tier": "t3",
+          "tools": "read",
+          "group_zh": "质量保障",
+          "keywords": [
+            "代码审查|审查(一下)?",
+            "\\breview\\b",
+            "\\bcode review\\b",
+            "(看看|检查).{0,10}(函数|代码|实现).{0,6}(有没有|是否有|有什么)(问题|bug|隐患)",
+            "\\bPR\\b"
+          ],
+          "example": "帮我 review 一下这个 PR，就改了两个文件"
+        },
+        {
+          "id": "software.review-large",
+          "label_zh": "代码审查：大 PR 或核心模块",
+          "label_en": "Code review: large PR or core module",
+          "tier": "t6",
+          "tools": "read",
+          "group_zh": "质量保障",
+          "keywords": [
+            "(大|巨大|很大的?)\\s?PR",
+            "核心.{0,4}(模块|代码|链路)",
+            "\\d{2,} ?多?个文件",
+            "\\breview (a|the|this) (large|big|huge) (pr|change|diff)",
+            "(审查|review).{0,10}(整个|全部)"
+          ],
+          "example": "帮我审查这个大 PR，改了 40 多个文件，涉及核心支付模块"
+        },
+        {
+          "id": "software.security-audit",
+          "label_zh": "安全审计、漏洞排查",
+          "label_en": "Security audit and vulnerability hunting",
+          "tier": "t7",
+          "tools": "read",
+          "group_zh": "质量保障",
+          "keywords": [
+            "安全(审计|检查|审查|漏洞|隐患)",
+            "漏洞",
+            "(SQL ?)?注入|\\bXSS\\b|\\bCSRF\\b|越权|\\bSSRF\\b",
+            "渗透|\\bpentest",
+            "威胁建模|\\bthreat model",
+            "\\bsecurity (audit|review)\\b",
+            "\\bvulnerab"
+          ],
+          "example": "对整个代码库做一次安全审计，找出潜在漏洞"
+        },
+        {
+          "id": "software.sql",
+          "label_zh": "SQL 编写与优化",
+          "label_en": "Write and optimize SQL",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "专项",
+          "keywords": [
+            "\\bSQL\\b",
+            "查询语句|慢查询",
+            "索引",
+            "\\bselect\\b.{0,40}\\bfrom\\b",
+            "\\b(mysql|postgres(ql)?|sqlite|oracle)\\b",
+            "\\bjoin\\b"
+          ],
+          "example": "写一条 SQL 查出每个用户最近一次下单的时间"
+        },
+        {
+          "id": "software.devops",
+          "label_zh": "DevOps：CI、Docker、云与部署",
+          "label_en": "DevOps: CI, Docker, cloud and deployment",
+          "tier": "t3",
+          "tools": "code",
+          "group_zh": "专项",
+          "keywords": [
+            "\\bdocker(file)?\\b|\\bk8s\\b|\\bkubernetes\\b|\\bhelm\\b",
+            "\\bCI/CD\\b|持续集成|持续部署|github actions|gitlab ci|\\bCI (pipeline|job|workflow)\\b",
+            "部署|上线脚本",
+            "\\bnginx\\b",
+            "流水线",
+            "\\bterraform\\b|云服务器|服务器配置|运维"
+          ],
+          "example": "写一个 GitHub Actions 流水线，自动跑测试并部署到服务器"
+        },
+        {
+          "id": "software.git",
+          "label_zh": "Git 操作、合并冲突",
+          "label_en": "Git operations and merge conflicts",
+          "tier": "t2",
+          "tools": "code",
+          "group_zh": "专项",
+          "keywords": [
+            "\\bgit\\b",
+            "合并冲突|冲突(怎么)?解决",
+            "\\brebase\\b|cherry-?pick",
+            "提交记录|撤销.{0,6}(提交|commit)",
+            "\\bmerge conflict",
+            "\\bcommit\\b"
+          ],
+          "example": "git 合并冲突了，怎么解决？"
+        },
+        {
+          "id": "software.algorithm",
+          "label_zh": "算法与数据结构题",
+          "label_en": "Algorithms and data structures",
+          "tier": "t5",
+          "tools": "code",
+          "group_zh": "专项",
+          "keywords": [
+            "算法",
+            "数据结构(题|与算法)|(手写|实现)(一个)?.{0,6}(链表|堆|栈|队列|红黑树|跳表)",
+            "\\bleetcode\\b|力扣",
+            "动态规划|二叉树|图论|贪心|回溯|最短路径",
+            "\\bdynamic programming\\b|\\balgorithm",
+            "\\bO\\([^)]*\\)",
+            "快速排序|快排|归并排序|二分(查找)?|排序算法",
+            "\\b(inversions?|substring|parenthes[ie]s|subsequence|permutations?|intervals?)\\b|子串|子序列|括号匹配|逆序对",
+            "\\bparser\\b|\\bprecedence\\b|解析器|表达式求值|语法分析",
+            "\\bsemaphore\\b|\\bconcurrently\\b|并发(数|控制|限制)",
+            "(10\\^\\d|\\d{1,3}(,\\d{3})+|十万|百万).{0,40}(elements|integers|length|items|个元素|长度)|\\btime out\\b|会超时",
+            "\\basyncio\\b|\\basync\\b.{0,60}\\b(limit|semaphore|concurren)"
+          ],
+          "example": "用动态规划解最长公共子序列，要求 O(n*m) 的复杂度"
+        },
+        {
+          "id": "software.algorithm-proof",
+          "label_zh": "算法正确性证明、复杂度分析",
+          "label_en": "Algorithm correctness proof and complexity analysis",
+          "tier": "t7",
+          "tools": "read",
+          "group_zh": "专项",
+          "keywords": [
+            "证明.{0,20}(算法|正确|最优|复杂度)",
+            "(算法|贪心|策略).{0,20}证明",
+            "正确性证明",
+            "复杂度分析|分析.{0,6}复杂度",
+            "摊还|\\bamortized\\b",
+            "\\bprove .{0,30}(algorithm|correct|optimal)",
+            "\\bproof of correctness\\b",
+            "(能|可以)得到最优解|最优性",
+            "\\blineari[sz]ab",
+            "\\block-?free\\b|无锁"
+          ],
+          "example": "证明这个贪心算法能得到最优解，并分析时间复杂度"
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "emoji": "📊",
+      "label_zh": "数据与数学",
+      "label_en": "Data and math",
+      "categories": [
+        {
+          "id": "data.math-calc",
+          "label_zh": "数学计算",
+          "label_en": "Arithmetic and unit conversion",
+          "tier": "t1",
+          "tools": "code",
+          "keywords": [
+            "算(一下|一算)",
+            "等于多少|是多少",
+            "换算",
+            "百分之|\\d+ ?%",
+            "\\bcalculate\\b|\\bconvert \\d",
+            "\\bhow much is\\b",
+            "\\d+ ?[\\+\\-\\*/×÷] ?\\d+"
+          ],
+          "example": "算一下 1250 的 18% 是多少"
+        },
+        {
+          "id": "data.math-solve",
+          "label_zh": "数学解题",
+          "label_en": "Solve a math problem",
+          "tier": "t4",
+          "tools": "code",
+          "keywords": [
+            "解方程|方程组",
+            "求解|求.{0,10}(极值|最值|导数|积分|面积|概率)",
+            "几何|三角形|圆的",
+            "极值|单调|导数|积分|微分|矩阵|特征值",
+            "概率",
+            "\\bsolve (for|this|the equation)\\b",
+            "\\bintegral\\b|\\bderivative\\b|\\bprobability\\b|\\beigen",
+            "\\bsum of all\\b|\\bhow many (positive )?integers\\b|有多少个(整数|正整数)",
+            "完全(平方|立方|六次方)数|\\bperfect (squares?|cubes?)\\b|\\bdivisible\\b|整除|\\bprimes?\\b|质数|素数|\\bautomorphic\\b",
+            "\\bdice\\b|骰子|\\bfraction\\b|分数形式"
+          ],
+          "example": "求函数 f(x)=x³-3x 的极值"
+        },
+        {
+          "id": "data.math-proof",
+          "label_zh": "数学证明 / 竞赛题",
+          "label_en": "Math proof or competition problem",
+          "tier": "t7",
+          "tools": "code",
+          "keywords": [
+            "证明",
+            "竞赛题|奥数|数学竞赛|\\bIMO\\b",
+            "引理|定理|无理数|充要条件",
+            "\\bprove\\b|\\bproof\\b",
+            "\\bolympiad\\b|\\blemma\\b|\\btheorem\\b"
+          ],
+          "example": "证明根号 2 是无理数"
+        },
+        {
+          "id": "data.spreadsheet",
+          "label_zh": "表格 / Excel 公式",
+          "label_en": "Spreadsheet and Excel formulas",
+          "tier": "t2",
+          "tools": "write",
+          "keywords": [
+            "\\bexcel\\b|\\bwps\\b|google sheets",
+            "表格",
+            "公式",
+            "\\b(vlookup|xlookup|sumif|countif)\\b",
+            "透视表|\\bpivot\\b",
+            "单元格|\\bspreadsheet\\b"
+          ],
+          "example": "Excel 里怎么用 VLOOKUP 把两张表按工号合并？"
+        },
+        {
+          "id": "data.cleaning",
+          "label_zh": "数据清洗与整理",
+          "label_en": "Data cleaning",
+          "tier": "t3",
+          "tools": "code",
+          "keywords": [
+            "数据清洗|清洗(一下)?(数据)?",
+            "去重|重复行",
+            "缺失值|空值",
+            "异常值",
+            "格式(不统一|统一)",
+            "\\bclean(ing)? (the |this |my )?data",
+            "\\bmissing values\\b|\\bdedup"
+          ],
+          "example": "这份 CSV 有很多缺失值和重复行，帮我清洗一下"
+        },
+        {
+          "id": "data.stats",
+          "label_zh": "统计分析与解读",
+          "label_en": "Statistical analysis",
+          "tier": "t5",
+          "tools": "code",
+          "keywords": [
+            "统计",
+            "显著(性)?",
+            "回归",
+            "假设检验|[tT] ?检验|卡方",
+            "方差|标准差",
+            "相关性|置信区间|[pP] ?值",
+            "\\bregression\\b|\\bstatistical\\b|\\bsignifican|\\banova\\b|\\bcorrelation\\b"
+          ],
+          "example": "这两组数据的差异显著吗？帮我做个 t 检验并解读结果"
+        },
+        {
+          "id": "data.viz",
+          "label_zh": "数据可视化",
+          "label_en": "Data visualization",
+          "tier": "t3",
+          "tools": "code",
+          "keywords": [
+            "可视化",
+            "画(个|一个|一张)?.{0,6}(图|图表)",
+            "柱状图|折线图|饼图|热力图|散点图",
+            "\\b(matplotlib|plotly|echarts|seaborn|d3)\\b",
+            "\\bchart\\b|\\bplot\\b|\\bvisuali[sz]"
+          ],
+          "example": "用 matplotlib 画出每月销售额的折线图"
+        },
+        {
+          "id": "data.ml",
+          "label_zh": "机器学习建模",
+          "label_en": "Machine-learning modelling",
+          "tier": "t6",
+          "tools": "code",
+          "keywords": [
+            "机器学习|深度学习|神经网络",
+            "(训练|构建)(一个)?.{0,10}模型",
+            "特征工程",
+            "过拟合|欠拟合",
+            "\\b(xgboost|lightgbm|sklearn|scikit|pytorch|tensorflow|keras)\\b",
+            "\\bmachine learning\\b|\\btrain (a|the) model\\b|\\bfeature engineering\\b|\\boverfit"
+          ],
+          "example": "用 XGBoost 训练一个用户流失预测模型，并做特征工程"
+        }
+      ]
+    },
+    {
+      "id": "writing",
+      "emoji": "✍️",
+      "label_zh": "写作",
+      "label_en": "Writing",
+      "categories": [
+        {
+          "id": "writing.edit",
+          "label_zh": "润色、改写、点评用户给的文本",
+          "label_en": "Edit, rewrite or critique provided text",
+          "tier": "t2",
+          "tools": "write",
+          "keywords": [
+            "润色",
+            "改写|重写",
+            "点评",
+            "帮我(改改|改一下|修改一下)",
+            "(这段|这篇|我的).{0,6}(写得)?怎么样",
+            "\\bproofread|\\bpolish\\b",
+            "\\b(rewrite|edit) (this|my)\\b",
+            "\\bfeedback on (my|this)\\b"
+          ],
+          "example": "帮我润色一下这段自我介绍，让它更有感染力"
+        },
+        {
+          "id": "writing.personal",
+          "label_zh": "个人沟通：邮件、消息、贺词",
+          "label_en": "Personal messages and emails",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "邮件",
+            "(发|回)(给)?(他|她|客户|老板|领导|同事)?(的)?(一条)?(消息|微信|短信)",
+            "贺词|祝福(语)?",
+            "道歉|感谢信",
+            "请假",
+            "回复(他|她|客户|老板|领导)",
+            "\\bemail\\b|\\bmessage to\\b|\\bthank-?you note\\b|\\bapology\\b"
+          ],
+          "example": "帮我写一封邮件，跟客户说项目要延期一周"
+        },
+        {
+          "id": "writing.summary",
+          "label_zh": "摘要、提炼要点",
+          "label_en": "Summaries and key points",
+          "tier": "t2",
+          "tools": "write",
+          "keywords": [
+            "总结",
+            "摘要",
+            "概括",
+            "提炼",
+            "要点",
+            "\\btl;?dr\\b",
+            "\\bsummar(y|i[sz]e)\\b",
+            "\\bkey points\\b"
+          ],
+          "example": "帮我总结一下这篇文章的要点"
+        },
+        {
+          "id": "writing.argument",
+          "label_zh": "议论与观点文章",
+          "label_en": "Opinion and argumentative writing",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "议论文",
+            "观点",
+            "论证",
+            "评论文章|时评",
+            "\\bop-?ed\\b|\\bargumentative\\b|\\bpersuasive essay\\b",
+            "\\bessay (on|about)\\b",
+            "利弊|正反(两)?方"
+          ],
+          "example": "写一篇关于远程办公利弊的议论文"
+        },
+        {
+          "id": "writing.marketing",
+          "label_zh": "营销文案、SEO、社媒内容",
+          "label_en": "Marketing copy, SEO and social posts",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "文案",
+            "营销|推广|种草|带货",
+            "广告",
+            "小红书|公众号|抖音|微博|朋友圈|知乎",
+            "\\bSEO\\b",
+            "\\bcopywriting\\b|\\bmarketing\\b|\\bad copy\\b|\\bsocial media post\\b|\\btweet\\b"
+          ],
+          "example": "帮我写一篇小红书种草文案，推广新款保温杯"
+        },
+        {
+          "id": "writing.formal",
+          "label_zh": "公文、报告、方案书",
+          "label_en": "Formal documents and reports",
+          "tier": "t5",
+          "tools": "write",
+          "keywords": [
+            "公文",
+            "报告",
+            "方案书|策划书",
+            "工作总结|述职|年终总结",
+            "申请书|通知|请示|立项",
+            "\\bwhite paper\\b|\\bproposal\\b|\\breport (on|for)\\b"
+          ],
+          "example": "写一份年度工作总结报告，突出三个重点项目"
+        },
+        {
+          "id": "writing.tech-docs",
+          "label_zh": "技术文档、README、API 文档",
+          "label_en": "Technical docs, README, API docs",
+          "tier": "t3",
+          "tools": "write",
+          "keywords": [
+            "(写|生成|补充|完善|更新)(一份|一个)?.{0,6}README|README.{0,6}(怎么写|写)|\\bwrite (a |the )?readme\\b",
+            "技术文档|接口文档|API ?文档|使用文档|开发文档|部署文档",
+            "\\bdocstrings?\\b|\\bchangelog\\b",
+            "\\bdocumentation\\b|\\bdocs for\\b"
+          ],
+          "example": "给这个库写一份 README，包括安装和快速上手"
+        },
+        {
+          "id": "writing.academic",
+          "label_zh": "学术论文写作",
+          "label_en": "Academic paper writing",
+          "tier": "t6",
+          "tools": "write",
+          "keywords": [
+            "(?<!议)论文",
+            "学术",
+            "期刊|会议投稿",
+            "开题报告|毕业论文|学位论文",
+            "引用格式|参考文献",
+            "\\bpaper\\b|\\bthesis\\b|\\bdissertation\\b|\\bmanuscript\\b"
+          ],
+          "example": "帮我写毕业论文的引言部分，主题是联邦学习"
+        },
+        {
+          "id": "writing.fiction",
+          "label_zh": "小说、剧本、创意写作",
+          "label_en": "Fiction, scripts and creative writing",
+          "tier": "t5",
+          "tools": "write",
+          "keywords": [
+            "小说",
+            "故事",
+            "剧本",
+            "情节|人物设定|世界观",
+            "章节|续写",
+            "\\bnovel\\b|\\bshort story\\b|\\bscreenplay\\b|\\bplot\\b|\\bfiction\\b"
+          ],
+          "example": "写一篇科幻短篇小说，主角是最后一个人类程序员"
+        },
+        {
+          "id": "writing.speech",
+          "label_zh": "演讲稿、致辞",
+          "label_en": "Speeches and toasts",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "演讲(稿)?",
+            "致辞",
+            "发言稿|讲话稿",
+            "主持词|祝酒词|开场白",
+            "\\bspeech\\b|\\btoast\\b|\\bkeynote\\b"
+          ],
+          "example": "帮我写一篇婚礼上的伴郎致辞，三分钟左右"
+        }
+      ]
+    },
+    {
+      "id": "language",
+      "emoji": "🌐",
+      "label_zh": "语言",
+      "label_en": "Language",
+      "categories": [
+        {
+          "id": "language.translate",
+          "label_zh": "日常翻译",
+          "label_en": "Everyday translation",
+          "tier": "t1",
+          "tools": "read",
+          "keywords": [
+            "翻译",
+            "译(成|为)|翻成",
+            "用(英文|英语|日语|日文|中文)(怎么)?说",
+            "\\btranslat",
+            "\\binto (english|chinese|japanese|french|german|korean|spanish)\\b"
+          ],
+          "example": "把这句话翻译成英文：会议推迟到明天下午三点"
+        },
+        {
+          "id": "language.pro-translate",
+          "label_zh": "专业 / 长文翻译",
+          "label_en": "Professional or long-form translation",
+          "tier": "t5",
+          "tools": "write",
+          "keywords": [
+            "(翻译|译成|译为).{0,30}(合同|论文|法律|医学|医疗|技术文档|说明书|整篇|全文|章节|文件|术语)",
+            "(合同|论文|法律|医学|技术文档|说明书|整篇|全文).{0,20}(翻译|译成|译为)",
+            "术语(要)?准确",
+            "\\b(legal|medical|literary|technical) translation\\b"
+          ],
+          "example": "把这份英文合同全文翻译成中文，术语要准确"
+        },
+        {
+          "id": "language.grammar",
+          "label_zh": "语法纠错",
+          "label_en": "Grammar check",
+          "tier": "t1",
+          "tools": "read",
+          "keywords": [
+            "语法",
+            "病句",
+            "错别字",
+            "拼写",
+            "这句(话)?.{0,6}(对吗|对不对|有问题吗|通顺吗)",
+            "\\bgrammar\\b|\\btypos?\\b|\\bspelling\\b",
+            "有没有错别字|错字"
+          ],
+          "example": "这句英文语法对吗：He go to school yesterday."
+        },
+        {
+          "id": "language.learning",
+          "label_zh": "外语学习与练习",
+          "label_en": "Foreign-language learning",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "学(习)?(英语|日语|韩语|法语|德语|西班牙语|外语)",
+            "背单词|词汇量",
+            "口语",
+            "(陪我|和我)(练|聊).{0,6}(英语|日语|外语|口语)",
+            "雅思|托福|四六级|\\bJLPT\\b|\\bIELTS\\b|\\bTOEFL\\b",
+            "\\bvocabulary\\b|\\bpractice (my )?(english|speaking)\\b"
+          ],
+          "example": "陪我练习英语口语，模拟一场面试"
+        }
+      ]
+    },
+    {
+      "id": "info",
+      "emoji": "🔎",
+      "label_zh": "信息查询",
+      "label_en": "Information lookup",
+      "categories": [
+        {
+          "id": "info.fact",
+          "label_zh": "常识与具体事实",
+          "label_en": "Facts and general knowledge",
+          "tier": "t1",
+          "tools": "read",
+          "weight": 0.5,
+          "keywords": [
+            "什么是|是什么",
+            "是谁",
+            "哪一年|什么时候",
+            "多少|多高|多大|多远|多长|多重|几个",
+            "在哪(里|儿)?",
+            "\\bwhat is\\b|\\bwho is\\b|\\bwhen (did|was)\\b|\\bwhere is\\b|\\bhow (many|tall|far|big)\\b|\\bdefine\\b",
+            "(表示|代表|指|意味着)什么"
+          ],
+          "example": "埃菲尔铁塔有多高？"
+        },
+        {
+          "id": "info.news",
+          "label_zh": "时事新闻",
+          "label_en": "Current events",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "最新",
+            "新闻",
+            "最近.{0,6}(发生|有什么|怎么样了)",
+            "今天(的)?(消息|新闻)",
+            "时事",
+            "\\bnews\\b|\\blatest\\b|\\bthis week\\b"
+          ],
+          "example": "最近 AI 行业有什么重要新闻？"
+        },
+        {
+          "id": "info.shopping",
+          "label_zh": "产品与购物比较",
+          "label_en": "Product and shopping comparison",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "值得买|买哪(个|款)|入手",
+            "哪个(好|更好|性价比)",
+            "推荐(一款|几款|一个)",
+            "性价比",
+            "预算",
+            "购买建议",
+            "\\bshould i buy\\b|\\bworth (it|buying)\\b|\\bbest .{0,20} to buy\\b"
+          ],
+          "example": "预算 5000，买 iPhone 还是小米 15，哪个性价比高？"
+        },
+        {
+          "id": "info.tech-compare",
+          "label_zh": "技术 / 工具选型比较",
+          "label_en": "Technology and tool comparison",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "(react|vue|angular|svelte|next\\.?js|django|flask|fastapi|spring|rails|golang|rust|python|java|node\\.?js|mysql|postgres(ql)?|mongodb|redis|kafka|rabbitmq|elasticsearch|docker|kubernetes).{0,15}(和|与|还是|跟|\\bvs\\.?\\b|\\bor\\b|\\bversus\\b).{0,15}(react|vue|angular|svelte|next\\.?js|django|flask|fastapi|spring|rails|golang|rust|python|java|node\\.?js|mysql|postgres(ql)?|mongodb|redis|kafka|rabbitmq|elasticsearch|docker|kubernetes)",
+            "(框架|数据库|语言|工具|库|中间件).{0,10}(对比|比较|哪个好|选哪个)",
+            "选哪个|该选",
+            "\\bvs\\.?\\b|\\bversus\\b",
+            "\\bcompare .{0,30}(framework|database|language|library|tool)"
+          ],
+          "example": "React 和 Vue 对比，新项目该选哪个？"
+        },
+        {
+          "id": "info.research-report",
+          "label_zh": "深度调研报告",
+          "label_en": "In-depth research report",
+          "tier": "t6",
+          "tools": "read",
+          "keywords": [
+            "调研",
+            "深度(分析|研究)",
+            "行业(报告|分析|研究)",
+            "研究报告",
+            "现状.{0,4}趋势",
+            "\\bmarket research\\b|\\bin-depth (research|analysis|report)\\b|\\bdeep dive\\b"
+          ],
+          "example": "帮我做一份中国新能源汽车行业的调研报告，分析现状和趋势"
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "emoji": "🎓",
+      "label_zh": "教育学习",
+      "label_en": "Education",
+      "categories": [
+        {
+          "id": "education.explain",
+          "label_zh": "概念讲解、辅导",
+          "label_en": "Explain a concept, tutoring",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "讲解|讲讲|讲一下",
+            "通俗(地)?(解释|讲|说)",
+            "原理",
+            "为什么会",
+            "帮我理解|教我|给我讲",
+            "\\bELI5\\b|\\bexplain (to me )?(how|why|what)\\b|\\bteach me\\b|\\bhelp me understand\\b|\\bin simple terms\\b"
+          ],
+          "example": "通俗地讲讲区块链的原理"
+        },
+        {
+          "id": "education.homework",
+          "label_zh": "作业解题（带步骤）",
+          "label_en": "Homework help with steps",
+          "tier": "t3",
+          "tools": "code",
+          "keywords": [
+            "作业",
+            "习题|课后题|练习题",
+            "这道(题|物理题|化学题)",
+            "解题(步骤|过程|思路)",
+            "考试题",
+            "\\bhomework\\b|\\bexercise\\b|\\bproblem set\\b|\\bstep-?by-?step solution\\b",
+            "这道.{0,6}题"
+          ],
+          "example": "这道物理作业题怎么做：小球从 10 米高处自由落下，落地速度是多少？"
+        },
+        {
+          "id": "education.teaching",
+          "label_zh": "出题、备课、教案",
+          "label_en": "Teaching materials",
+          "tier": "t3",
+          "tools": "write",
+          "keywords": [
+            "出\\s*(几道|一套|一些|\\d+\\s*道)?.{0,12}(题|试卷)",
+            "备课",
+            "教案|课件|教学设计",
+            "\\blesson plan\\b|\\bquiz\\b|\\bworksheet\\b|\\bexam questions\\b|\\bsyllabus\\b",
+            "(给|为).{0,8}(学生|孩子|班级|学员)"
+          ],
+          "example": "给初二学生出 10 道一元一次方程的练习题"
+        },
+        {
+          "id": "education.study-plan",
+          "label_zh": "学习规划与备考",
+          "label_en": "Study plan and exam prep",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "学习(计划|路线|规划)",
+            "备考|复习计划",
+            "(怎么|如何)(学|入门)",
+            "入门路线|零基础",
+            "\\bstudy plan\\b|\\blearning path\\b|\\broadmap to learn\\b|\\bhow to learn\\b"
+          ],
+          "example": "零基础想学 Python 做数据分析，给我一个三个月的学习计划"
+        }
+      ]
+    },
+    {
+      "id": "howto",
+      "emoji": "🧭",
+      "label_zh": "实用建议",
+      "label_en": "How-to guidance",
+      "categories": [
+        {
+          "id": "howto.software-usage",
+          "label_zh": "软件与设备使用",
+          "label_en": "Using software and devices",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "(怎么|如何)(设置|打开|关闭|开启|安装|卸载|连接|导出|恢复|删除)",
+            "(Excel|Word|PPT|微信|手机|电脑|路由器|打印机|Windows|Mac|iPhone|安卓|Android).{0,12}(怎么|如何)",
+            "\\bhow (do i|to) (set up|install|turn on|turn off|export|connect|disable|enable)\\b"
+          ],
+          "example": "iPhone 怎么关闭自动更新？"
+        },
+        {
+          "id": "howto.errands",
+          "label_zh": "办事流程、生活常识",
+          "label_en": "Paperwork and everyday procedures",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "办(理)?.{0,4}(证|签证|护照|身份证|居住证|社保|公积金|驾照)",
+            "流程是什么|什么流程",
+            "(需要|准备)(准备)?(什么|哪些)材料",
+            "(怎么|如何)(办理|申请|报销|退税|过户)",
+            "手续",
+            "\\bhow to apply for\\b|\\bvisa\\b|\\bpaperwork\\b"
+          ],
+          "example": "在上海办居住证需要准备什么材料？"
+        },
+        {
+          "id": "howto.diy",
+          "label_zh": "家居维修与 DIY",
+          "label_en": "Home repair and DIY",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "维修|修理",
+            "(修|换).{0,4}(水龙头|马桶|灯泡|门锁|洗衣机|空调|插座)",
+            "\\bDIY\\b",
+            "漏水|滴水|堵了",
+            "装修",
+            "\\b(fix|repair) (my|a|the) (faucet|toilet|door|sink|washing machine)\\b"
+          ],
+          "example": "水龙头一直滴水，自己怎么修？"
+        },
+        {
+          "id": "howto.planning",
+          "label_zh": "计划与决策",
+          "label_en": "Planning and decisions",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "纠结",
+            "(怎么|如何)选",
+            "选择困难",
+            "做(个|一个)?(决定|决策)",
+            "(帮我)?(理一理|权衡一下)",
+            "\\bhelp me decide\\b|\\bshould i (choose|pick|go with)\\b"
+          ],
+          "example": "我在两个 offer 之间纠结，帮我理一理怎么选"
+        }
+      ]
+    },
+    {
+      "id": "health",
+      "emoji": "🩺",
+      "label_zh": "健康",
+      "label_en": "Health",
+      "guidance_en": "Health request: be careful and calibrated, state uncertainty, cite reputable sources where possible, recommend seeing a doctor for anything serious or persistent, and never present a diagnosis as certain.",
+      "categories": [
+        {
+          "id": "health.fitness",
+          "label_zh": "健身与营养",
+          "label_en": "Fitness and nutrition",
+          "tier": "t3",
+          "tools": "read",
+          "floor": "t3",
+          "keywords": [
+            "健身|增肌|减脂|减肥|塑形",
+            "训练计划",
+            "跑步|马拉松",
+            "饮食(计划|搭配)|卡路里|热量|营养|蛋白质",
+            "\\bworkout\\b|\\bfitness\\b|\\blose weight\\b|\\bdiet\\b|\\bcalorie|\\bnutrition\\b"
+          ],
+          "example": "给我制定一个每周 3 次的增肌训练计划"
+        },
+        {
+          "id": "health.beauty",
+          "label_zh": "美容与护理",
+          "label_en": "Beauty and self-care",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "护肤|化妆|美容|美妆",
+            "祛痘|痘痘|毛孔",
+            "发型|脱发",
+            "防晒",
+            "\\bskincare\\b|\\bmakeup\\b|\\bacne\\b|\\bhair ?style\\b"
+          ],
+          "example": "油性皮肤夏天怎么护肤？"
+        },
+        {
+          "id": "health.symptoms",
+          "label_zh": "症状咨询",
+          "label_en": "Symptoms",
+          "tier": "t5",
+          "tools": "read",
+          "floor": "t5",
+          "keywords": [
+            "症状",
+            "头(疼|痛|晕)|头晕",
+            "发烧|发热|咳嗽|腹(痛|泻)|胸闷|心慌|恶心",
+            "过敏",
+            "不舒服",
+            "是什么病|要不要去医院|挂什么科",
+            "\\bsymptoms?\\b|\\bheadache\\b|\\bfever\\b|\\bcough\\b|\\brash\\b|\\bdizzy\\b|\\bshould i see a doctor\\b"
+          ],
+          "example": "最近总是头晕，早上起来更明显，可能是什么原因？"
+        },
+        {
+          "id": "health.medication",
+          "label_zh": "用药咨询",
+          "label_en": "Medication",
+          "tier": "t6",
+          "tools": "read",
+          "floor": "t5",
+          "keywords": [
+            "用药|吃药|服药",
+            "(这个|这种)?药",
+            "剂量|副作用",
+            "布洛芬|对乙酰氨基酚|抗生素|阿莫西林|处方药",
+            "能(不能)?一起吃",
+            "\\bmedication\\b|\\bdos(e|age)\\b|\\bside effects?\\b|\\bibuprofen\\b|\\bantibiotic"
+          ],
+          "example": "布洛芬和对乙酰氨基酚能一起吃吗？"
+        },
+        {
+          "id": "health.report",
+          "label_zh": "检查报告解读",
+          "label_en": "Medical test results",
+          "tier": "t6",
+          "tools": "write",
+          "floor": "t5",
+          "keywords": [
+            "体检报告|化验单|检查报告|报告单",
+            "血常规|尿常规|肝功能|转氨酶|血脂|血糖",
+            "(指标|数值).{0,4}(偏高|偏低|异常)|偏高|偏低",
+            "\\bCT\\b|B超|核磁|\\bMRI\\b|X光",
+            "\\blab results?\\b|\\bblood test\\b|\\btest results\\b"
+          ],
+          "example": "体检报告里谷丙转氨酶偏高，是什么意思？"
+        },
+        {
+          "id": "health.mental",
+          "label_zh": "心理健康",
+          "label_en": "Mental health",
+          "tier": "t5",
+          "tools": "read",
+          "floor": "t5",
+          "guidance_en": "If there is any sign of crisis or risk of self-harm, lead with empathy and with local crisis resources (hotline, emergency services) before anything else.",
+          "keywords": [
+            "焦虑|抑郁|失眠",
+            "压力(很|太|特别)?大",
+            "心理",
+            "情绪(低落|崩溃|很差)|心情.{0,4}(低落|很差|不好)",
+            "不想活|自杀|想死|轻生|伤害自己",
+            "惊恐|恐慌",
+            "\\banxiety\\b|\\bdepress|\\binsomnia\\b|\\bpanic\\b|\\bsuicid|\\bself-?harm\\b|\\bmental health\\b"
+          ],
+          "example": "最近压力很大，每天晚上都失眠，心情很低落"
+        }
+      ]
+    },
+    {
+      "id": "law",
+      "emoji": "⚖️",
+      "label_zh": "法律",
+      "label_en": "Legal",
+      "guidance_en": "Legal request: name the jurisdiction you assume and how current the law is, say that this is not legal advice, and recommend a qualified lawyer for anything with real stakes.",
+      "categories": [
+        {
+          "id": "law.consult",
+          "label_zh": "一般法律咨询",
+          "label_en": "General legal question",
+          "tier": "t5",
+          "tools": "read",
+          "floor": "t5",
+          "keywords": [
+            "法律|违法|合法|犯法",
+            "起诉|仲裁|打官司",
+            "律师",
+            "赔偿|维权|侵权",
+            "劳动(法|合同|纠纷)|拖欠工资|辞退",
+            "判(几|多少)年",
+            "\\blawsuit\\b|\\blegal\\b|\\bsue\\b|\\blawyer\\b|\\bliable\\b|\\billegal\\b"
+          ],
+          "example": "公司拖欠工资三个月，我该怎么维权？"
+        },
+        {
+          "id": "law.contract-draft",
+          "label_zh": "合同起草",
+          "label_en": "Draft a contract",
+          "tier": "t5",
+          "tools": "write",
+          "floor": "t5",
+          "keywords": [
+            "(起草|拟|写)(一份|一个)?.{0,8}(合同|协议)",
+            "(合同|协议)模板",
+            "\\bdraft (a|an|the) (contract|agreement|nda)\\b"
+          ],
+          "example": "帮我起草一份房屋租赁合同"
+        },
+        {
+          "id": "law.contract-review",
+          "label_zh": "合同审查、风险条款",
+          "label_en": "Contract review",
+          "tier": "t6",
+          "tools": "write",
+          "floor": "t5",
+          "keywords": [
+            "(审查|审核|看看|检查).{0,10}(合同|协议|条款)",
+            "(合同|协议).{0,10}(风险|漏洞|坑|问题|不利)",
+            "条款",
+            "\\breview (this|the|my) (\\w+ )?(contract|agreement|lease|terms)\\b",
+            "\\b(unfair|risky|one-sided) (clauses?|terms)\\b|\\bclauses?\\b"
+          ],
+          "example": "帮我审查这份劳动合同，看看有没有对我不利的条款"
+        },
+        {
+          "id": "law.compliance",
+          "label_zh": "合规与政策解读",
+          "label_en": "Compliance and regulation",
+          "tier": "t6",
+          "tools": "read",
+          "floor": "t5",
+          "keywords": [
+            "合规",
+            "隐私政策|个人信息保护|数据出境",
+            "\\bGDPR\\b|\\bCCPA\\b|\\bHIPAA\\b",
+            "监管|资质|许可证|牌照",
+            "\\bcompliance\\b|\\bregulation\\b|\\bprivacy policy\\b"
+          ],
+          "example": "我们的 App 要上架欧洲，GDPR 合规需要做哪些事？"
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "emoji": "💰",
+      "label_zh": "金融财务",
+      "label_en": "Finance",
+      "guidance_en": "Finance request: state assumptions and risks, say how current the data is, and do not give definitive buy/sell advice.",
+      "categories": [
+        {
+          "id": "finance.personal",
+          "label_zh": "个人理财常识",
+          "label_en": "Personal finance",
+          "tier": "t3",
+          "tools": "read",
+          "floor": "t3",
+          "keywords": [
+            "理财",
+            "存钱|储蓄|攒钱",
+            "记账",
+            "信用卡|贷款|房贷|车贷",
+            "保险",
+            "个税|退休金|养老金",
+            "\\bpersonal finance\\b|\\bsavings\\b|\\bmortgage\\b|\\bcredit card\\b|\\binsurance\\b|\\bretire"
+          ],
+          "example": "月薪 1 万，怎么规划存钱和理财？"
+        },
+        {
+          "id": "finance.investing",
+          "label_zh": "投资分析",
+          "label_en": "Investment analysis",
+          "tier": "t6",
+          "tools": "code",
+          "floor": "t5",
+          "keywords": [
+            "股票|基金|债券|美股|A股|港股|ETF",
+            "投资",
+            "估值|市盈率",
+            "财报",
+            "买入|卖出|持仓|仓位",
+            "比特币|加密货币|\\bcrypto\\b",
+            "\\bstocks?\\b|\\binvest|\\bportfolio\\b|\\bvaluation\\b|\\bearnings\\b"
+          ],
+          "example": "帮我分析一下这家公司的财报，现在值得投资吗？"
+        },
+        {
+          "id": "finance.accounting",
+          "label_zh": "会计与税务",
+          "label_en": "Accounting and tax",
+          "tier": "t5",
+          "tools": "read",
+          "floor": "t5",
+          "keywords": [
+            "会计|记账凭证|分录",
+            "报税|税务|纳税|增值税|企业所得税|发票|专票",
+            "审计",
+            "财务报表|资产负债表|利润表|现金流量表",
+            "\\baccounting\\b|\\btax (return|filing)\\b|\\bbookkeeping\\b|\\bbalance sheet\\b|\\bVAT\\b"
+          ],
+          "example": "小规模纳税人开专票的增值税怎么算？"
+        },
+        {
+          "id": "finance.modeling",
+          "label_zh": "财务建模、估值",
+          "label_en": "Financial modelling and valuation",
+          "tier": "t6",
+          "tools": "code",
+          "floor": "t5",
+          "keywords": [
+            "财务模型|估值模型",
+            "\\bDCF\\b|现金流折现",
+            "敏感性分析",
+            "盈利预测|预测模型",
+            "\\bfinancial model\\b|\\bLBO\\b|\\bsensitivity analysis\\b"
+          ],
+          "example": "帮我搭一个三年期的 DCF 估值模型"
+        }
+      ]
+    },
+    {
+      "id": "business",
+      "emoji": "💼",
+      "label_zh": "职场与商业",
+      "label_en": "Work and business",
+      "categories": [
+        {
+          "id": "business.resume",
+          "label_zh": "简历、求职信",
+          "label_en": "Resume and cover letter",
+          "tier": "t3",
+          "tools": "write",
+          "keywords": [
+            "简历",
+            "求职信",
+            "作品集",
+            "项目经历",
+            "\\bresume\\b|\\bcv\\b|\\bcover letter\\b"
+          ],
+          "example": "帮我优化一下简历里的项目经历"
+        },
+        {
+          "id": "business.interview",
+          "label_zh": "面试准备",
+          "label_en": "Interview preparation",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "面试",
+            "面经",
+            "行为面试",
+            "\\binterview\\b|\\bbehavioral questions\\b"
+          ],
+          "example": "明天有产品经理的面试，帮我准备常见问题"
+        },
+        {
+          "id": "business.minutes",
+          "label_zh": "会议纪要、周报整理",
+          "label_en": "Meeting notes and status reports",
+          "tier": "t2",
+          "tools": "write",
+          "keywords": [
+            "会议纪要|会议记录",
+            "周报|日报|月报",
+            "整理(成)?.{0,4}(纪要|要点)",
+            "\\bmeeting (notes|minutes)\\b|\\bweekly report\\b|\\bstatus update\\b"
+          ],
+          "example": "把这段会议录音文字整理成会议纪要"
+        },
+        {
+          "id": "business.project-management",
+          "label_zh": "项目管理与计划",
+          "label_en": "Project management",
+          "tier": "t3",
+          "tools": "write",
+          "keywords": [
+            "项目管理",
+            "排期",
+            "里程碑",
+            "甘特图",
+            "任务拆(解|分)|拆成(几个)?任务",
+            "\\bWBS\\b|\\bOKR\\b|\\bKPI\\b",
+            "迭代计划|\\bsprint\\b|\\bmilestone\\b|\\bgantt\\b|\\bproject plan\\b"
+          ],
+          "example": "帮我把这个项目拆成任务并排一个两个月的排期"
+        },
+        {
+          "id": "business.market",
+          "label_zh": "市场与竞品分析",
+          "label_en": "Market and competitor analysis",
+          "tier": "t5",
+          "tools": "read",
+          "keywords": [
+            "竞品",
+            "市场分析|市场规模",
+            "用户画像",
+            "\\bSWOT\\b",
+            "\\bmarket (analysis|size|research)\\b|\\bcompetitor|\\bcompetitive (analysis|landscape)\\b|\\bTAM\\b"
+          ],
+          "example": "帮我做一份咖啡连锁品牌的竞品分析"
+        },
+        {
+          "id": "business.strategy",
+          "label_zh": "商业计划、商业策略",
+          "label_en": "Business plan and strategy",
+          "tier": "t6",
+          "tools": "read",
+          "keywords": [
+            "商业计划(书)?",
+            "商业模式|盈利模式",
+            "(商业|增长|定价|市场)(策略|战略)",
+            "融资|\\bBP\\b|路演",
+            "\\bbusiness (plan|model|strategy)\\b|\\bgo-to-market\\b|\\bpricing strategy\\b|\\bfundrais|\\bpitch deck\\b"
+          ],
+          "example": "帮我写一份 AI 教育创业项目的商业计划书"
+        },
+        {
+          "id": "business.negotiation",
+          "label_zh": "谈判与沟通策略",
+          "label_en": "Negotiation and communication strategy",
+          "tier": "t5",
+          "tools": "read",
+          "keywords": [
+            "谈判",
+            "砍价|谈薪|加薪",
+            "沟通(策略|技巧)",
+            "说服",
+            "(怎么|如何)(跟|和|向)(老板|领导|同事|客户|对方).{0,6}(说|沟通|谈|开口)",
+            "\\bnegotiat|\\bsalary\\b|\\bpersuade\\b|\\bdifficult conversation\\b"
+          ],
+          "example": "想跟老板谈加薪，怎么开口比较好？"
+        },
+        {
+          "id": "business.prd",
+          "label_zh": "产品需求（PRD）与原型",
+          "label_en": "Product requirements and prototypes",
+          "tier": "t5",
+          "tools": "write",
+          "keywords": [
+            "\\bPRD\\b",
+            "需求文档|产品需求",
+            "原型",
+            "用户故事",
+            "功能清单",
+            "\\bproduct requirements?\\b|\\buser stor(y|ies)\\b|\\bwireframe\\b|\\bprototype\\b|\\bfeature spec\\b"
+          ],
+          "example": "帮我写一份打卡小程序的 PRD"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "emoji": "🔬",
+      "label_zh": "科研",
+      "label_en": "Research",
+      "categories": [
+        {
+          "id": "research.lit-review",
+          "label_zh": "文献检索与综述",
+          "label_en": "Literature search and review",
+          "tier": "t6",
+          "tools": "read",
+          "keywords": [
+            "文献综述|综述",
+            "相关工作",
+            "研究现状",
+            "文献",
+            "\\brelated work\\b|\\bliterature review\\b|\\bsurvey of\\b|\\bstate of the art\\b"
+          ],
+          "example": "帮我写一篇关于大模型幻觉问题的文献综述"
+        },
+        {
+          "id": "research.experiment",
+          "label_zh": "实验设计",
+          "label_en": "Experiment design",
+          "tier": "t6",
+          "tools": "read",
+          "keywords": [
+            "实验(设计|方案)",
+            "对照组",
+            "样本量",
+            "变量控制|自变量|因变量",
+            "研究方法|问卷设计",
+            "\\bexperiment(al)? design\\b|\\bcontrol group\\b|\\bsample size\\b|\\bA/B test\\b|\\bmethodology\\b"
+          ],
+          "example": "我想验证新教学方法的效果，帮我设计实验方案和对照组"
+        },
+        {
+          "id": "research.theory",
+          "label_zh": "理论推导",
+          "label_en": "Theoretical derivation",
+          "tier": "t7",
+          "tools": "code",
+          "keywords": [
+            "推导",
+            "理论(分析|推导|模型)",
+            "第一性原理",
+            "方程组|波动方程|薛定谔|麦克斯韦|哈密顿|拉格朗日",
+            "\\bderiv(e|ation)\\b|\\btheoretical (analysis|model)\\b|\\bfrom first principles\\b|\\bhamiltonian\\b|\\blagrangian\\b"
+          ],
+          "example": "从麦克斯韦方程组推导电磁波的波动方程"
+        },
+        {
+          "id": "research.paper-review",
+          "label_zh": "论文审阅与修改意见",
+          "label_en": "Paper review",
+          "tier": "t6",
+          "tools": "write",
+          "keywords": [
+            "审稿",
+            "审阅.{0,6}(论文|稿件|初稿)",
+            "论文.{0,6}(修改意见|审阅|点评)",
+            "\\breviewer comments\\b|\\bpeer review\\b|\\breview (my|this) (paper|manuscript)\\b|\\brebuttal\\b"
+          ],
+          "example": "帮我审阅这篇论文初稿，按审稿人的标准给修改意见"
+        },
+        {
+          "id": "research.research-data",
+          "label_zh": "科研数据分析",
+          "label_en": "Research data analysis",
+          "tier": "t5",
+          "tools": "code",
+          "keywords": [
+            "科研数据|实验数据",
+            "处理组|对照组",
+            "分析(我的|这组|这些)?.{0,4}(实验)?数据",
+            "\\bresearch data\\b|\\bexperimental data\\b|\\banaly[sz]e (my|the) (experiment|lab) data\\b"
+          ],
+          "example": "帮我分析这组实验数据，看看处理组和对照组有没有差异"
+        }
+      ]
+    },
+    {
+      "id": "design",
+      "emoji": "🎨",
+      "label_zh": "设计与多媒体",
+      "label_en": "Design and media",
+      "categories": [
+        {
+          "id": "design.ux",
+          "label_zh": "UI / UX 设计建议",
+          "label_en": "UI / UX design advice",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "交互(设计)?",
+            "用户体验",
+            "界面(设计)?",
+            "可用性",
+            "\\bUX\\b|\\bUI\\b",
+            "\\busability\\b|\\buser experience\\b|\\buser interface\\b"
+          ],
+          "example": "看看这个注册页面的交互设计有什么可以改进的"
+        },
+        {
+          "id": "design.visual",
+          "label_zh": "视觉与品牌",
+          "label_en": "Visual design and branding",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "配色|色彩",
+            "字体",
+            "\\blogo\\b",
+            "品牌(设计|形象|视觉|配色|调性|色)|\\bVI\\b",
+            "视觉",
+            "海报|排版",
+            "\\bcolor palette\\b|\\btypography\\b|\\bbranding\\b|\\bvisual identity\\b|\\bposter\\b"
+          ],
+          "example": "给我的咖啡店设计一套品牌配色和字体方案"
+        },
+        {
+          "id": "design.image-analysis",
+          "label_zh": "图片 / 截图分析",
+          "label_en": "Analyze an image or screenshot",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "(这张|这个|附件)?(图|图片|截图|照片).{0,10}(是什么|有什么|看看|分析|识别|里)",
+            "看(一下|看)?(这张)?.{0,4}(图|截图|照片)",
+            "识别图片|\\bOCR\\b",
+            "\\b(this|the attached) (image|screenshot|photo|picture)\\b|\\bwhat'?s in (this|the) (image|picture)\\b"
+          ],
+          "example": "看看这张截图里的报错是什么"
+        },
+        {
+          "id": "design.image-prompt",
+          "label_zh": "生成图片的提示词",
+          "label_en": "Prompts for image generation",
+          "tier": "t1",
+          "tools": "read",
+          "keywords": [
+            "(画|生成)(一张|一幅|一只|一个|个)|做(一张|一幅).{0,6}(图|海报|插画)",
+            "\\bmidjourney\\b|stable diffusion|\\bdall-?e\\b|文生图|\\bSDXL\\b",
+            "(图片|绘画|画图).{0,6}提示词|提示词.{0,6}(画|图)",
+            "\\bimage prompt\\b|\\bgenerate (an )?image\\b|\\bdraw (a|an|me)\\b"
+          ],
+          "example": "帮我写一段 Midjourney 提示词，画一只赛博朋克风格的猫"
+        },
+        {
+          "id": "design.av-script",
+          "label_zh": "视频 / 音频脚本",
+          "label_en": "Video and audio scripts",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "视频脚本|短视频",
+            "分镜",
+            "口播|配音",
+            "播客",
+            "\\bvlog\\b|\\bvideo script\\b|\\bstoryboard\\b|\\bpodcast\\b|\\bvoiceover\\b|\\byoutube script\\b"
+          ],
+          "example": "写一个 60 秒的产品介绍短视频脚本，带分镜"
+        }
+      ]
+    },
+    {
+      "id": "creative",
+      "emoji": "💡",
+      "label_zh": "创意与娱乐",
+      "label_en": "Creative and fun",
+      "categories": [
+        {
+          "id": "creative.brainstorm",
+          "label_zh": "头脑风暴、点子",
+          "label_en": "Brainstorming",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "头脑风暴",
+            "点子|主意",
+            "创意",
+            "灵感",
+            "有什么好玩的",
+            "\\bbrainstorm|\\bideas? for\\b|\\bcreative ideas\\b"
+          ],
+          "example": "公司年会有什么有创意的活动点子？"
+        },
+        {
+          "id": "creative.naming",
+          "label_zh": "起名、口号",
+          "label_en": "Naming and slogans",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "起(个)?名|取(个)?名",
+            "(?<!重)命名",
+            "名字",
+            "口号|\\bslogan\\b|\\btagline\\b",
+            "\\bname (for|my|our)\\b",
+            "好听的|寓意"
+          ],
+          "example": "给我的宠物猫起个好听的名字"
+        },
+        {
+          "id": "creative.poetry",
+          "label_zh": "诗词、歌词",
+          "label_en": "Poems and lyrics",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "诗|诗词|古诗|律诗|绝句",
+            "对联",
+            "歌词",
+            "押韵|藏头",
+            "\\bpoem\\b|\\bpoetry\\b|\\blyrics\\b|\\brhyme\\b"
+          ],
+          "example": "写一首关于秋天的七言绝句"
+        },
+        {
+          "id": "creative.roleplay",
+          "label_zh": "游戏、角色扮演",
+          "label_en": "Games and role play",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "角色扮演|扮演",
+            "假装你是|你现在是",
+            "文字冒险|跑团|剧本杀",
+            "(玩|来)(个|一个)?.{0,4}游戏",
+            "\\brole-?play\\b|\\bpretend (to be|you are)\\b|\\btext adventure\\b"
+          ],
+          "example": "你现在扮演一个中世纪的酒馆老板，我们来玩文字冒险"
+        }
+      ]
+    },
+    {
+      "id": "life",
+      "emoji": "🏠",
+      "label_zh": "生活",
+      "label_en": "Everyday life",
+      "categories": [
+        {
+          "id": "life.cooking",
+          "label_zh": "烹饪与菜谱",
+          "label_en": "Cooking and recipes",
+          "tier": "t1",
+          "tools": "read",
+          "keywords": [
+            "菜谱|食谱",
+            "的做法",
+            "(怎么|如何)做(才)?好吃",
+            "(肉|鱼|鸡|蛋|面|饭|汤|饺子|蛋糕|排骨|豆腐).{0,6}(怎么|如何)(做|烧|炖|炒)",
+            "烹饪",
+            "\\brecipe\\b|\\bhow to (cook|bake|make)\\b"
+          ],
+          "example": "红烧肉怎么做好吃？"
+        },
+        {
+          "id": "life.travel",
+          "label_zh": "旅行规划",
+          "label_en": "Travel planning",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "旅行|旅游|出游",
+            "行程",
+            "攻略",
+            "景点",
+            "酒店|机票|自驾",
+            "\\bitinerary\\b|\\btrip\\b|\\btravel\\b|\\bsightseeing\\b"
+          ],
+          "example": "五一去成都玩 4 天，帮我排个行程"
+        },
+        {
+          "id": "life.family",
+          "label_zh": "家庭与育儿",
+          "label_en": "Family and parenting",
+          "tier": "t3",
+          "tools": "read",
+          "keywords": [
+            "育儿|带娃",
+            "孩子|宝宝|儿子|女儿",
+            "(老人|父母|爸妈).{0,6}(照顾|相处|沟通)",
+            "婆媳|夫妻|亲子",
+            "\\bparenting\\b|\\btoddler\\b|\\bmy (kid|son|daughter|child)\\b"
+          ],
+          "example": "三岁孩子总是发脾气，该怎么引导？"
+        },
+        {
+          "id": "life.pets",
+          "label_zh": "宠物",
+          "label_en": "Pets",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "猫咪|狗狗|宠物",
+            "(猫|狗).{0,6}(不吃|不喝|生病|掉毛|怎么办|吐)",
+            "驱虫|绝育|疫苗",
+            "\\bpets?\\b|\\bpuppy\\b|\\bkitten\\b|\\bmy (cat|dog)\\b"
+          ],
+          "example": "猫咪不爱喝水怎么办？"
+        }
+      ]
+    },
+    {
+      "id": "chat",
+      "emoji": "💬",
+      "label_zh": "闲聊与情感",
+      "label_en": "Chat and feelings",
+      "categories": [
+        {
+          "id": "chat.greeting",
+          "label_zh": "寒暄、闲聊",
+          "label_en": "Greetings and small talk",
+          "tier": "t1",
+          "tools": "read",
+          "ceiling": "t1",
+          "keywords": [
+            "^\\s*(hi|hello|hey|你好|您好|嗨|在吗|早上好|晚上好|早安|晚安|谢谢|多谢|thanks|thank you)[\\s!！。.,，~～]*$"
+          ],
+          "example": "你好"
+        },
+        {
+          "id": "chat.feelings",
+          "label_zh": "情感关系、自我反思",
+          "label_en": "Relationships and personal reflection",
+          "tier": "t3",
+          "tools": "read",
+          "guidance_en": "If there is any sign of crisis or risk of self-harm, lead with empathy and with local crisis resources before anything else.",
+          "keywords": [
+            "感情|恋爱|分手|失恋|暗恋|前任|表白",
+            "男朋友|女朋友|男友|女友|伴侣|老公|老婆|婚姻",
+            "孤独|迷茫|人生意义|自我怀疑",
+            "难受|伤心",
+            "\\brelationship\\b|\\bbreak ?up\\b|\\bboyfriend\\b|\\bgirlfriend\\b|\\blonely\\b|\\bfeel(ing)? lost\\b"
+          ],
+          "example": "和男朋友分手了，心里很难受"
+        },
+        {
+          "id": "chat.companion",
+          "label_zh": "陪伴聊天",
+          "label_en": "Companionship chat",
+          "tier": "t2",
+          "tools": "read",
+          "keywords": [
+            "陪我聊|聊聊天|随便聊",
+            "无聊",
+            "\\bjust chat\\b|\\btalk to me\\b|\\bi'?m bored\\b"
+          ],
+          "example": "好无聊啊，陪我聊聊天吧"
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "emoji": "🗂️",
+      "label_zh": "其他",
+      "label_en": "Other",
+      "categories": [
+        {
+          "id": "other.about",
+          "label_zh": "询问助手或分诊本身",
+          "label_en": "Questions about the assistant or the triage",
+          "tier": null,
+          "tools": "read",
+          "handler": "desk",
+          "keywords": [
+            "你是(谁|什么模型)",
+            "为什么.{0,10}(挂|分|派)(到|给)",
+            "分诊|挂号单|改挂",
+            "\\bwhich model are you\\b|\\bwhy (did you|was this) (route|send)\\b",
+            "科室"
+          ],
+          "example": "为什么把我的问题分到这个科室？"
+        },
+        {
+          "id": "other.unclear",
+          "label_zh": "无法判断、需求不清",
+          "label_en": "Unclear request",
+          "tier": "t3",
+          "tools": "read",
+          "fallback": true,
+          "guidance_en": "The request is unclear: ask one short clarifying question before doing substantial work.",
+          "keywords": []
+        }
+      ]
+    }
+  ]
+}

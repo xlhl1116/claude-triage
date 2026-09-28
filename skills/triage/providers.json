@@ -1,5 +1,5 @@
 {
-  "_note": "Provider registry shared by the triage slip, use_provider.py and the benchmark. models.<tier>.id is the real model behind each clinic; extra_body is sent with benchmark requests; pricing is optional (USD per million tokens). Fields listed in `unverified` could not be confirmed against the live official docs on 2026-09-28. `effort` is the Claude Code effort level written into the clinic agent; for third-party providers it is passed through to their Anthropic-compatible endpoint and whether they honour it is unverified (effort_verified=false). `api_effort` describes what the benchmark sends through extra_body.",
+  "_note": "Provider registry shared by the triage slip, use_provider.py and the benchmark. models.<tier> is the exact model and effort behind each internal tier (t1..t8); extra_body is sent with benchmark requests; pricing is optional (USD per million tokens). Fields listed in `unverified` could not be confirmed against the live official docs on 2026-09-28. `effort` is the Claude Code effort level written into the clinic agent; for third-party providers it is passed through to their Anthropic-compatible endpoint and whether they honour it is unverified (effort_verified=false). `api_effort` describes what the benchmark sends through extra_body.",
   "claude": {
     "label_en": "Anthropic Claude",
     "label_zh": "Anthropic Claude",
@@ -14,7 +14,7 @@
       "base_url": "https://api.anthropic.com"
     },
     "models": {
-      "quick": {
+      "t1": {
         "id": "claude-haiku-4-5",
         "name": "Claude Haiku 4.5",
         "pricing": {
@@ -24,53 +24,89 @@
           "cache_read": 0.1
         }
       },
-      "standard": {
+      "t2": {
         "id": "claude-sonnet-5",
         "name": "Claude Sonnet 5",
-        "effort": "medium",
+        "effort": "low",
+        "supports_effort": true,
         "pricing": {
           "input": 2.0,
           "output": 10.0,
           "cache_write": 2.5,
           "cache_read": 0.2
-        },
-        "supports_effort": true
+        }
       },
-      "deep": {
+      "t3": {
+        "id": "claude-sonnet-5",
+        "name": "Claude Sonnet 5",
+        "effort": "medium",
+        "supports_effort": true,
+        "pricing": {
+          "input": 2.0,
+          "output": 10.0,
+          "cache_write": 2.5,
+          "cache_read": 0.2
+        }
+      },
+      "t4": {
+        "id": "claude-sonnet-5",
+        "name": "Claude Sonnet 5",
+        "effort": "high",
+        "supports_effort": true,
+        "pricing": {
+          "input": 2.0,
+          "output": 10.0,
+          "cache_write": 2.5,
+          "cache_read": 0.2
+        }
+      },
+      "t5": {
         "id": "claude-opus-5-5",
         "name": "Claude Opus 5.5",
         "effort": "medium",
+        "supports_effort": true,
         "pricing": {
           "input": 4.0,
           "output": 20.0,
           "cache_write": 5.0,
           "cache_read": 0.2
-        },
-        "supports_effort": true
+        }
       },
-      "deep-max": {
+      "t6": {
+        "id": "claude-opus-5-5",
+        "name": "Claude Opus 5.5",
+        "effort": "high",
+        "supports_effort": true,
+        "pricing": {
+          "input": 4.0,
+          "output": 20.0,
+          "cache_write": 5.0,
+          "cache_read": 0.2
+        }
+      },
+      "t7": {
         "id": "claude-opus-5-5",
         "name": "Claude Opus 5.5",
         "effort": "max",
+        "supports_effort": true,
         "pricing": {
           "input": 4.0,
           "output": 20.0,
           "cache_write": 5.0,
           "cache_read": 0.2
-        },
-        "supports_effort": true
+        }
       },
-      "frontier": {
+      "t8": {
         "id": "claude-fable-5-1",
         "name": "Claude Fable 5.1",
         "effort": "max",
+        "supports_effort": true,
         "pricing": {
           "input": 10.0,
           "output": 50.0,
           "cache_write": 12.5,
           "cache_read": 0.25
-        },
-        "supports_effort": true
+        }
       }
     },
     "unverified": [],
@@ -92,64 +128,100 @@
       "base_url": "https://api.deepseek.com"
     },
     "models": {
-      "quick": {
+      "t1": {
         "id": "deepseek-flash",
         "name": "DeepSeek V4.1 Flash",
+        "effort": "low",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
         },
-        "api_effort": "thinking off",
-        "effort": "low"
+        "api_effort": "thinking off"
       },
-      "standard": {
+      "t2": {
         "id": "deepseek-flash",
         "name": "DeepSeek V4.1 Flash",
+        "effort": "low",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "low"
         },
-        "api_effort": "reasoning_effort=low",
-        "effort": "medium"
+        "api_effort": "reasoning_effort=low"
       },
-      "deep": {
-        "id": "deepseek-v4-pro",
-        "name": "DeepSeek V4 Pro",
+      "t3": {
+        "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "effort": "medium",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "high"
         },
-        "api_effort": "reasoning_effort=high",
-        "effort": "high"
+        "api_effort": "reasoning_effort=high"
       },
-      "deep-max": {
-        "id": "deepseek-v4-pro",
-        "name": "DeepSeek V4 Pro",
+      "t4": {
+        "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "effort": "high",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
       },
-      "frontier": {
+      "t5": {
         "id": "deepseek-v4-pro",
         "name": "DeepSeek V4 Pro",
+        "effort": "medium",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "low"
+        },
+        "api_effort": "reasoning_effort=low"
+      },
+      "t6": {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "effort": "high",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "high"
+        },
+        "api_effort": "reasoning_effort=high"
+      },
+      "t7": {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "effort": "max",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
+      },
+      "t8": {
+        "id": "deepseek-v4-pro",
+        "name": "DeepSeek V4 Pro",
+        "effort": "max",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          },
+          "reasoning_effort": "max"
+        },
+        "api_effort": "reasoning_effort=max"
       }
     },
     "unverified": [],
@@ -174,49 +246,76 @@
       "base_url_intl": "https://api.moonshot.ai/v1"
     },
     "models": {
-      "quick": {
+      "t1": {
         "id": "kimi-k2.7-code-highspeed",
         "name": "Kimi K2.7 Code HighSpeed",
-        "api_effort": "default",
-        "effort": "low"
+        "effort": "low",
+        "api_effort": "default"
       },
-      "standard": {
+      "t2": {
         "id": "kimi-k2.6",
         "name": "Kimi K2.6",
-        "api_effort": "default",
-        "effort": "medium"
+        "effort": "low",
+        "extra_body": {
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "api_effort": "thinking off"
       },
-      "deep": {
+      "t3": {
+        "id": "kimi-k2.6",
+        "name": "Kimi K2.6",
+        "effort": "medium",
+        "api_effort": "default (thinking on)"
+      },
+      "t4": {
+        "id": "kimi-k2.7-code",
+        "name": "Kimi K2.7 Code",
+        "effort": "high",
+        "api_effort": "default (thinking on)"
+      },
+      "t5": {
         "id": "kimi-k3",
         "name": "Kimi K3",
+        "effort": "medium",
+        "extra_body": {
+          "reasoning_effort": "low"
+        },
+        "api_effort": "reasoning_effort=low"
+      },
+      "t6": {
+        "id": "kimi-k3",
+        "name": "Kimi K3",
+        "effort": "high",
         "extra_body": {
           "reasoning_effort": "high"
         },
-        "api_effort": "reasoning_effort=high",
-        "effort": "high"
+        "api_effort": "reasoning_effort=high"
       },
-      "deep-max": {
+      "t7": {
         "id": "kimi-k3",
         "name": "Kimi K3",
+        "effort": "max",
         "extra_body": {
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
       },
-      "frontier": {
+      "t8": {
         "id": "kimi-k3",
         "name": "Kimi K3",
+        "effort": "max",
         "extra_body": {
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
       }
     },
     "unverified": [
       "claude_code.base_url (China endpoint)",
-      "bench.base_url (China endpoint, third-party sources only)"
+      "bench.base_url (China endpoint, third-party sources only)",
+      "kimi-k2.7-code with thinking always on used for t4"
     ],
     "effort_verified": false
   },
@@ -243,47 +342,65 @@
       "base_url_intl": "https://api.z.ai/api/paas/v4"
     },
     "models": {
-      "quick": {
+      "t1": {
         "id": "glm-5.3-flash",
         "name": "GLM-5.3-Flash",
-        "api_effort": "default",
-        "effort": "low"
+        "effort": "low",
+        "api_effort": "default"
       },
-      "standard": {
+      "t2": {
+        "id": "glm-5.3-flash",
+        "name": "GLM-5.3-Flash",
+        "effort": "low",
+        "api_effort": "default"
+      },
+      "t3": {
         "id": "glm-5.3",
         "name": "GLM-5.3",
-        "api_effort": "default",
-        "effort": "medium"
+        "effort": "medium",
+        "api_effort": "default"
       },
-      "deep": {
+      "t4": {
         "id": "glm-5.3",
         "name": "GLM-5.3",
-        "api_effort": "default",
-        "effort": "high"
+        "effort": "high",
+        "api_effort": "default"
       },
-      "deep-max": {
+      "t5": {
         "id": "glm-5.3",
         "name": "GLM-5.3",
+        "effort": "medium",
+        "api_effort": "default"
+      },
+      "t6": {
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "effort": "high",
+        "api_effort": "default"
+      },
+      "t7": {
+        "id": "glm-5.3",
+        "name": "GLM-5.3",
+        "effort": "max",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
       },
-      "frontier": {
+      "t8": {
         "id": "glm-5.3",
         "name": "GLM-5.3",
+        "effort": "max",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           },
           "reasoning_effort": "max"
         },
-        "api_effort": "reasoning_effort=max",
-        "effort": "max"
+        "api_effort": "reasoning_effort=max"
       }
     },
     "unverified": [
@@ -308,60 +425,93 @@
       "base_url": "https://api.xiaomimimo.com/v1"
     },
     "models": {
-      "quick": {
+      "t1": {
         "id": "mimo-v2.5",
         "name": "MiMo V2.5",
+        "effort": "low",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
         },
-        "api_effort": "thinking off",
-        "effort": "low"
+        "api_effort": "thinking off"
       },
-      "standard": {
+      "t2": {
+        "id": "mimo-v2.5",
+        "name": "MiMo V2.5",
+        "effort": "low",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          }
+        },
+        "api_effort": "thinking on"
+      },
+      "t3": {
         "id": "mimo-v2.6-pro",
         "name": "MiMo V2.6 Pro",
+        "effort": "medium",
         "extra_body": {
           "thinking": {
             "type": "disabled"
           }
         },
-        "api_effort": "thinking off",
-        "effort": "medium"
+        "api_effort": "thinking off"
       },
-      "deep": {
+      "t4": {
         "id": "mimo-v2.6-pro",
         "name": "MiMo V2.6 Pro",
+        "effort": "high",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           }
         },
-        "api_effort": "thinking on",
-        "effort": "high"
+        "api_effort": "thinking on"
       },
-      "deep-max": {
+      "t5": {
         "id": "mimo-v2.6-pro",
         "name": "MiMo V2.6 Pro",
+        "effort": "medium",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           }
         },
-        "api_effort": "thinking on",
-        "effort": "max"
+        "api_effort": "thinking on"
       },
-      "frontier": {
+      "t6": {
         "id": "mimo-v2.6-pro",
         "name": "MiMo V2.6 Pro",
+        "effort": "high",
         "extra_body": {
           "thinking": {
             "type": "enabled"
           }
         },
-        "api_effort": "thinking on",
-        "effort": "max"
+        "api_effort": "thinking on"
+      },
+      "t7": {
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
+        "effort": "max",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          }
+        },
+        "api_effort": "thinking on"
+      },
+      "t8": {
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
+        "effort": "max",
+        "extra_body": {
+          "thinking": {
+            "type": "enabled"
+          }
+        },
+        "api_effort": "thinking on"
       }
     },
     "unverified": [

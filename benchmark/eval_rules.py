@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Run the rule engine over benchmark/triage-cases.jsonl and print accuracy + confusion matrix."""
+"""Routing regression: does the rule engine put each request in the expected category?
+
+Checks two sets:
+  - every category's own `example` in skills/triage/taxonomy.json
+  - the hand-labelled prompts in benchmark/triage-cases.jsonl
+"""
 
 from __future__ import annotations
 
@@ -10,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "skills" / "triage" / "scripts"))
 
-from triage import DEFAULT_RULES, clinic_ids, load_rules, triage  # noqa: E402
+from triage import load_rules, load_taxonomy, triage  # noqa: E402
 
 CASES = Path(__file__).resolve().parent / "triage-cases.jsonl"
 
@@ -20,31 +25,36 @@ def load_cases(path: Path = CASES) -> list[dict]:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def main() -> int:
-    rules = load_rules(DEFAULT_RULES)
-    TIER_ORDER = clinic_ids(rules)
-    cases = load_cases()
-    matrix = {e: {p: 0 for p in TIER_ORDER} for e in TIER_ORDER}
+def check(rows: list[tuple[str, str, str, str | None]], rules: dict, tax: dict) -> tuple[int, int, list[str]]:
+    ok_cat = ok_dom = 0
     misses = []
-    nurse = 0
-    for c in cases:
-        r = triage(c["prompt"], rules)
-        matrix[c["expected"]][r["clinic"]] += 1
-        nurse += r["needs_second_opinion"]
-        if r["clinic"] != c["expected"]:
-            misses.append((c["id"], c["expected"], r["clinic"], r["score"], c["prompt"][:60]))
+    for rid, prompt, expected, expected_tier in rows:
+        r = triage(prompt, rules, tax)
+        got = r["category"]
+        ok_dom += got.split(".")[0] == expected.split(".")[0]
+        if got == expected and (expected_tier is None or r["tier"] == expected_tier):
+            ok_cat += 1
+        else:
+            misses.append(f"  {rid}: expected {expected}{'/' + expected_tier if expected_tier else ''}, "
+                          f"got {got}/{r['tier']} ({r['confidence']}) — {prompt[:50]!r}")
+    return ok_cat, ok_dom, misses
 
-    correct = sum(matrix[t][t] for t in TIER_ORDER)
-    print(f"accuracy: {correct}/{len(cases)} = {correct / len(cases):.1%}")
-    print(f"needs a second opinion (low confidence): {nurse}/{len(cases)}\n")
-    print("expected \\ predicted  " + "  ".join(f"{t:>8}" for t in TIER_ORDER))
-    for e in TIER_ORDER:
-        print(f"{e:>20}  " + "  ".join(f"{matrix[e][p]:>8}" for p in TIER_ORDER))
-    if misses:
-        print("\nmisses:")
+
+def main() -> int:
+    rules, tax = load_rules(), load_taxonomy()
+    examples = [(c["id"], c["example"], c["id"], None) for c in tax["_by_id"].values() if c.get("example")]
+    cases = [(c["id"], c["prompt"], c["expected_category"], c.get("expected_tier")) for c in load_cases()]
+    failed = 0
+    for name, rows in (("taxonomy examples", examples), ("labelled cases", cases)):
+        ok_cat, ok_dom, misses = check(rows, rules, tax)
+        n = len(rows)
+        print(f"{name}: category {ok_cat}/{n} ({ok_cat / n:.0%}), domain {ok_dom}/{n} ({ok_dom / n:.0%})")
         for m in misses:
-            print(f"  {m[0]}: expected {m[1]}, got {m[2]} (score {m[3]}) — {m[4]}")
-    return 0 if not misses else 1
+            print(m)
+        failed += len(misses)
+    low = sum(triage(p, rules, tax)["needs_second_opinion"] for _, p, _, _ in cases)
+    print(f"labelled cases needing the desk's second opinion: {low}/{len(cases)}")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ def read_jsonl(path: Path) -> dict:
 
 
 def summarise(run_dir: Path, config: dict) -> dict:
-    from run_bench import CLINICS, gen_key, resolve_strategy  # local import: avoid a cycle at module load
+    from run_bench import TIERS, gen_key, resolve_strategy  # local import: avoid a cycle at module load
 
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     gens = read_jsonl(run_dir / "generations.jsonl")
@@ -68,9 +68,9 @@ def summarise(run_dir: Path, config: dict) -> dict:
             "errors": sum(1 for r in rows if str(r.get("stop_reason", "")).startswith("error")),
         }
 
-    # each provider is compared with always using its own strongest clinic
+    # each provider is compared with always using its own strongest model
     for name, st in strategies.items():
-        base = strategies.get(name.split(":")[0] + ":" + CLINICS[-1])
+        base = strategies.get(name.split(":")[0] + ":" + TIERS[-1])
         if not base:
             continue
         if base["cost_usd"] and st["cost_usd"] is not None:
@@ -80,7 +80,7 @@ def summarise(run_dir: Path, config: dict) -> dict:
     confusion = {}
     for r in routing.values():
         c = confusion.setdefault(r["provider"], {}).setdefault(r["difficulty"], {})
-        c[r["clinic"]] = c.get(r["clinic"], 0) + 1
+        c[r["tier"]] = c.get(r["tier"], 0) + 1
 
     judge_cost = sum(r.get("judge_cost_usd", 0.0) for r in gens.values())
     return {"meta": meta, "strategies": strategies, "routing_confusion": confusion,
@@ -104,7 +104,7 @@ def render_md(s: dict) -> str:
     lines += [f"# Benchmark run `{Path(meta.get('run_dir', '')).name or meta['started']}`", "",
               f"- backend: `{meta['backend']}` · started {meta['started']} · {len(meta['task_ids'])} tasks × {meta['repeats']} repeat(s)",
               f"- models: " + ", ".join(f"`{k}` = {v}" for k, v in meta["models"].items()),
-              f"- baseline: each provider's own strongest clinic · second opinion: {'on' if meta.get('second_opinion') else 'off'} · region: {meta.get('region', 'cn')}", ""]
+              f"- baseline: each provider's own strongest model · second opinion: {'on' if meta.get('second_opinion') else 'off'} · region: {meta.get('region', 'cn')}", ""]
 
     lines += ["## Quality and cost", "",
               "| strategy | pass rate | easy | medium | hard | Δ vs strongest | cost | cost vs strongest | cost / pass | median latency |",
@@ -119,10 +119,10 @@ def render_md(s: dict) -> str:
     lines += ["", "Cost is generation cost only (plus second-opinion calls for triage); “—” means no pricing is configured for that model. "
               f"Judge cost, not included above: {fmt_money(s['judge_cost_usd'])}.", ""]
 
-    from run_bench import CLINICS
-    tiers = CLINICS
+    from run_bench import TIERS
+    tiers = TIERS
     for provider, conf in s["routing_confusion"].items():
-        lines += [f"## Routing on `{provider}` (human difficulty label → clinic chosen)", "",
+        lines += [f"## Routing on `{provider}` (human difficulty label → model tier chosen)", "",
                   "| difficulty | " + " | ".join(tiers) + " |", "|---|" + "---:|" * len(tiers)]
         for d in DIFFICULTIES:
             row = conf.get(d, {})

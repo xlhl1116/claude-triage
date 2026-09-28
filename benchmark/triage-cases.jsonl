@@ -1,47 +1,64 @@
-{"id": "zh-q-01", "expected": "quick", "prompt": "你好"}
-{"id": "zh-q-02", "expected": "quick", "prompt": "把这句话翻译成英文：今天的会议推迟到下午三点"}
-{"id": "zh-q-03", "expected": "quick", "prompt": "什么是 RESTful API？"}
-{"id": "zh-q-04", "expected": "quick", "prompt": "帮我检查一下这段文案有没有错别字：我们的产品致力于为用户提共最好的服务"}
-{"id": "zh-q-05", "expected": "quick", "prompt": "把变量 usr_nm 重命名为 username"}
-{"id": "zh-q-06", "expected": "quick", "prompt": "git 撤销上一次 commit 的命令是什么"}
-{"id": "zh-q-07", "expected": "quick", "prompt": "帮我润色一下这封邮件，语气更正式一点"}
-{"id": "en-q-01", "expected": "quick", "prompt": "thanks!"}
-{"id": "en-q-02", "expected": "quick", "prompt": "Translate 'see you tomorrow' into Japanese"}
-{"id": "en-q-03", "expected": "quick", "prompt": "What is a monad?"}
-{"id": "en-q-04", "expected": "quick", "prompt": "Fix the typo in the README heading"}
-{"id": "en-q-05", "expected": "quick", "prompt": "Format this JSON: {\"a\":1,\"b\":[1,2]}"}
-{"id": "zh-s-01", "expected": "standard", "prompt": "用 Python 写一个函数，读取 CSV 文件并按日期列分组求和"}
-{"id": "zh-s-02", "expected": "standard", "prompt": "运行 npm test 报错 TypeError: Cannot read properties of undefined (reading 'map')，帮我修复"}
-{"id": "zh-s-03", "expected": "standard", "prompt": "给 utils/date.ts 里的 formatDate 写单元测试，覆盖时区和闰年"}
-{"id": "zh-s-04", "expected": "standard", "prompt": "重构这个 React 组件，把数据获取逻辑抽成自定义 hook"}
-{"id": "zh-s-05", "expected": "standard", "prompt": "帮我做一下这个 PR 的代码审查，重点看错误处理"}
-{"id": "zh-s-06", "expected": "standard", "prompt": "解释一下这段代码在做什么：\n```python\nfrom functools import reduce\nprint(reduce(lambda a, b: a * b, range(1, 6)))\n```"}
-{"id": "zh-s-07", "expected": "standard", "prompt": "实现一个带过期时间的 LRU 缓存"}
-{"id": "en-s-01", "expected": "standard", "prompt": "Write a bash script that backs up ~/Documents to S3 every night"}
-{"id": "en-s-02", "expected": "standard", "prompt": "My Flask app throws a 500 error when I submit the form, here is the traceback: KeyError: 'email'"}
-{"id": "en-s-03", "expected": "standard", "prompt": "Add unit tests for the parser module"}
-{"id": "en-s-04", "expected": "standard", "prompt": "Refactor this function to remove the nested if statements:\n```js\nfunction f(a){ if(a){ if(a.b){ return a.b.c; } } return null; }\n```"}
-{"id": "en-s-05", "expected": "standard", "prompt": "Implement pagination for the /users endpoint"}
-{"id": "en-s-06", "expected": "quick", "prompt": "Summarize this design doc and list the open questions:\n- goal: reduce onboarding time\n- owner: platform team"}
-{"id": "zh-d-01", "expected": "deep-max", "prompt": "帮我设计一个支持百万级 QPS 的分布式任务调度系统，给出架构图思路和关键组件的权衡"}
-{"id": "zh-d-02", "expected": "deep", "prompt": "线上服务偶发 502，只在生产环境出现，日志里没有明显异常，帮我找出根因"}
-{"id": "zh-d-03", "expected": "deep", "prompt": "我们要把整个项目从 Python 2 迁移到 Python 3，评估风险并制定分阶段方案"}
-{"id": "zh-d-04", "expected": "deep-max", "prompt": "这段 Go 代码在高并发下有竞态条件和偶尔的死锁，帮我分析原因并修复"}
-{"id": "zh-d-05", "expected": "deep", "prompt": "证明这个贪心算法能得到最优解，并分析时间复杂度"}
-{"id": "zh-d-06", "expected": "deep-max", "prompt": "对整个代码库做一次安全审计，找出潜在漏洞并给出修复优先级"}
-{"id": "zh-d-07", "expected": "deep-max", "prompt": "单体应用要拆成微服务，数据库怎么拆？如何保证数据一致性？"}
-{"id": "en-d-01", "expected": "deep", "prompt": "Design the architecture for a multi-tenant SaaS billing platform and compare the trade-offs of event sourcing vs CRUD"}
-{"id": "en-d-02", "expected": "deep", "prompt": "We have an intermittent memory leak in our Node service that only shows up after ~3 days in production. Help me find the root cause."}
-{"id": "en-d-03", "expected": "deep", "prompt": "Refactor the authentication flow across the entire codebase to support OAuth and SSO without breaking existing sessions"}
-{"id": "en-d-04", "expected": "deep-max", "prompt": "Prove that this lock-free queue is linearizable, or find a counterexample with a race condition"}
-{"id": "en-d-05", "expected": "deep-max", "prompt": "Our p99 latency doubled after the migration to the new ORM. Profile the bottleneck and propose a fix, considering the pros and cons of each option."}
-{"id": "ov-01", "expected": "deep", "prompt": "@deep 把这句话翻译成英文：你好世界"}
-{"id": "ov-02", "expected": "quick", "prompt": "@quick 帮我设计一个分布式系统的架构"}
-{"id": "ov-03", "expected": "standard", "prompt": "用 sonnet 回答：什么是闭包"}
-{"id": "en-d-06", "expected": "deep", "prompt": "Our Node service leaks memory, but only after ~3 days in production"}
-{"id": "zh-f-01", "expected": "frontier", "prompt": "对整个代码库做一次安全审计，重点排查分布式锁在高并发下的竞态条件，并给出架构层面的重构方案"}
-{"id": "en-f-01", "expected": "frontier", "prompt": "Design a distributed consensus-based architecture for our payment ledger, prove the consistency guarantees, and audit the current implementation for race conditions across the entire codebase"}
-{"id": "ov-04", "expected": "deep-max", "prompt": "@deep-max 看看这个函数有没有问题"}
-{"id": "ov-05", "expected": "frontier", "prompt": "@fable 解释一下什么是闭包"}
-{"id": "ov-06", "expected": "deep", "prompt": "用 opus 写一个快速排序"}
-{"id": "en-d-07", "expected": "deep-max", "prompt": "Design a distributed job scheduler for 1M QPS and handle concurrency and consistency"}
+{"id": "zh-q-01", "expected_category": "chat.greeting", "prompt": "你好"}
+{"id": "zh-q-02", "expected_category": "language.translate", "prompt": "把这句话翻译成英文：今天的会议推迟到下午三点"}
+{"id": "zh-q-03", "expected_category": "info.fact", "prompt": "什么是 RESTful API？"}
+{"id": "zh-q-04", "expected_category": "language.grammar", "prompt": "帮我检查一下这段文案有没有错别字：我们的产品致力于为用户提共最好的服务"}
+{"id": "zh-q-05", "expected_category": "software.rename-format", "prompt": "把变量 usr_nm 重命名为 username"}
+{"id": "zh-q-06", "expected_category": "software.git", "prompt": "git 撤销上一次 commit 的命令是什么"}
+{"id": "zh-q-07", "expected_category": "writing.edit", "prompt": "帮我润色一下这封邮件，语气更正式一点"}
+{"id": "en-q-01", "expected_category": "chat.greeting", "prompt": "thanks!"}
+{"id": "en-q-02", "expected_category": "language.translate", "prompt": "Translate 'see you tomorrow' into Japanese"}
+{"id": "en-q-03", "expected_category": "info.fact", "prompt": "What is a monad?"}
+{"id": "en-q-04", "expected_category": "language.grammar", "prompt": "Fix the typo in the README heading"}
+{"id": "en-q-05", "expected_category": "software.rename-format", "prompt": "Format this JSON: {\"a\":1,\"b\":[1,2]}"}
+{"id": "zh-s-01", "expected_category": "software.write-function", "prompt": "用 Python 写一个函数，读取 CSV 文件并按日期列分组求和"}
+{"id": "zh-s-02", "expected_category": "software.debug-clear-error", "prompt": "运行 npm test 报错 TypeError: Cannot read properties of undefined (reading 'map')，帮我修复"}
+{"id": "zh-s-03", "expected_category": "software.unit-tests", "prompt": "给 utils/date.ts 里的 formatDate 写单元测试，覆盖时区和闰年"}
+{"id": "zh-s-04", "expected_category": "software.local-refactor", "prompt": "重构这个 React 组件，把数据获取逻辑抽成自定义 hook"}
+{"id": "zh-s-05", "expected_category": "software.review-small", "prompt": "帮我做一下这个 PR 的代码审查，重点看错误处理"}
+{"id": "zh-s-06", "expected_category": "software.explain-snippet", "prompt": "解释一下这段代码在做什么：\n```python\nfrom functools import reduce\nprint(reduce(lambda a, b: a * b, range(1, 6)))\n```"}
+{"id": "zh-s-07", "expected_category": "software.write-function", "prompt": "实现一个带过期时间的 LRU 缓存"}
+{"id": "en-s-01", "expected_category": "software.write-function", "prompt": "Write a bash script that backs up ~/Documents to S3 every night"}
+{"id": "en-s-02", "expected_category": "software.debug-clear-error", "prompt": "My Flask app throws a 500 error when I submit the form, here is the traceback: KeyError: 'email'"}
+{"id": "en-s-03", "expected_category": "software.unit-tests", "prompt": "Add unit tests for the parser module"}
+{"id": "en-s-04", "expected_category": "software.local-refactor", "prompt": "Refactor this function to remove the nested if statements:\n```js\nfunction f(a){ if(a){ if(a.b){ return a.b.c; } } return null; }\n```"}
+{"id": "en-s-05", "expected_category": "software.module-feature", "prompt": "Implement pagination for the /users endpoint"}
+{"id": "en-s-06", "expected_category": "writing.summary", "prompt": "Summarize this design doc and list the open questions:\n- goal: reduce onboarding time\n- owner: platform team"}
+{"id": "zh-d-01", "expected_category": "software.distributed-architecture", "prompt": "帮我设计一个支持百万级 QPS 的分布式任务调度系统，给出架构图思路和关键组件的权衡"}
+{"id": "zh-d-02", "expected_category": "software.hard-debug", "prompt": "线上服务偶发 502，只在生产环境出现，日志里没有明显异常，帮我找出根因"}
+{"id": "zh-d-03", "expected_category": "software.migration", "prompt": "我们要把整个项目从 Python 2 迁移到 Python 3，评估风险并制定分阶段方案"}
+{"id": "zh-d-04", "expected_category": "software.concurrency-bug", "prompt": "这段 Go 代码在高并发下有竞态条件和偶尔的死锁，帮我分析原因并修复"}
+{"id": "zh-d-05", "expected_category": "software.algorithm-proof", "prompt": "证明这个贪心算法能得到最优解，并分析时间复杂度"}
+{"id": "zh-d-06", "expected_category": "software.security-audit", "prompt": "对整个代码库做一次安全审计，找出潜在漏洞并给出修复优先级"}
+{"id": "zh-d-07", "expected_category": "software.system-architecture", "prompt": "单体应用要拆成微服务，数据库怎么拆？如何保证数据一致性？"}
+{"id": "en-d-01", "expected_category": "software.system-architecture", "prompt": "Design the architecture for a multi-tenant SaaS billing platform and compare the trade-offs of event sourcing vs CRUD"}
+{"id": "en-d-02", "expected_category": "software.hard-debug", "prompt": "We have an intermittent memory leak in our Node service that only shows up after ~3 days in production. Help me find the root cause."}
+{"id": "en-d-03", "expected_category": "software.large-refactor", "prompt": "Refactor the authentication flow across the entire codebase to support OAuth and SSO without breaking existing sessions"}
+{"id": "en-d-04", "expected_category": "software.algorithm-proof", "prompt": "Prove that this lock-free queue is linearizable, or find a counterexample with a race condition"}
+{"id": "en-d-05", "expected_category": "software.performance", "prompt": "Our p99 latency doubled after the migration to the new ORM. Profile the bottleneck and propose a fix, considering the pros and cons of each option."}
+{"id": "ov-01", "expected_category": "language.translate", "prompt": "@deep 把这句话翻译成英文：你好世界", "expected_tier": "t5"}
+{"id": "ov-02", "expected_category": "software.system-architecture", "prompt": "@quick 帮我设计一个分布式系统的架构", "expected_tier": "t1"}
+{"id": "ov-03", "expected_category": "info.fact", "prompt": "用 sonnet 回答：什么是闭包", "expected_tier": "t3"}
+{"id": "en-d-06", "expected_category": "software.leak", "prompt": "Our Node service leaks memory, but only after ~3 days in production"}
+{"id": "zh-f-01", "expected_category": "software.distributed-architecture", "prompt": "对整个代码库做一次安全审计，重点排查分布式锁在高并发下的竞态条件，并给出架构层面的重构方案"}
+{"id": "en-f-01", "expected_category": "software.system-architecture", "prompt": "Design a distributed consensus-based architecture for our payment ledger, prove the consistency guarantees, and audit the current implementation for race conditions across the entire codebase"}
+{"id": "ov-04", "expected_category": "software.review-small", "prompt": "@deep-max 看看这个函数有没有问题", "expected_tier": "t7"}
+{"id": "ov-05", "expected_category": "info.fact", "prompt": "@fable 解释一下什么是闭包", "expected_tier": "t8"}
+{"id": "ov-06", "expected_category": "software.algorithm", "prompt": "用 opus 写一个快速排序", "expected_tier": "t5"}
+{"id": "en-d-07", "expected_category": "software.distributed-architecture", "prompt": "Design a distributed job scheduler for 1M QPS and handle concurrency and consistency"}
+{"id": "x-01", "expected_category": "health.medication", "prompt": "阿莫西林和头孢能一起吃吗？"}
+{"id": "x-02", "expected_category": "law.contract-review", "prompt": "房东给的租房合同里有一条押金不退的条款，这合理吗？帮我看看合同有没有坑"}
+{"id": "x-03", "expected_category": "finance.investing", "prompt": "现在美股估值是不是太高了，还适合买入 ETF 吗？"}
+{"id": "x-04", "expected_category": "writing.marketing", "prompt": "给我们的新咖啡豆写三条朋友圈推广文案"}
+{"id": "x-05", "expected_category": "business.resume", "prompt": "帮我把简历里的实习经历改得更有说服力"}
+{"id": "x-06", "expected_category": "data.viz", "prompt": "用 echarts 做一个各省销售额的地图"}
+{"id": "x-07", "expected_category": "life.travel", "prompt": "十月去日本自由行 7 天，东京大阪怎么安排行程？"}
+{"id": "x-08", "expected_category": "education.explain", "prompt": "给我讲讲 Transformer 的注意力机制原理"}
+{"id": "x-09", "expected_category": "software.devops", "prompt": "Dockerfile 怎么写才能让镜像更小？"}
+{"id": "x-10", "expected_category": "software.sql", "prompt": "这条 SQL 很慢，帮我看看索引该怎么加"}
+{"id": "x-11", "expected_category": "health.mental", "prompt": "我最近很焦虑，晚上睡不着"}
+{"id": "x-12", "expected_category": "research.lit-review", "prompt": "帮我整理一下扩散模型在医学影像上的相关工作"}
+{"id": "x-13", "expected_category": "creative.poetry", "prompt": "写一首押韵的生日祝福小诗"}
+{"id": "x-14", "expected_category": "language.translate", "prompt": "Translate this into Chinese: the deadline has been moved to Friday."}
+{"id": "x-15", "expected_category": "software.hard-debug", "prompt": "CI 上的测试随机失败，本地怎么跑都是好的"}
+{"id": "x-16", "expected_category": "law.contract-review", "prompt": "Review this rental contract for unfair clauses"}
+{"id": "x-17", "expected_category": "software.concurrency-bug", "prompt": "Our checkout service deadlocks under high concurrency in production. Find the cause and fix it."}

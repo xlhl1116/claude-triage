@@ -4,7 +4,7 @@
 Claude Code talks to one Anthropic-compatible endpoint at a time. Switching
 provider means: new base URL + key, the haiku / sonnet / opus aliases remapped
 to that provider's models (Claude Code uses them internally), and a desk plus
-clinic agents whose `model:` fields name that provider's exact model IDs.
+executor agents whose `model:` fields name that provider's exact model IDs.
 
     python3 use_provider.py deepseek                      # print what would change
     python3 use_provider.py deepseek --write ~/.claude/settings.json
@@ -27,16 +27,16 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from gen_agents import generate  # noqa: E402
-from triage import DEFAULT_RULES, agent_name, load_providers, load_rules  # noqa: E402
+from triage import agent_name, load_providers, load_rules, load_taxonomy  # noqa: E402
 
-ALIAS_CLINICS = {"ANTHROPIC_DEFAULT_HAIKU_MODEL": "quick",
-                 "ANTHROPIC_DEFAULT_SONNET_MODEL": "standard",
-                 "ANTHROPIC_DEFAULT_OPUS_MODEL": "deep-max"}
+ALIAS_TIERS = {"ANTHROPIC_DEFAULT_HAIKU_MODEL": "t1",
+               "ANTHROPIC_DEFAULT_SONNET_MODEL": "t3",
+               "ANTHROPIC_DEFAULT_OPUS_MODEL": "t7"}
 CLEARED = ["ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_MODEL", "ANTHROPIC_SMALL_FAST_MODEL",
            "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_OPUS_MODEL",
            "API_TIMEOUT_MS", "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
            # Some vendor guides set these; they force every subagent onto one model / effort
-           # and silently defeat the clinics, so switching provider always removes them.
+           # and silently defeat the triage, so switching provider always removes them.
            "CLAUDE_CODE_SUBAGENT_MODEL", "CLAUDE_CODE_EFFORT_LEVEL"]
 
 
@@ -52,8 +52,8 @@ def build_env(provider: dict, intl: bool, token_plan: bool = False) -> dict:
     cc = provider["claude_code"]
     env = {"ANTHROPIC_BASE_URL": pick_base_url(cc, intl, token_plan),
            cc.get("token_var", "ANTHROPIC_AUTH_TOKEN"): f"<your {provider['label_en']} API key>"}
-    for var, cid in ALIAS_CLINICS.items():
-        env[var] = provider["models"][cid]["id"]
+    for var, tier in ALIAS_TIERS.items():
+        env[var] = provider["models"][tier]["id"]
     env.update(cc.get("env", {}))
     return env
 
@@ -75,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
 
     p = providers[args.provider]
-    rules = load_rules(DEFAULT_RULES)
+    rules, tax = load_rules(), load_taxonomy()
 
     if args.provider == "claude":
         if not args.write:
@@ -100,18 +100,18 @@ def main(argv: list[str] | None = None) -> int:
     for note in p.get("unverified", []):
         print(f"note: unverified — {note}; check {p['docs']}", file=sys.stderr)
     if not p.get("effort_verified", False):
-        print(f"note: clinic effort levels are passed to {p['label_en']}; whether it honours them is unverified.",
+        print(f"note: effort levels are passed to {p['label_en']}; whether it honours them is unverified.",
               file=sys.stderr)
 
     env = build_env(p, args.intl, args.token_plan)
     key_var = p["claude_code"].get("token_var", "ANTHROPIC_AUTH_TOKEN")
     desk = agent_name(args.provider, "desk")
-    agents = generate(args.provider, rules, providers)
+    agents = generate(args.provider, rules, tax, providers)
 
     if not args.write:
         print(json.dumps({"agent": desk, "env": env}, indent=2, ensure_ascii=False))
-        print(f"\nplus these agents (generated with gen_agents.py --provider {args.provider} --out ~/.claude/agents):\n  "
-              + "\n  ".join(agents) + f"\nDocs: {p['docs']}", file=sys.stderr)
+        print(f"\nplus {len(agents)} agents (desk + executors), written by --write or by "
+              f"gen_agents.py --provider {args.provider} --out ~/.claude/agents\nDocs: {p['docs']}", file=sys.stderr)
         return 0
 
     path = args.write.expanduser()
