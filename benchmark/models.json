@@ -1,0 +1,7 @@
+{
+  "_note": "Benchmark settings. Models, endpoints and prices live in skills/triage/providers.json. Strategy names are '<provider>:<tier>' (always that model) or '<provider>:triage' (route per task).",
+  "providers": ["claude"],
+  "judge": { "target": "claude/deep", "effort": "medium" },
+  "max_tokens": 16000,
+  "system_prompt": "You are a helpful assistant. Follow the requested output format exactly."
+}

@@ -27,7 +27,9 @@ CLAUDE_TRIAGE_EOF
 
 If `python3` is missing, try `python`. If neither works, skip to step 2 and let the nurse decide.
 
-The JSON gives `tier`, `agent`, `model`, `effort`, `score`, `confidence`, `needs_nurse`, `override`, the matched `signals`, and a cost `estimate`.
+The JSON gives `tier`, `agent`, `model`, `effort`, `score`, `confidence`, `needs_nurse`, `override`, the matched `signals`, the `provider` and real `model_id` behind the clinic, and a cost `estimate` (null when no pricing is configured for that provider).
+
+The provider (Claude, DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo) is detected from `ANTHROPIC_BASE_URL`. If the user reaches a provider through their own proxy, add `--provider <name>`; `python3 "${CLAUDE_SKILL_DIR}/scripts/use_provider.py" <name>` prints the settings that point Claude Code at a provider.
 
 ## 2. Second opinion when unsure / 拿不准时请分诊护士
 

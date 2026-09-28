@@ -10,7 +10,7 @@ sys.path.insert(0, str(SCRIPT.parent))
 sys.path.insert(0, str(ROOT / "benchmark"))
 
 from eval_rules import load_cases  # noqa: E402
-from triage import DEFAULT_RULES, load_rules, triage  # noqa: E402
+from triage import DEFAULT_RULES, load_providers, load_rules, triage  # noqa: E402
 
 RULES = load_rules(DEFAULT_RULES)
 
@@ -37,7 +37,7 @@ class Behaviour(unittest.TestCase):
         self.assertTrue(triage("把这份微服务架构文档翻译成英文", RULES)["needs_nurse"])
 
     def test_cost_estimate_is_cheaper_below_deep(self):
-        e = triage("Translate 'hello' into French", RULES)["estimate"]
+        e = triage("Translate 'hello' into French", RULES, load_providers(), "claude")["estimate"]
         self.assertLess(e["cost_usd"], e["always_deep_cost_usd"])
         self.assertGreater(e["saving_pct"], 50)
 

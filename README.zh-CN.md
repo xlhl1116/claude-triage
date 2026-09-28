@@ -71,10 +71,30 @@ claude-triage 像医院的分诊台一样站在请求前面：
 | 执行前预估成本 | ✅ | ❌ | ❌ | ❌ |
 | 一键手动推翻 | ✅ `@quick` / `@deep` | 指定 model 参数 | 调阈值 | 手动切模型 |
 | 规则可读可改 | ✅ JSON + 测试 | ❌ | 训练出的路由器 | ❌ |
-| 跨厂商模型 | ❌（规划中） | ✅ | ✅ | ❌ |
+| 非 Anthropic 模型 | ✅ DeepSeek、Kimi、智谱、小米 MiMo（一次用一家） | ✅ | ✅ | ❌ |
 | 额外 API key / 基础设施 | 无 | OpenRouter 账号 | 自己部署 | 无 |
 
 *对比基于 2026-09 的公开文档，如有出入欢迎指正。*
+
+## 第三方厂商：DeepSeek、Kimi、智谱 GLM、小米 MiMo
+
+Claude Code 同一时间只连一个 Anthropic 兼容接口，三个科室用的是 `haiku` / `sonnet` / `opus` 三个别名。切换厂商，就是把这三个别名映射到该厂商的快速 / 通用 / 最强模型：
+
+| 厂商 | 快速门诊 | 普通门诊 | 专家门诊 |
+|---|---|---|---|
+| Claude | claude-haiku-4-5 | claude-sonnet-5 | claude-opus-5 |
+| DeepSeek | deepseek-flash | deepseek-flash | deepseek-v4-pro |
+| 月之暗面 Kimi | kimi-k2.7-code-highspeed | kimi-k2.6 | kimi-k3 |
+| 智谱 GLM | glm-5.3-flash | glm-5.3 | glm-5.3 |
+| 小米 MiMo | mimo-v2.5 | mimo-v2.6-pro | mimo-v2.6-pro |
+
+```bash
+python3 skills/triage/scripts/use_provider.py deepseek          # 输出 settings.json 的 "env" 配置
+python3 skills/triage/scripts/use_provider.py zhipu --intl      # 用 z.ai 国际站而不是 bigmodel.cn
+python3 skills/triage/scripts/use_provider.py kimi --write ~/.claude/settings.json
+```
+
+挂号单会根据 `ANTHROPIC_BASE_URL` 自动识别厂商并显示真实模型名。部分厂商的官方教程会设置 `CLAUDE_CODE_SUBAGENT_MODEL`，它会把所有子 agent 强制成同一个模型、让分诊悄悄失效，所以脚本会把它清掉。模型 ID 于 2026-09-28 对照各家文档核对过，个别未能完全确认的列在 [`providers.json`](skills/triage/providers.json) 的 `unverified` 字段里。
 
 ## 单独试用规则引擎
 
@@ -92,16 +112,22 @@ python3 -m unittest discover -s tests
 python3 benchmark/eval_rules.py
 ```
 
-> ⚠️ `benchmark/triage-cases.jsonl` 里的 41 条种子用例是和规则一起写的，100% 准确率只是回归检查，不代表真实效果。真正的 benchmark 在路线图上——非常欢迎贡献真实的（脱敏后的）提示词。
+> ⚠️ `benchmark/triage-cases.jsonl` 里的 41 条种子用例是和规则一起写的，100% 准确率只是回归检查，不代表真实效果。
+
+## Benchmark：质量与成本
+
+`benchmark/run_bench.py` 用 30 道自动评分的题（简单 / 中等 / 困难各 10 道：翻译、常识、带单元测试的编程、算法、数学、排错、系统设计），分别测“固定用某一档”和“按分诊路由”的表现。上面每家厂商都能测，也能放在一起横向对比。用法见 [`benchmark/README.md`](benchmark/README.md)，真实跑分结果即将公布。
 
 ## 路线图
 
 - [x] 分诊规则表、规则引擎、可解释挂号单、成本预估
 - [x] 三个专科 subagent + 分诊护士、手动改挂、自动转诊
-- [ ] **Benchmark**：在公开任务集上对比“全程 Opus / 全程 Sonnet”的质量与成本，并出图
+- [x] 第三方厂商：DeepSeek、Kimi、智谱 GLM、小米 MiMo
+- [x] Benchmark 框架：30 道自动评分题、按厂商分策略、离线 mock 模式
+- [ ] **Benchmark 结果**：公布真实跑分并出图
 - [ ] **从反馈中学习**：记录改挂和转诊，自动建议调整权重
 - [ ] Hook 模式：每条提示词自动分诊，不必手动敲命令
-- [ ] **跨厂商路由**（第二阶段）：GPT、Gemini、本地模型共用同一张挂号单
+- [ ] **混合路由**：同一会话里不同科室用不同厂商（如快速门诊用 DeepSeek、专家门诊用 Opus）；接入 GPT、Gemini、本地模型
 
 ## 参与贡献
 

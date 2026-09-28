@@ -71,10 +71,30 @@ The full rule table lives in [`docs/triage-rules.md`](docs/triage-rules.md); the
 | Cost estimate before running | ✅ | ❌ | ❌ | ❌ |
 | One-word manual override | ✅ `@quick` / `@deep` | model param | threshold param | switch model |
 | Editable, readable rules | ✅ JSON + tests | ❌ | trained router | ❌ |
-| Cross-provider models | ❌ (roadmap) | ✅ | ✅ | ❌ |
+| Non-Anthropic models | ✅ DeepSeek, Kimi, GLM, MiMo (one provider at a time) | ✅ | ✅ | ❌ |
 | Extra API key / infra | none | OpenRouter account | your own deployment | none |
 
 *Comparison reflects public docs as of 2026-09; corrections welcome.*
+
+## Other providers: DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo
+
+Claude Code talks to one Anthropic-compatible endpoint at a time, and the clinics use the `haiku` / `sonnet` / `opus` aliases. Switching provider means remapping those aliases to that provider's fast / general / strongest model:
+
+| Provider | Quick | Standard | Specialist |
+|---|---|---|---|
+| Claude | claude-haiku-4-5 | claude-sonnet-5 | claude-opus-5 |
+| DeepSeek | deepseek-flash | deepseek-flash | deepseek-v4-pro |
+| Moonshot Kimi | kimi-k2.7-code-highspeed | kimi-k2.6 | kimi-k3 |
+| Zhipu GLM | glm-5.3-flash | glm-5.3 | glm-5.3 |
+| Xiaomi MiMo | mimo-v2.5 | mimo-v2.6-pro | mimo-v2.6-pro |
+
+```bash
+python3 skills/triage/scripts/use_provider.py deepseek          # print the settings.json "env" block
+python3 skills/triage/scripts/use_provider.py zhipu --intl      # z.ai instead of bigmodel.cn
+python3 skills/triage/scripts/use_provider.py kimi --write ~/.claude/settings.json
+```
+
+The slip detects the provider from `ANTHROPIC_BASE_URL` and shows the real model name. Some vendor setup guides also set `CLAUDE_CODE_SUBAGENT_MODEL`, which forces every subagent onto one model and silently disables triage, so the script removes it. Model IDs were checked against each vendor's docs on 2026-09-28; the few that could not be fully confirmed are listed under `unverified` in [`providers.json`](skills/triage/providers.json).
 
 ## Try the rule engine on its own
 
@@ -92,16 +112,22 @@ python3 -m unittest discover -s tests
 python3 benchmark/eval_rules.py
 ```
 
-> ⚠️ The 41 seed cases in `benchmark/triage-cases.jsonl` were written alongside the rules, so their 100% accuracy is a regression check, not a quality claim. A real benchmark is on the roadmap — contributions of real, anonymised prompts are very welcome.
+> ⚠️ The 41 seed cases in `benchmark/triage-cases.jsonl` were written alongside the rules, so their 100% accuracy is a regression check, not a quality claim.
+
+## Benchmark: quality vs. cost
+
+`benchmark/run_bench.py` runs 30 auto-graded tasks (10 easy / 10 medium / 10 hard: translation, facts, coding with unit tests, algorithms, math, debugging, system design) under each strategy: every fixed tier, plus triage routing. Any provider above can be benchmarked, and they can be compared side by side. See [`benchmark/README.md`](benchmark/README.md). Published results are coming soon.
 
 ## Roadmap
 
 - [x] Rule table, rule engine, explainable slip, cost estimate
 - [x] Three clinic subagents + nurse, manual override, automatic escalation
-- [ ] **Benchmark**: quality vs. cost against always-Opus / always-Sonnet on a public task set, with charts
+- [x] Providers: DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo
+- [x] Benchmark harness: 30 graded tasks, per-provider strategies, offline mock mode
+- [ ] **Benchmark results**: publish real runs, with charts
 - [ ] **Learn from feedback**: record overrides and escalations, suggest weight changes
 - [ ] Hook mode: triage every prompt automatically, not only via the slash command
-- [ ] **Cross-provider routing** (phase 2): GPT, Gemini, local models behind the same slip
+- [ ] **Mixed routing**: different providers per clinic in one session (e.g. DeepSeek for quick, Opus for deep); GPT, Gemini, local models
 
 ## Contributing
 

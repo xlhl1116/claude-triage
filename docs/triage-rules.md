@@ -93,7 +93,21 @@
 
 `预估成本 = (请求 token + 3,000 上下文) × 输入单价 + 该科室典型输出 token × 输出单价`
 
-典型输出：quick 600 / standard 2,500 / deep 8,000 token。单价见 `rules.json` 的 `pricing_usd_per_mtok`（默认按 Anthropic API 2026-06 标价：Haiku 4.5 $1/$5，Sonnet 5 $2/$10，Opus 5 $5/$25 每百万 token）。这只是数量级参考；订阅用户看的是额度而不是账单，但比例一样有意义。
+典型输出：quick 600 / standard 2,500 / deep 8,000 token。单价见 [`providers.json`](../skills/triage/providers.json) 里各模型的 `pricing`（Claude 默认按 Anthropic API 2026-06 标价：Haiku 4.5 $1/$5，Sonnet 5 $2/$10，Opus 5 $5/$25 每百万 token；第三方厂商暂未配置价格，挂号单显示“—”）。这只是数量级参考；订阅用户看的是额度而不是账单，但比例一样有意义。
+
+## 第三方厂商 / Other providers
+
+三个科室在 Claude Code 里用的是 `haiku` / `sonnet` / `opus` 这三个别名，切换厂商就是把别名映射到该厂商的模型（`ANTHROPIC_DEFAULT_{HAIKU,SONNET,OPUS}_MODEL`）：
+
+| 厂商 | 快速门诊 | 普通门诊 | 专家门诊 |
+|---|---|---|---|
+| Claude | claude-haiku-4-5 | claude-sonnet-5 | claude-opus-5 |
+| DeepSeek | deepseek-flash（关思考） | deepseek-flash（开思考） | deepseek-v4-pro |
+| Kimi | kimi-k2.7-code-highspeed | kimi-k2.6 | kimi-k3 |
+| 智谱 GLM | glm-5.3-flash | glm-5.3 | glm-5.3（最高推理强度） |
+| 小米 MiMo | mimo-v2.5（关思考） | mimo-v2.6-pro（关思考） | mimo-v2.6-pro（开思考） |
+
+括号里的思考开关只在 benchmark 直连 API 时生效；在 Claude Code 里，同一个模型的两档差别取决于厂商是否支持 agent 的 `effort` 设置。
 
 ## 转诊 / Escalation
 
