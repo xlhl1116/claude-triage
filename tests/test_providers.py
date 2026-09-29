@@ -119,7 +119,7 @@ class Agents(unittest.TestCase):
     def test_desk_only_routes(self):
         fields, body = parse_agent(generate("claude", RULES, TAX, PROVIDERS)["triage-desk.md"])
         self.assertEqual(fields["model"], "claude-haiku-4-5")
-        self.assertEqual(fields["tools"], "Agent, Skill, Bash, Read, Glob, Grep")
+        self.assertEqual(fields["tools"], "Agent, Skill, Bash, Glob")
         self.assertIn("never answer", body.lower())
         for cid in TAX["_by_id"]:
             self.assertIn(f"`{cid}`", body)

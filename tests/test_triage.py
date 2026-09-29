@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -183,6 +184,17 @@ class Hook(unittest.TestCase):
         out = run("--hook", stdin=json.dumps({"prompt": note}))
         self.assertEqual((out.returncode, out.stdout), (0, ""))
 
+    def test_asking_whether_a_problem_exists_is_not_max_effort(self):
+        asked = triage("这个项目里 triage() 在高并发下调用会不会有线程安全问题？帮我找原因", RULES, TAX, PROVIDERS)
+        self.assertEqual((asked["category"], asked["effort"]), ("software.concurrency-bug", "high"))
+        self.assertIn("hypothetical", [m["id"] for m in asked["modifiers"]])
+        seen = triage("我们的结账服务在高并发下偶发死锁，帮我找原因", RULES, TAX, PROVIDERS)
+        self.assertEqual(seen["effort"], "max")
+
+    def test_desk_category_keeps_manual_model(self):
+        r = triage("@haiku write a haiku about autumn", RULES, TAX, PROVIDERS, category="creative.poetry")
+        self.assertEqual((r["category"], r["confidence"], r["model_id"]), ("creative.poetry", "manual", "claude-haiku-4-5"))
+
     def test_footer_omits_effort_for_models_without_one(self):
         r = triage("Translate to French: see you on Thursday", RULES, TAX, PROVIDERS)
         self.assertEqual(r["footer"], "— 🌐 Language › Everyday translation · Claude Haiku 4.5")
@@ -194,6 +206,60 @@ class Hook(unittest.TestCase):
     def test_hook_uses_detected_provider(self):
         ctx = self.context("你好", env={**ENV, "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic"})
         self.assertIn('"agent": "triage-t1-read-deepseek"', ctx["additionalContext"])
+
+
+
+class DeskGuard(unittest.TestCase):
+    """PreToolUse and Stop hooks that keep the desk from doing the work itself."""
+    DESK = "claude-triage:triage-desk"
+
+    def hook(self, event):
+        out = run("--hook", stdin=json.dumps(event))
+        self.assertEqual(out.returncode, 0)
+        return json.loads(out.stdout) if out.stdout.strip() else None
+
+    def bash(self, command, agent=DESK):
+        return self.hook({"hook_event_name": "PreToolUse", "agent_type": agent, "tool_name": "Bash",
+                          "tool_input": {"command": command}})
+
+    def test_desk_may_only_run_the_triage_script(self):
+        self.assertIsNone(self.bash("python3 /x/skills/triage/scripts/triage.py --category data.stats"))
+        denied = self.bash("grep -n detect_lang tests/test_triage.py")
+        self.assertEqual(denied["hookSpecificOutput"]["permissionDecision"], "deny")
+        self.assertIsNone(self.bash("grep -n detect_lang tests/test_triage.py", agent="claude-triage:triage-t3-code"))
+
+    def stop(self, entries, **extra):
+        with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False, encoding="utf-8") as f:
+            for e in entries:
+                f.write(json.dumps(e, ensure_ascii=False) + "\n")
+        self.addCleanup(os.unlink, f.name)
+        return self.hook({"hook_event_name": "Stop", "agent_type": self.DESK, "transcript_path": f.name,
+                          "stop_hook_active": False, **extra})
+
+    @staticmethod
+    def user(text):
+        return {"type": "user", "message": {"role": "user", "content": text}}
+
+    @staticmethod
+    def assistant(*tools):
+        content = [{"type": "text", "text": "…"}] + [{"type": "tool_use", "name": t, "input": {}} for t in tools]
+        return {"type": "assistant", "message": {"role": "assistant", "content": content}}
+
+    def test_stop_blocks_an_answer_that_was_not_dispatched(self):
+        out = self.stop([self.user("Translate to French: see you on Thursday"), self.assistant()])
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("claude-triage:triage-t1-read", out["reason"])
+
+    def test_stop_allows_dispatched_requests_and_desk_questions(self):
+        self.assertIsNone(self.stop([self.user("Translate to French: see you on Thursday"), self.assistant("Agent")]))
+        notice = "<task-notification><status>completed</status></task-notification>"
+        self.assertIsNone(self.stop([self.user("hi"), self.assistant("Agent"), self.user(notice), self.assistant()]))
+        self.assertIsNone(self.stop([self.user("hi"), self.assistant()], stop_hook_active=True))
+
+    def test_stop_ignores_other_agents(self):
+        out = self.hook({"hook_event_name": "Stop", "agent_type": "general-purpose", "transcript_path": "/nonexistent"})
+        self.assertIsNone(out)
+
 
 
 if __name__ == "__main__":
