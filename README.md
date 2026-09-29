@@ -55,6 +55,16 @@ Needs Claude Code 2.1.284 or later (the first release that knows Claude Sonnet 5
 
 Restart Claude Code. From then on the **triage desk is your main conversation**: just type as usual.
 
+### Where it works
+
+| Where | Automatic triage of every message | `/claude-triage:triage <request>` |
+|---|---|---|
+| Claude Code CLI (terminal) | ✅ the desk is the main conversation | ✅ |
+| Claude desktop app, Code tab | ❌ the app ignores a plugin's main-agent setting | ✅ |
+| Claude desktop app, Cowork | ❌ same reason | ⚠️ should work (same plugin format), not tested yet |
+
+In the desktop app, install from **+ → Plugins → Add plugin** and type `/claude-triage:triage` before a request you want routed; the slip, the exact model and effort, and the full answer work the same way. The hook stays silent there, so it costs your main model nothing. The executor always runs inside the same conversation as a sub-agent (shown as a collapsible step), and the desk passes its answer back to you in full.
+
 **Just want to see the routing first?** The rule engine is plain Python with no dependencies:
 
 ```bash

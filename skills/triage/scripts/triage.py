@@ -335,7 +335,10 @@ DISPATCH_TOOLS = ("Agent", "Task")
 
 
 def is_desk(event: dict) -> bool:
-    return str(event.get("agent_type", "")).split(":")[-1] == "triage-desk"
+    """The session's main thread is a triage desk: the plugin's own (claude-triage:triage-desk) or a
+    provider's generated one (triage-desk-deepseek, ...)."""
+    name = str(event.get("agent_type", "")).split(":")[-1]
+    return name == "triage-desk" or name.startswith("triage-desk-")
 
 
 def last_request(transcript: Path) -> tuple[str | None, bool]:
@@ -407,7 +410,13 @@ def relay_gap(transcript: Path) -> tuple[int, int] | None:
 
 
 def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: str) -> dict | None:
-    """UserPromptSubmit: attach a <triage-slip> for the triage desk to every prompt."""
+    """UserPromptSubmit: attach a <triage-slip> for the triage desk to every prompt.
+
+    Only when the main thread is the desk. Elsewhere (the desktop app, where the plugin's `agent`
+    setting does not apply, or a user-chosen main agent) the slip would only cost the main model
+    context; there, /claude-triage:triage runs the rule engine itself."""
+    if not is_desk(event):
+        return None
     prompt = event.get("prompt", "")
     # Slash commands, and background-agent results that Claude Code feeds back as a prompt.
     if not prompt.strip() or prompt.lstrip().startswith(("/", "<task-notification>")):

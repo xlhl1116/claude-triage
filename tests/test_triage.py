@@ -160,9 +160,23 @@ class Cli(unittest.TestCase):
 
 
 class Hook(unittest.TestCase):
-    def context(self, prompt, env=None):
-        out = run("--hook", stdin=json.dumps({"prompt": prompt, "session_id": "x"}), env=env)
+    DESK_EVENT = {"hook_event_name": "UserPromptSubmit", "agent_type": "claude-triage:triage-desk", "session_id": "x"}
+
+    def context(self, prompt, env=None, agent="claude-triage:triage-desk"):
+        out = run("--hook", stdin=json.dumps({**self.DESK_EVENT, "agent_type": agent, "prompt": prompt}), env=env)
         return json.loads(out.stdout)["hookSpecificOutput"]
+
+    def test_hook_attaches_nothing_when_the_desk_is_not_the_main_thread(self):
+        # e.g. the desktop app, where the plugin's `agent` setting does not apply
+        for event in ({"prompt": "这段 Go 代码在高并发下会死锁"},
+                      {"prompt": "这段 Go 代码在高并发下会死锁", "agent_type": "general-purpose"}):
+            out = run("--hook", stdin=json.dumps({"hook_event_name": "UserPromptSubmit", **event}))
+            self.assertEqual((out.returncode, out.stdout), (0, ""), event)
+
+    def test_provider_desks_count_as_the_desk(self):
+        env = {**ENV, "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic"}
+        ctx = self.context("你好", env=env, agent="triage-desk-deepseek")
+        self.assertIn('"agent": "triage-t1-read-deepseek"', ctx["additionalContext"])
 
     def test_hook_attaches_slip(self):
         ctx = self.context("这段 Go 代码在高并发下会死锁")
@@ -179,14 +193,15 @@ class Hook(unittest.TestCase):
         self.assertNotIn(note, self.context("这段 Go 代码在高并发下会死锁")["additionalContext"])
 
     def test_hook_skips_slash_commands_and_bad_input(self):
-        for stdin in (json.dumps({"prompt": "/help"}), "not json", json.dumps({"prompt": "  "})):
+        for stdin in (json.dumps({**self.DESK_EVENT, "prompt": "/help"}), "not json",
+                      json.dumps({**self.DESK_EVENT, "prompt": "  "})):
             out = run("--hook", stdin=stdin)
             self.assertEqual((out.returncode, out.stdout), (0, ""), stdin)
 
     def test_hook_skips_background_agent_results(self):
         # Claude Code feeds a finished background agent back to the desk as a prompt; it is not a request.
         note = "<task-notification>\n<status>completed</status>\n<summary>Agent finished</summary>\n</task-notification>"
-        out = run("--hook", stdin=json.dumps({"prompt": note}))
+        out = run("--hook", stdin=json.dumps({**self.DESK_EVENT, "prompt": note}))
         self.assertEqual((out.returncode, out.stdout), (0, ""))
 
     def test_asking_whether_a_problem_exists_is_not_max_effort(self):
@@ -205,7 +220,7 @@ class Hook(unittest.TestCase):
         self.assertEqual(r["footer"], "— 🌐 Language › Everyday translation · Claude Haiku 4.5")
 
     def test_hook_can_be_switched_off(self):
-        out = run("--hook", stdin=json.dumps({"prompt": "hi"}), env={**ENV, "CLAUDE_TRIAGE": "off"})
+        out = run("--hook", stdin=json.dumps({**self.DESK_EVENT, "prompt": "hi"}), env={**ENV, "CLAUDE_TRIAGE": "off"})
         self.assertEqual(out.stdout, "")
 
     def test_hook_uses_detected_provider(self):
