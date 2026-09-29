@@ -2,12 +2,17 @@
 
 # 🏥 claude-triage
 
-**A triage desk for Claude Code: a cheap desk model reads every request, recognises what kind of request it is among 120 categories, and hands it to the exact model and thinking effort that category needs, with a slip that explains why.**
+### Stop paying Opus prices to rename a variable.
+
+**A triage desk for Claude Code.** A cheap desk model reads every request, recognises which of 120 kinds it is, and sends it to the model and thinking effort that kind needs, with a slip that explains why.
 
 English | [简体中文](README.zh-CN.md)
 
 [![tests](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml/badge.svg)](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![version](https://img.shields.io/badge/version-0.1.0-orange.svg)
+![python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
+![no extra API key](https://img.shields.io/badge/extra%20API%20key-none-brightgreen.svg)
 
 </div>
 
@@ -31,6 +36,14 @@ Override    add @haiku / @sonnet / @opus / @opus-max / @fable to pick the model 
 — Software development › Concurrency, race or deadlock bug · Claude Opus 5.5 · effort max
 ```
 
+## Why
+
+- **One model for everything is the wrong trade.** Keep Opus on and a typo fix costs like an architecture review; keep Haiku on and a production deadlock gets a shallow answer.
+- **You shouldn't have to decide.** Nobody knows in advance whether a question needs a "standard" or a "specialist" model. The desk works it out from what you asked.
+- **You can see every decision.** Each answer comes with a slip: the category, the words that matched, the model, the effort and the estimated saving. One word (`@opus-max`) overrules it.
+
+> 🧪 **Early release (v0.1).** The rule engine, 49 tests and the routing checks all pass, but the plugin has had little real-world use in Claude Code yet. Misrouted examples and bug reports are very welcome.
+
 ## Install
 
 ```text
@@ -39,6 +52,13 @@ Override    add @haiku / @sonnet / @opus / @opus-max / @fable to pick the model 
 ```
 
 Restart Claude Code. From then on the **triage desk is your main conversation**: just type as usual.
+
+**Just want to see the routing first?** The rule engine is plain Python with no dependencies:
+
+```bash
+git clone https://github.com/xlhl1116/claude-triage && cd claude-triage
+echo "Our checkout service deadlocks under high concurrency in production" | python3 skills/triage/scripts/triage.py --format slip
+```
 
 ## How it works
 
@@ -69,6 +89,9 @@ Pick the model yourself any time by adding `@haiku`, `@sonnet`, `@opus`, `@opus-
 
 ## Categories
 
+<details>
+<summary><b>17 domains, 120 categories</b> (click to expand)</summary>
+
 | Domain | Categories | Examples → default model |
 |---|---:|---|
 | 💻 Software development | 40 | rename / format → Haiku 4.5 · UI component → Sonnet 5 medium · cross-module feature → Opus 5.5 medium · migration → Opus 5.5 high · large refactor, intermittent bug, concurrency, security audit, distributed architecture → Opus 5.5 max |
@@ -88,6 +111,8 @@ Pick the model yourself any time by adding `@haiku`, `@sonnet`, `@opus`, `@opus-
 | 🏠 Everyday life | 4 | recipes → Haiku 4.5 · travel, parenting → Sonnet 5 medium |
 | 💬 Chat and feelings | 3 | greetings → Haiku 4.5 · relationships → Sonnet 5 medium |
 | 🗂️ Other | 2 | questions about the triage (answered by the desk) · unclear requests |
+
+</details>
 
 The domains are grounded in published studies of real usage: OpenAI / NBER *How People Use ChatGPT* (2025), Anthropic's Clio and Economic Index (2024–2026) and Microsoft's *Copilot Usage Report 2025*. Software development is split the finest because it is the biggest use of Claude and the core of Claude Code.
 
@@ -176,6 +201,10 @@ python3 skills/triage/scripts/gen_agents.py   # if you changed models, tiers or 
 python3 skills/triage/scripts/gen_docs.py     # refresh docs/taxonomy.md
 python3 -m unittest discover -s tests
 ```
+
+---
+
+If claude-triage saves you tokens or picks better than you would have, a ⭐ helps other Claude Code users find it.
 
 ## License
 

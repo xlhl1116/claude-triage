@@ -2,12 +2,17 @@
 
 # 🏥 claude-triage
 
-**Claude Code 的 AI 导诊台：由一个便宜的导诊模型读每条请求，从 120 个细类里认出它是哪类需求，再交给这类需求需要的精确型号和思考深度，并附一张讲清楚“为什么”的挂号单。**
+### 别再用 Opus 的价钱去改一个变量名。
+
+**Claude Code 的 AI 导诊台。** 由一个便宜的导诊模型读每条请求，从 120 个细类里认出它是哪类需求，再交给这类需求需要的模型和思考深度，并附一张讲清楚“为什么”的挂号单。
 
 [English](README.md) | 简体中文
 
 [![tests](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml/badge.svg)](https://github.com/xlhl1116/claude-triage/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![version](https://img.shields.io/badge/version-0.1.0-orange.svg)
+![python](https://img.shields.io/badge/python-3.9%2B-blue.svg)
+![no extra API key](https://img.shields.io/badge/extra%20API%20key-none-brightgreen.svg)
 
 </div>
 
@@ -31,6 +36,14 @@
 — 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max
 ```
 
+## 为什么需要它
+
+- **所有请求用同一个模型，怎么选都亏。** 一直开 Opus，改个错别字也按架构评审的价钱算；一直开 Haiku，线上死锁只能得到一个浅显的回答。
+- **你不该自己来判断。** 没人能提前知道一个问题该挂普通号还是专家号，导诊台根据你问的内容来判断。
+- **每个决定都看得见。** 每个回答都附一张挂号单：类别、命中的关键词、型号、思考深度和预估节省。加一个词（`@opus-max`）就能推翻它。
+
+> 🧪 **早期版本（v0.1）。** 规则引擎、49 个测试和分诊回归检查全部通过，但插件在 Claude Code 里的实际使用还很少。非常欢迎提交分错科的例子和 bug。
+
 ## 安装
 
 ```text
@@ -39,6 +52,13 @@
 ```
 
 重启 Claude Code 后，**主会话就是导诊台**，像平时一样提问即可。
+
+**想先看看分诊效果？** 规则引擎是纯 Python，没有任何依赖：
+
+```bash
+git clone https://github.com/xlhl1116/claude-triage && cd claude-triage
+echo "这段 Go 代码在高并发下会死锁，线上已经出现两次" | python3 skills/triage/scripts/triage.py --format slip
+```
 
 ## 工作原理
 
@@ -69,6 +89,9 @@
 
 ## 分类表
 
+<details>
+<summary><b>17 个大类，120 个细类</b>（点击展开）</summary>
+
 | 大类 | 细类数 | 示例 → 默认模型 |
 |---|---:|---|
 | 💻 软件开发 | 40 | 改名 / 格式化 → Haiku 4.5 · UI 组件 → Sonnet 5 medium · 跨模块功能 → Opus 5.5 medium · 框架迁移 → Opus 5.5 high · 大型重构、偶发 bug、并发、安全审计、分布式架构 → Opus 5.5 max |
@@ -88,6 +111,8 @@
 | 🏠 生活 | 4 | 菜谱 → Haiku 4.5 · 旅行、育儿 → Sonnet 5 medium |
 | 💬 闲聊与情感 | 3 | 寒暄 → Haiku 4.5 · 情感关系 → Sonnet 5 medium |
 | 🗂️ 其他 | 2 | 询问分诊本身（导诊台直接回答） · 需求不清 |
+
+</details>
 
 大类的划分参考了公开的真实使用研究：OpenAI / NBER《How People Use ChatGPT》（2025）、Anthropic 的 Clio 和 Economic Index（2024–2026）、Microsoft《Copilot Usage Report 2025》。软件开发是 Claude 最主要的用途，也是 Claude Code 的核心场景，所以分得最细。
 
@@ -176,6 +201,10 @@ python3 skills/triage/scripts/gen_agents.py   # 改了型号、档位或工具�
 python3 skills/triage/scripts/gen_docs.py     # 刷新 docs/taxonomy.md
 python3 -m unittest discover -s tests
 ```
+
+---
+
+如果 claude-triage 帮你省了 token，或者比你自己选得更准，点个 ⭐ 能让更多 Claude Code 用户看到它。
 
 ## 许可证
 
