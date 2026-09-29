@@ -178,7 +178,7 @@
             "\\bsmall change\\b",
             "\\badd (a|an) (parameter|argument)\\b",
             "函数(里|中|内)的?",
-            "边界(条件)?|差一错误|\boff-by-one\b",
+            "边界(条件)?|差一错误|\\boff-by-one\\b",
             "\\bin (\\w+\\(\\)|the \\w+ function|this function)\\b.{0,20}\\b(make it|change it|also|so that)\\b",
             "\\bmake (\\w+\\(\\)|the \\w+ function|this function) (also )?(accept|handle|return|support|skip|ignore)\\b",
             "\\b(change|modify|update) (\\w+\\(\\)|the \\w+ function|this function) (so|to)\\b"
@@ -279,7 +279,7 @@
             "\\bbootstrap (a|the|new) (project|app)",
             "\\bfrom scratch\\b",
             "\\bnew project\\b",
-            "(项目|工程)骨架|\bboilerplate\b|\bstarter (project|template|kit)\b|\b(bootstrap|set up|spin up|create) (a )?new \\w+ (project|app|service|repo)\b",
+            "(项目|工程)骨架|\\bboilerplate\\b|\\bstarter (project|template|kit)\\b|\\b(bootstrap|set up|spin up|create) (a )?new \\w+ (project|app|service|repo)\\b",
             "\\b(set up|setup|start|spin up|create|kick off|initiali[sz]e) (a )?(brand[- ])?new (\\w+ ){0,3}(project|app|repo|service|api|site|monorepo)\\b",
             "\\bboilerplate\\b|\\bstarter (template|project|kit)\\b|\\bproject skeleton\\b"
           ],

@@ -241,6 +241,16 @@ class DeskGuard(unittest.TestCase):
         self.assertEqual(denied["hookSpecificOutput"]["permissionDecision"], "deny")
         self.assertIsNone(self.bash("grep -n detect_lang tests/test_triage.py", agent="claude-triage:triage-t3-code"))
 
+    def test_desk_must_name_the_executor_as_subagent_type(self):
+        def dispatch(tool_input, agent=self.DESK):
+            return self.hook({"hook_event_name": "PreToolUse", "agent_type": agent, "tool_name": "Agent",
+                              "tool_input": {"prompt": "x", **tool_input}})
+        denied = dispatch({"agent": "claude-triage:triage-t3-read"})
+        self.assertEqual(denied["hookSpecificOutput"]["permissionDecision"], "deny")
+        self.assertIn("subagent_type", denied["hookSpecificOutput"]["permissionDecisionReason"])
+        self.assertIsNone(dispatch({"subagent_type": "claude-triage:triage-t3-read"}))
+        self.assertIsNone(dispatch({}, agent="claude-triage:triage-t3-code"))
+
     def stop(self, entries, **extra):
         with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False, encoding="utf-8") as f:
             for e in entries:

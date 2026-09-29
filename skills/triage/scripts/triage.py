@@ -373,8 +373,8 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
                    "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
                    f"{json.dumps(brief)}\n\n"
                    "The rules found no signal in this request, so this slip has no category and no executor yet. "
-                   "Pick the catalogue category that fits what the user wants done, and get its routing (slip, "
-                   f"executor, footer) with: {rerun}\n"
+                   "Pick the catalogue category that fits what the user wants done, then run this command yourself "
+                   f"(not the claude-triage skill) to get its slip, executor and footer: {rerun}\n"
                    f"Pick {tax['_fallback']['id']} only if a reasonable reader could not tell what the user wants.\n"
                    "</triage-slip>")
         return {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": context}}
@@ -401,6 +401,20 @@ def hook_bash(event: dict) -> dict | None:
                                     "slip's executor with the Agent tool; it can read and search the repo."}}
 
 
+def hook_dispatch(event: dict) -> dict | None:
+    """PreToolUse on Agent: the desk tends to pass the slip's executor as `agent`, which the Agent tool
+    does not take, so the request would go to a default agent on the wrong model."""
+    tool_input = event.get("tool_input") or {}
+    if not is_desk(event) or tool_input.get("subagent_type"):
+        return None
+    named = tool_input.get("agent")
+    return {"hookSpecificOutput": {
+        "hookEventName": "PreToolUse", "permissionDecision": "deny",
+        "permissionDecisionReason": "Name the executor in `subagent_type`"
+                                    + (f" (\"{named}\"), not `agent`" if named else ", the slip's `agent`")
+                                    + ", and dispatch again with the same prompt."}}
+
+
 def hook_stop(event: dict, rules: dict, tax: dict, providers: dict, provider: str) -> dict | None:
     """Stop: the desk may not end a turn that answered a request without dispatching it."""
     if not is_desk(event) or event.get("stop_hook_active") or not event.get("transcript_path"):
@@ -419,7 +433,7 @@ def hook_stop(event: dict, rules: dict, tax: dict, providers: dict, provider: st
 
 
 def hook_main(rules_path: Path, taxonomy_path: Path, providers_path: Path) -> int:
-    """Claude Code hooks for the triage desk (UserPromptSubmit, PreToolUse on Bash, Stop).
+    """Claude Code hooks for the triage desk (UserPromptSubmit, PreToolUse on Bash and Agent, Stop).
 
     Never breaks the session: any problem means no output, and Claude Code carries on as usual.
     """
@@ -429,7 +443,7 @@ def hook_main(rules_path: Path, taxonomy_path: Path, providers_path: Path) -> in
         event = json.loads(sys.stdin.read() or "{}")
         name = event.get("hook_event_name", "UserPromptSubmit")
         if name == "PreToolUse":
-            out = hook_bash(event)
+            out = hook_dispatch(event) if event.get("tool_name") in DISPATCH_TOOLS else hook_bash(event)
         else:
             rules, tax, providers = load_rules(rules_path), load_taxonomy(taxonomy_path), load_providers(providers_path)
             provider = os.environ.get("CLAUDE_TRIAGE_PROVIDER") or detect_provider(providers)
