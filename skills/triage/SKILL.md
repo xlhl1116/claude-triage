@@ -47,6 +47,6 @@ Dispatch with the Agent tool to the slip's `agent` (for Claude: `claude-triage:t
 
 ## 5. Hand back / 回诊
 
-- Relay the executor's answer faithfully and completely.
+- Relay the executor's answer faithfully and completely: paste it verbatim, however long. The user cannot see the executor's output, only what you write, so never summarize it or refer to it as "above".
 - If it starts with `TRIAGE_ESCALATE:`, tell the user in one line and dispatch once to the next stronger model with the same tool profile (the next tier up in the agent name), at most two transfers.
 - End with the JSON's `footer` line from the run you dispatched with (the `--category` rerun if you re-routed), copied verbatim, e.g. `— 💻 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max`. Never write it yourself.

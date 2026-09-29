@@ -262,6 +262,47 @@ class DeskGuard(unittest.TestCase):
         self.assertIsNone(self.stop([self.user("hi"), self.assistant("Agent"), self.user(notice), self.assistant()]))
         self.assertIsNone(self.stop([self.user("hi"), self.assistant()], stop_hook_active=True))
 
+    @staticmethod
+    def dispatch(tool_id="t1"):
+        return {"type": "assistant", "message": {"role": "assistant", "content": [
+            {"type": "text", "text": "🏥 分诊挂号单 …"},
+            {"type": "tool_use", "id": tool_id, "name": "Agent", "input": {"subagent_type": "claude-triage:triage-t7-read"}}]}}
+
+    @staticmethod
+    def result(text, tool_id="t1"):
+        return {"type": "user", "message": {"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": tool_id, "content": [{"type": "text", "text": text}]}]}}
+
+    @staticmethod
+    def said(text):
+        return {"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": text}]}}
+
+    def test_stop_blocks_a_summarised_relay(self):
+        # Seen in a real run: Opus returned a 23,000-character design, the desk relayed a 700-character summary.
+        answer = "设计方案：" + "分片、租约、时间轮。" * 400
+        out = self.stop([self.user("设计一个支持百万 QPS 的分布式任务调度系统"), self.dispatch(), self.result(answer),
+                         self.said("以上是 Claude Opus 5.5 的设计方案，要点如下：分片、租约。")])
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("verbatim", out["reason"])
+        self.assertIn(f"{len(answer):,}", out["reason"])
+
+    def test_stop_allows_a_full_relay_and_short_answers(self):
+        answer = "设计方案：" + "分片、租约、时间轮。" * 400
+        full = [self.user("设计一个分布式任务调度系统"), self.dispatch(), self.result(answer), self.said(answer + "\n— footer")]
+        self.assertIsNone(self.stop(full))
+        short = [self.user("把这句话翻译成英文：你好"), self.dispatch(), self.result("Hello."), self.said("Hello.\n— footer")]
+        self.assertIsNone(self.stop(short))
+
+    def test_stop_checks_background_results_too(self):
+        answer = "x" * 5000
+        notice = f"<task-notification><status>completed</status><result>{answer}</result></task-notification>"
+        launched = self.result("Async agent launched successfully. agentId: abc")
+        out = self.stop([self.user("设计一个分布式任务调度系统"), self.dispatch(), launched, self.said("正在处理，完成后通知你。"),
+                         self.user(notice), self.said("方案已完成，要点：……")])
+        self.assertEqual(out["decision"], "block")
+        self.assertIsNone(self.stop([self.user("设计一个分布式任务调度系统"), self.dispatch(), launched,
+                                     self.user(notice), self.said(answer)]))
+
     def test_stop_ignores_other_agents(self):
         out = self.hook({"hook_event_name": "Stop", "agent_type": "general-purpose", "transcript_path": "/nonexistent"})
         self.assertIsNone(out)

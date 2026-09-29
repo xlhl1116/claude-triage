@@ -357,6 +357,55 @@ def last_request(transcript: Path) -> tuple[str | None, bool]:
     return prompt, dispatched
 
 
+RELAY_MIN_CHARS = 1500   # answers shorter than this are never flagged
+RELAY_MIN_RATIO = 0.5    # the desk must pass on at least this share of the executor's answer
+
+
+def _text(content) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "\n".join(c.get("text", "") for c in content if isinstance(c, dict))
+    return ""
+
+
+def relay_gap(transcript: Path) -> tuple[int, int] | None:
+    """(answer chars, relayed chars) when the desk passed on much less of the executor's latest
+    answer than it received. The user never sees an executor's output, only what the desk writes."""
+    answer, relayed, dispatch_ids = None, 0, set()
+    with open(transcript, encoding="utf-8") as f:
+        for line in f:
+            try:
+                e = json.loads(line)
+            except ValueError:
+                continue
+            content = (e.get("message") or {}).get("content")
+            if e.get("type") == "assistant" and isinstance(content, list):
+                for c in content:
+                    if c.get("type") == "tool_use" and c.get("name") in DISPATCH_TOOLS:
+                        dispatch_ids.add(c.get("id"))
+                    elif c.get("type") == "text" and answer is not None:
+                        relayed += len(c.get("text", ""))
+            elif e.get("type") == "user":
+                # foreground: the Agent tool result; background: a <task-notification> prompt
+                if isinstance(content, list):
+                    for c in content:
+                        if isinstance(c, dict) and c.get("type") == "tool_result" \
+                                and c.get("tool_use_id") in dispatch_ids:
+                            text = _text(c.get("content"))
+                            if not text.lstrip().startswith("Async agent launched"):
+                                answer, relayed = text, 0
+                elif isinstance(content, str) and content.lstrip().startswith("<task-notification>") \
+                        and "<result>" in content:
+                    answer, relayed = content.split("<result>", 1)[1].split("</result>", 1)[0], 0
+                elif isinstance(content, str) and not content.lstrip().startswith(("<", "/")) \
+                        and not e.get("isMeta"):
+                    answer, relayed = None, 0  # a new user request starts a new round
+    if answer is None or len(answer) < RELAY_MIN_CHARS or relayed >= RELAY_MIN_RATIO * len(answer):
+        return None
+    return len(answer), relayed
+
+
 def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: str) -> dict | None:
     """UserPromptSubmit: attach a <triage-slip> for the triage desk to every prompt."""
     prompt = event.get("prompt", "")
@@ -373,6 +422,10 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
               "from what the user wants done.\n") if r["confidence"] == "low" else ""
     context = ("<triage-slip>\n"
                "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
+               "Desk: begin your reply by showing the user the rendered slip below (re-routed: the new one), "
+               "before you dispatch. The user must see it every time, even for the simplest request. "
+               "The user cannot see the executor's output: paste its answer to them verbatim and in full, "
+               "never a summary.\n"
                f"{json.dumps(brief, ensure_ascii=False)}\n\n{render_slip(r, rules, r['lang'])}\n\n"
                f"{unsure}To route under a different category: {rerun}\n"
                "</triage-slip>")
@@ -395,8 +448,17 @@ def hook_stop(event: dict, rules: dict, tax: dict, providers: dict, provider: st
     if not is_desk(event) or event.get("stop_hook_active") or not event.get("transcript_path"):
         return None
     prompt, dispatched = last_request(Path(event["transcript_path"]))
-    if prompt is None or dispatched:
+    if prompt is None:
         return None
+    if dispatched:
+        gap = relay_gap(Path(event["transcript_path"]))
+        if gap is None:
+            return None
+        return {"decision": "block",
+                "reason": f"The user cannot see the executor's output; they only see what you write. The executor "
+                          f"answered with {gap[0]:,} characters and you passed on {gap[1]:,}. Paste the executor's "
+                          "complete answer verbatim now: do not summarize it, shorten it, or refer to it as 'above'. "
+                          "Then end with the slip's footer."}
     r = triage(prompt, rules, tax, providers, provider)
     if r["handler"] == "desk" or "agent" not in r:
         return None
