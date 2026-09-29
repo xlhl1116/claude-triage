@@ -363,10 +363,23 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
     if not prompt.strip() or prompt.lstrip().startswith(("/", "<task-notification>")):
         return None
     r = triage(prompt, rules, tax, providers, provider)
-    brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
-                                   "model_name", "effort", "tier", "guidance", "provider", "footer")}
     rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
              "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
+    if r["category"] == tax["_fallback"]["id"] and not r["keywords"] and not r["override"]:
+        # No keyword matched at all. Handing the desk the fallback executor here made it keep the
+        # fallback for requests it could have placed, so it has to pick a category itself.
+        brief = {"category": None, "confidence": "none", "agent": None, "provider": provider}
+        context = ("<triage-slip>\n"
+                   "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
+                   f"{json.dumps(brief)}\n\n"
+                   "The rules found no signal in this request, so this slip has no category and no executor yet. "
+                   "Pick the catalogue category that fits what the user wants done, and get its routing (slip, "
+                   f"executor, footer) with: {rerun}\n"
+                   f"Pick {tax['_fallback']['id']} only if a reasonable reader could not tell what the user wants.\n"
+                   "</triage-slip>")
+        return {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": context}}
+    brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
+                                   "model_name", "effort", "tier", "guidance", "provider", "footer")}
     unsure = ("The rules could not place this request. That does not make it unclear: decide the category "
               "from what the user wants done.\n") if r["confidence"] == "low" else ""
     context = ("<triage-slip>\n"

@@ -175,8 +175,16 @@ class Hook(unittest.TestCase):
 
     def test_hook_tells_desk_to_decide_uncertain_slips(self):
         note = "That does not make it unclear"
-        self.assertIn(note, self.context("hey there, can you split this function up")["additionalContext"])
+        self.assertIn(note, self.context("review my resume")["additionalContext"])
         self.assertNotIn(note, self.context("这段 Go 代码在高并发下会死锁")["additionalContext"])
+
+    def test_hook_leaves_signal_less_requests_for_the_desk_to_place(self):
+        text = self.context("can you sort out the thing from yesterday")["additionalContext"]
+        self.assertIn('"category": null', text)
+        self.assertIn("--category <category-id>", text)
+        self.assertNotIn("triage-t3-read", text)
+        manual = self.context("@opus zxqv")["additionalContext"]
+        self.assertIn('"agent": "claude-triage:triage-t5-', manual)
 
     def test_hook_skips_slash_commands_and_bad_input(self):
         for stdin in (json.dumps({"prompt": "/help"}), "not json", json.dumps({"prompt": "  "})):

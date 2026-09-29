@@ -22,7 +22,11 @@
             "\\bexplain (this|the|what this) (code|snippet|function)",
             "\\bwhat does this (code|function|snippet) do",
             "\\bwhat does this (\\w+ ){0,2}(do|mean)\\b|\\bwalk me through (what )?(this|the) (\\w+ ){0,3}(code|snippet|function|script|query|regex|line)",
-            "这(行|条|段).{0,40}(是干嘛|干嘛的|做什么|干什么|什么作用)"
+            "这(行|条|段).{0,40}(是干嘛|干嘛的|做什么|干什么|什么作用)",
+            "\\bwhat (is|does) (this|the following) (\\w+ ){0,2}(code|snippet|function|script|query|line|command|expression)\\b.{0,20}\\b(do|doing|mean)\\b",
+            "\\bexplain (what )?(this|the following) (\\w+ ){0,2}(does|code|snippet|script|query|command|line)\\b",
+            "\\b(don'?t|do not|can'?t) understand (this|the following|what this) (\\w+ ){0,2}(code|snippet|function|script|query|decorator|regex|line)\\b",
+            "\\bline by line\\b"
           ],
           "example": "解释一下这段代码在做什么：```python\nprint(sum(x * x for x in range(10)))\n```"
         },
@@ -37,7 +41,12 @@
             "(报错|错误|异常|error|exception|warning).{0,30}(什么意思|是啥意思|啥意思|\\bmean)",
             "什么意思|是啥意思",
             "(这个|该|这条)(报错|错误|异常)",
-            "\\b(segfault|segmentation fault|panic|stack overflow|core dumped)\\b.{0,40}\\bmean"
+            "\\b(segfault|segmentation fault|panic|stack overflow|core dumped)\\b.{0,40}\\bmean",
+            "\\bwhat does (this|the|that) (error|exception|warning|message)\\b.{0,20}\\bmean\\b",
+            "\\b(getting|got|seeing|keep getting)\\b.{0,15}['\\\"`].{3,}['\\\"`].{0,60}\\bwhat does (it|this|that) mean\\b",
+            "\\bwhat does ['\\\"`].{3,}['\\\"`].{0,40}\\bmean\\b",
+            "\\b(error|exception|warning)\\b.{0,60}\\b(what does (it|this|that) mean|what is (it|this|that) (telling|saying))\\b",
+            "\\bwhy (am i|do i keep|is it) getting\\b"
           ],
           "example": "TypeError: 'NoneType' object is not subscriptable 这个报错是什么意思？"
         },
@@ -55,7 +64,11 @@
             "\\busage of\\b",
             "什么时候用哪个|区别.{0,10}(什么时候|何时|该)用",
             "\\bwhen (should i|to) use\\b|\\b(right|correct|proper|best) way to use\\b",
-            "\\bhow (do i|to|can i|should i) .{0,50}\\b(with|in|using) (the )?(\\w+ ){1,3}(library|package|module|sdk|framework)\\b"
+            "\\bhow (do i|to|can i|should i) .{0,50}\\b(with|in|using) (the )?(\\w+ ){1,3}(library|package|module|sdk|framework)\\b",
+            "\\bhow (do i|do you|to|can i) .{0,60}\\b(using|with|in) (python )?(requests|pandas|numpy|boto3|axios|fetch|express|django|flask|fastapi|react|lodash|spring|sqlalchemy|prisma|redux)\\b",
+            "\\bwhat'?s the (right|correct|proper|idiomatic|best) way to\\b.{0,60}\\b(in|with|using) \\w+",
+            "\\b(which|what) (method|function|parameter|argument|option|flag) (do i|should i|to) (use|pass|call)\\b",
+            "\\bhow (do i|to) (make|send) (a|an) (get|post|put|http|api) request\\b"
           ],
           "example": "pandas 的 merge 函数怎么用？"
         },
@@ -77,7 +90,12 @@
             "(接手|刚接|新接|刚加入).{0,12}(项目|代码|仓库|系统)",
             "(理清|理一下|熟悉).{0,10}(项目|仓库|代码库|结构)",
             "(仓库|项目|代码库)的?(整体)?(结构|架构|目录)",
-            "\\b(tour|overview) of (this|the|our) (repo|codebase|project|code)\\b|\\bhow (the|this|our) (repo|codebase|code) is (organized|structured)\\b|\\bjust joined the team\\b"
+            "\\b(tour|overview) of (this|the|our) (repo|codebase|project|code)\\b|\\bhow (the|this|our) (repo|codebase|code) is (organized|structured)\\b|\\bjust joined the team\\b",
+            "\\bhow (does|do) (this|the|our) (repo|codebase|project|app|service|module)\\b.{0,30}\\bwork\\b",
+            "\\bwhere (in (this|the|our) (repo|codebase|project|code))?.{0,40}\\b(is|are|does|do)\\b.{0,40}\\b(handled|defined|implemented|checked|called|configured)\\b",
+            "\\btrace (how|where|the (flow|path|call))\\b|\\btrace it\\b",
+            "\\bhow (a|the|each) request flows\\b|\\bhow (is|are) (this|the) (repo|codebase|project|code) (laid out|organized|structured)\\b",
+            "\\bnew to (this|the) (codebase|repo|project|team)\\b"
           ],
           "example": "帮我梳理一下这个项目的整体架构和主要调用链"
         },
@@ -97,7 +115,11 @@
             "\\breformat\\b",
             "\\bformat (the|this) (code|file|json|yaml)",
             "\\badd (some )?comments?\\b",
-            "\\bpretty-?print|\\bconvert (this|it) (to|into) (valid )?(json|yaml|csv)\\b|转(成|为)\\s*(json|yaml|csv)"
+            "\\bpretty-?print|\\bconvert (this|it) (to|into) (valid )?(json|yaml|csv)\\b|转(成|为)\\s*(json|yaml|csv)",
+            "\\badd (\\w+ ){0,2}(docstrings?|comments|type hints|jsdoc)\\b",
+            "\\b(fix|clean up) (the )?(indentation|formatting|whitespace|imports)\\b",
+            "\\b(sort|organize) (the )?imports\\b|\\brun (black|prettier|gofmt|rustfmt|eslint --fix)\\b",
+            "\\b(more )?(meaningful|descriptive|better) (variable |function )?names?\\b"
           ],
           "example": "把变量 usr_nm 重命名为 username"
         },
@@ -112,7 +134,10 @@
             "改(一下)?.{0,4}(配置|常量|文案|端口|超时|版本号|环境变量)",
             "(配置|config|端口|超时时间|常量|文案).{0,12}改(成|为)",
             "\\bchange the (port|timeout|config|constant|copy|text)\\b",
-            "\\bbump (the )?version\\b"
+            "\\bbump (the )?version\\b",
+            "\\b(bump|change|set|update|increase|raise|lower|decrease) (the )?(default )?(\\w+ ){0,2}(timeout|port|limit|constant|env(ironment)? variable|setting|flag|url|version|retries|max|threshold)\\b",
+            "\\b(config|settings)\\.(ya?ml|json|toml|ini)\\b",
+            "\\bchange (the )?(button|label|placeholder|error message|heading|title) (text|copy|to)\\b"
           ],
           "example": "把配置里的端口从 8080 改成 9090"
         },
@@ -129,7 +154,10 @@
             "(bash|shell|awk|sed|grep|find|终端) ?(命令|command)",
             "\\bregex\\b",
             "\\bregular expression",
-            "\\bone-?liner\\b"
+            "\\bone-?liner\\b",
+            "\\b(bash|shell|zsh|powershell|awk|sed|grep|jq|find) (command|one-?liner|pipeline)\\b",
+            "\\b(a|one) (single )?command (to|that)\\b",
+            "\\bpattern (that|to) match(es)?\\b"
           ],
           "example": "写个正则匹配 5 位数字的邮编"
         },
@@ -150,7 +178,10 @@
             "\\bsmall change\\b",
             "\\badd (a|an) (parameter|argument)\\b",
             "函数(里|中|内)的?",
-            "边界(条件)?|差一错误|\boff-by-one\b"
+            "边界(条件)?|差一错误|\boff-by-one\b",
+            "\\bin (\\w+\\(\\)|the \\w+ function|this function)\\b.{0,20}\\b(make it|change it|also|so that)\\b",
+            "\\bmake (\\w+\\(\\)|the \\w+ function|this function) (also )?(accept|handle|return|support|skip|ignore)\\b",
+            "\\b(change|modify|update) (\\w+\\(\\)|the \\w+ function|this function) (so|to)\\b"
           ],
           "example": "在 parse 函数里加个参数，允许传入默认值"
         },
@@ -165,7 +196,10 @@
             "写(一个|个)?.{0,10}(函数|脚本|方法|小工具)",
             "实现(一个|个)?.{0,6}(函数|方法)",
             "\\bwrite (a|an) (\\w+ ){0,2}(function|script|method|cli)\\b",
-            "实现(一个|个)?.{0,16}(缓存|队列|类|工具|解析器|限流器|装饰器)"
+            "实现(一个|个)?.{0,16}(缓存|队列|类|工具|解析器|限流器|装饰器)",
+            "\\b(write|give me|create|make) (me )?(a|an) (small |simple |quick )?(python |node |bash |shell |js |javascript |go |rust |powershell )?(function|script|program|helper|cli|utility)\\b",
+            "\\b(python|node|bash|shell|powershell) script (that|to)\\b|\\b(python|js|javascript|typescript|bash|go) helper\\b|\\bi need (a|an) (\\w+ ){0,2}(function|script|helper) (that|to)\\b",
+            "\\bautomate (renaming|downloading|sending|resizing|converting|backing up|merging|cleaning)\\b"
           ],
           "example": "用 Python 写一个函数，读取 CSV 并按日期分组求和"
         },
@@ -181,7 +215,9 @@
             "(组件|页面|表单|弹窗|导航栏).{0,10}(实现|开发)",
             "\\b(react|vue|svelte|tailwind|css|jsx|tsx)\\b",
             "\\bcomponent\\b",
-            "\\blanding page\\b"
+            "\\blanding page\\b",
+            "\\b(dropdown|modal|navbar|sidebar|date ?picker|carousel|tooltip|toggle|tabs component|form component|button component|autocomplete)\\b",
+            "\\b(build|make|create) (a|an) (responsive |reusable |accessible )?(ui|front-?end) (widget|element|component)\\b"
           ],
           "example": "用 React 写一个带搜索框的下拉选择组件"
         },
@@ -197,7 +233,10 @@
             "新增(一个)?接口",
             "\\badd (a )?(feature|endpoint) to (the|this|our) (module|file|class|service)",
             "\\bendpoint\\b",
-            "\\badd (a |an )?\\w+ (feature|endpoint|api)\\b|加(一个|个)?.{0,12}(功能)$"
+            "\\badd (a |an )?\\w+ (feature|endpoint|api)\\b|加(一个|个)?.{0,12}(功能)$",
+            "\\badd (\\w+ ){0,3}(to|in) (the|our|this) (\\w+ ){0,2}(service|module|endpoint|api|controller|handler|backend|app)\\b",
+            "\\b(implement|add) (rate limiting|pagination|caching|search|filtering|sorting|export|retries|logging|webhooks?)\\b",
+            "\\bnew (api )?endpoint\\b"
           ],
           "example": "给 user 模块加一个修改密码的接口"
         },
@@ -218,7 +257,10 @@
             "\\bend-to-end feature\\b",
             "\\bend[- ]to[- ]end\\b(?!\\s*tests?)",
             "\\b(across|touch(es|ing)?|spans?|spanning) (several|multiple|many|the) (services|modules|layers|repos|components)\\b",
-            "\\b(frontend|backend|api|service|dashboard|database|mobile app)\\b.{0,30},.{0,30}\\b(and|&)\\b.{0,30}\\b(frontend|backend|api|service|dashboard|database|mobile app)\\b"
+            "\\b(frontend|backend|api|service|dashboard|database|mobile app)\\b.{0,30},.{0,30}\\b(and|&)\\b.{0,30}\\b(frontend|backend|api|service|dashboard|database|mobile app)\\b",
+            "\\bmulti-?tenan(t|cy)\\b",
+            "\\b(every|all) (tables?|services|layers)\\b.{0,60}\\b(api|ui|frontend|backend|admin)\\b",
+            "\\b(the )?(database|db|schema)\\b.{0,40}\\b(api|backend)\\b.{0,40}\\b(ui|frontend|front-?end|client)\\b"
           ],
           "example": "做一个导出订单的功能，前端加按钮，后端加接口和异步任务"
         },
@@ -237,7 +279,9 @@
             "\\bbootstrap (a|the|new) (project|app)",
             "\\bfrom scratch\\b",
             "\\bnew project\\b",
-            "(项目|工程)骨架|\bboilerplate\b|\bstarter (project|template|kit)\b|\b(bootstrap|set up|spin up|create) (a )?new \\w+ (project|app|service|repo)\b"
+            "(项目|工程)骨架|\bboilerplate\b|\bstarter (project|template|kit)\b|\b(bootstrap|set up|spin up|create) (a )?new \\w+ (project|app|service|repo)\b",
+            "\\b(set up|setup|start|spin up|create|kick off|initiali[sz]e) (a )?(brand[- ])?new (\\w+ ){0,3}(project|app|repo|service|api|site|monorepo)\\b",
+            "\\bboilerplate\\b|\\bstarter (template|project|kit)\\b|\\bproject skeleton\\b"
           ],
           "example": "从零搭建一个 Next.js + Prisma 的项目脚手架"
         },
@@ -257,7 +301,9 @@
             "\\bnot sure how to (build|implement|approach|design)",
             "\\bhow should i (build|implement|approach|structure)",
             "\\bsomehow\\b|\\bsome kind of\\b|\\bnot sure what\\b|\\bno idea what (to|we should) build\\b",
-            "没想好.{0,6}(做什么|具体)|具体(做什么|怎么做)还没"
+            "没想好.{0,6}(做什么|具体)|具体(做什么|怎么做)还没",
+            "\\b(make|improve) (the|our|this) (app|product|system|site) (better|smarter|more (useful|intelligent|engaging))\\b",
+            "\\b(boss|manager|client|pm|stakeholders?) (wants|asked|says?)\\b.{0,60}\\b(not sure|no idea|don'?t know|vague|something)\\b"
           ],
           "example": "我想做一个类似 Notion 的协作功能，但还没想清楚该怎么实现"
         },
@@ -276,7 +322,8 @@
             "大模型|\\bLLM\\b",
             "(Claude|OpenAI|GPT|DeepSeek|模型) ?API",
             "\\bMCP\\b|function calling|tool use",
-            "微调|fine-?tun"
+            "微调|fine-?tun",
+            "\\b(rag|retrieval[- ]augmented|embeddings?|vector (db|database|store|search)|langchain|llamaindex|llm|chatbot|ai agent|openai api|claude api|anthropic api|fine-?tun(e|ing)|prompt chain)\\b"
           ],
           "example": "帮我用 Claude API 做一个带 RAG 检索的问答 Agent"
         },
@@ -294,7 +341,10 @@
             "跑不起来|编译(失败|不过)|启动失败",
             "修复|\\bfix\\b",
             "\\b(throws?|crash(es|ed)?|fails? with)\\b",
-            "\\w+Error:"
+            "\\w+Error:",
+            "\\b(exception|error|errno|exit code)\\b.{0,60}\\bhow (do i|can i|to) fix\\b",
+            "\\b(fails?|failing|crash(es|ing)?|breaks?) (on|at|during|when)\\b.{0,40}\\b(start ?up|build|compile|install|import|deploy|launch|run)\\b",
+            "\\b(won'?t|doesn'?t|does not|will not) (compile|build|start|run|install|import)\\b"
           ],
           "example": "运行 npm test 报错 TypeError: Cannot read properties of undefined，帮我修复"
         },
@@ -313,7 +363,12 @@
             "\\bno error,? but\\b",
             "\\breturns? (the )?wrong\\b",
             "(也)?没(有)?报错|不报错|算错|算得不对|比(实际|预期)(的)?(少|多)|多算|少算",
-            "\\b(nothing|no) (errors?|exceptions?)\\b|\\bwithout (an |any )?(error|exception)s?\\b|\\b(applied|counted|charged) twice\\b"
+            "\\b(nothing|no) (errors?|exceptions?)\\b|\\bwithout (an |any )?(error|exception)s?\\b|\\b(applied|counted|charged) twice\\b",
+            "\\b(is|are|comes? out|ends? up|always|sometimes) (off by|wrong|incorrect|duplicated|missing)\\b",
+            "\\boff[- ]by[- ](one|a few|some)\\b",
+            "\\b(but|and) (nothing|no one|it never) (throws|errors|crashes|complains)\\b",
+            "\\b(doesn'?t|does not|isn'?t|is not) (add|sum|match|sort|count|calculate|compute) (up |correctly|properly|right)\\b",
+            "\\bgives? (the )?wrong\\b|\\bshows? (the )?wrong\\b|\\bduplicat(e|es|ed) (the )?(last|first|previous)\\b"
           ],
           "example": "这个函数没有报错，但算出来的折扣金额不对"
         },
@@ -330,7 +385,9 @@
             "\\bOOM\\b|out of memory",
             "\\bmemory leak|\\bleak(s|ing|ed)?\\b",
             "(句柄|连接|文件描述符).{0,6}(耗尽|打满|泄漏)",
-            "\\btoo many open files\\b|\\bfile descriptors?\\b|\\b(memory|heap|connections?|handles?) (keeps?|keep on) (growing|increasing|climbing)\\b"
+            "\\btoo many open files\\b|\\bfile descriptors?\\b|\\b(memory|heap|connections?|handles?) (keeps?|keep on) (growing|increasing|climbing)\\b",
+            "\\bmemory (keeps|grows|growing|climbs|climbing|increases|usage keeps)\\b|\\bkeeps? (growing|eating) (memory|ram)\\b",
+            "\\boom[- ]?killed\\b|\\bconnection pool (exhausted|runs? out)\\b"
           ],
           "example": "Node 服务内存一直涨，跑几天就 OOM"
         },
@@ -348,7 +405,10 @@
             "延迟(高|大|很高)|\\bp9[59]\\b",
             "吞吐",
             "\\blatency\\b|\\bslow\\b|\\bbottleneck",
-            "\\bprofil(e|ing)\\b|\\bthroughput\\b"
+            "\\bprofil(e|ing)\\b|\\bthroughput\\b",
+            "\\b(takes|taking) \\d+(\\.\\d+)? ?(s|sec|secs|seconds|minutes|min)\\b.{0,40}\\b(load|run|respond|finish|render|build|complete)\\b",
+            "\\b(speed (it |this )?up|make (it|this) faster|too slow|really slow|sluggish|laggy|high cpu|cpu (spikes|at 100))\\b",
+            "\\b(n\\+1|slow (query|queries|page|endpoint|startup))\\b"
           ],
           "example": "这个接口响应太慢了，p99 要 2 秒，帮我找瓶颈"
         },
@@ -367,7 +427,10 @@
             "(难以|无法|没法)?复现不了|难以复现",
             "\\bintermittent|\\bflaky\\b|\\bheisenbug\\b",
             "\\bonly (happens )?in production\\b|can'?t reproduce",
-            "根因|\\broot cause\\b"
+            "根因|\\broot cause\\b",
+            "\\b(only|just) (happens|occurs|shows up|fails)\\b.{0,30}\\b(in )?(prod|production|staging|on the server|under load)\\b",
+            "\\b(randomly|occasionally|sporadically|every (now and then|so often)|once in a while|at random)\\b.{0,80}\\b(fail|fails|error|errors|crash|crashes|timeout|times out|logged out|drop|drops|hang|hangs|500|502|503)\\b",
+            "\\b(can'?t|cannot|unable to) (repro|reproduce)\\b"
           ],
           "example": "线上服务偶发 502，本地复现不了，帮我找根因"
         },
@@ -386,7 +449,10 @@
             "\\brace condition|\\bdata race\\b",
             "\\bdeadlock",
             "\\bthread-?safe",
-            "\\bconcurren(cy|t)\\b"
+            "\\bconcurren(cy|t)\\b",
+            "\\b(two|multiple|several|concurrent) (requests|workers|threads|processes|users|jobs|consumers)\\b.{0,60}\\b(same|both|twice|overwrite|lose|lost|duplicate|clobber)\\b",
+            "\\b(processed|picked up|run|charged|executed|applied) twice\\b|\\blost update\\b|\\bdouble[- ](charge|booking|processing|spend)\\b",
+            "\\b(mutex|lock contention|atomic(ally)?|thread pool|goroutines?)\\b"
           ],
           "example": "这段 Go 代码在高并发下会死锁，帮我分析原因并修复"
         },
@@ -405,7 +471,10 @@
             "\\bclean ?up (this|the) (code|function)",
             "抽(成|出|离)",
             "\\brefactor(ing)?\\b",
-            "去掉.{0,6}嵌套|嵌套.{0,6}(太深|太多)"
+            "去掉.{0,6}嵌套|嵌套.{0,6}(太深|太多)",
+            "\\b(split|break) (it|this|the \\w+) (up )?into (smaller|separate|multiple) (functions|pieces|methods|parts)\\b",
+            "\\b(this|the) \\d+-line function\\b|\\b(clean up|simplify|tidy up|untangle) (this|the|my) (function|method|file|class|code)\\b",
+            "\\bwithout changing (its |the )?behaviou?r\\b"
           ],
           "example": "重构一下这个函数，去掉嵌套的 if，提高可读性"
         },
@@ -420,7 +489,9 @@
             "重构.{0,8}模块|模块.{0,8}重构",
             "(对外)?接口(保持)?不变",
             "\\brefactor (the|this) module",
-            "\\bwithout changing (the )?(interface|api|public api)"
+            "\\bwithout changing (the )?(interface|api|public api)",
+            "\\b(clean up|restructure|reorgani[sz]e|refactor|rework) (the )?(internals|inside) of\\b",
+            "\\bwithout changing (how|what) (\\w+ ){0,3}(call|use|see)s? it\\b|\\bkeep(ing)? (the )?(public )?(api|interface) (the same|unchanged|intact)\\b"
           ],
           "example": "把 payment 模块重构一下，对外接口保持不变"
         },
@@ -440,7 +511,10 @@
             "\\bupgrade (to|from)\\b",
             "\\bport (it|this|the \\w+) to\\b",
             "python ?2.{0,8}python ?3",
-            "\\bupgrade .{0,40}\\bto\\b|\\b(from|to) (angular|react|vue|python|node|java|typescript|javascript|django|rails|spring|php)\\s*\\d*\\b.{0,40}\\bto\\b|\\bmove (from|off) \\w+ to\\b|\\bconvert .{0,30}\\b(codebase|project|app) (to|into)\\b"
+            "\\bupgrade .{0,40}\\bto\\b|\\b(from|to) (angular|react|vue|python|node|java|typescript|javascript|django|rails|spring|php)\\s*\\d*\\b.{0,40}\\bto\\b|\\bmove (from|off) \\w+ to\\b|\\bconvert .{0,30}\\b(codebase|project|app) (to|into)\\b",
+            "\\b(move|moving|switch|switching|go|going) (our |the |this )?(\\w+ ){0,2}from \\w+( \\d+)? to \\w+",
+            "\\b(vue|angular|react|python|node|django|rails|spring|java|php|laravel|webpack|next\\.?js) \\d+(\\.\\d+)? to (vue|angular|react|python|node|django|rails|spring|java|php|laravel|vite|webpack|next\\.?js)? ?\\d+",
+            "\\bdeprecated\\b.{0,40}\\b(replace|upgrade|move off)\\b"
           ],
           "example": "把项目从 Vue 2 升级到 Vue 3"
         },
@@ -457,7 +531,8 @@
             "接口.{0,6}(重新设计|也要改|要变)",
             "\\blarge-?scale refactor|\\brearchitect",
             "\\brefactor .{0,60}(entire|whole) (codebase|project|system)",
-            "\\bacross (the )?(entire|whole)\\b|(整个|全部)(项目|代码库|系统)"
+            "\\bacross (the )?(entire|whole)\\b|(整个|全部)(项目|代码库|系统)",
+            "\\b(split|break) (up )?(the|our|this) monolith\\b|\\b(untangle|decouple) (the|our) (whole|entire) (codebase|system|app)\\b"
           ],
           "example": "对整个项目做大规模重构，拆分成几个独立的包，接口也要重新设计"
         },
@@ -473,7 +548,9 @@
             "接口(应该)?(怎么|如何)设计",
             "\\bAPI 设计\\b",
             "\\bdesign (the|an?) (api|interface|class|module|data structure|plugin system)",
-            "插件|扩展点|接口和数据结构"
+            "插件|扩展点|接口和数据结构",
+            "\\b(design|define|sketch) (the )?(api|interface|class hierarchy|types|data structures?|contract) (for|of)\\b",
+            "\\bhow should i (structure|design|model) (the|this|my) (class|classes|module|api|interface|types)\\b"
           ],
           "example": "帮我设计一下这个插件系统的接口和数据结构"
         },
@@ -492,7 +569,10 @@
             "\\bER ?图",
             "字段(怎么|如何)?设计",
             "数据模型",
-            "\\bdatabase design\\b|\\bdata model\\b"
+            "\\bdatabase design\\b|\\bdata model\\b",
+            "\\b(design|model|create) (the )?(database )?(tables|table structure|entities|er diagram|erd)\\b",
+            "\\b(many-to-many|one-to-many|foreign keys?|normali[sz](e|ation))\\b",
+            "\\bhow (should|do) i (model|store|structure)\\b.{0,50}\\b(in (the |a )?(database|db|postgres|mysql)|tables?)\\b"
           ],
           "example": "设计一个电商系统的数据库表结构"
         },
@@ -511,7 +591,9 @@
             "方案 ?[AB一二12]",
             "\\btrade-?offs?\\b",
             "\\bpros and cons\\b",
-            "\\bcompare (the )?(approaches|options|designs)\\b"
+            "\\bcompare (the )?(approaches|options|designs)\\b",
+            "\\bpoke holes\\b|\\bsanity[- ]check (our|my|this|the) (plan|design|approach|proposal)\\b|\\b(review|critique|evaluate) (our|my|this|the) (design|plan|approach|proposal|rfc)\\b",
+            "\\bwhat (could|might) go wrong with (this|our|my) (plan|design|approach)\\b"
           ],
           "example": "方案 A 用消息队列，方案 B 用定时任务，帮我评审一下优缺点"
         },
@@ -531,7 +613,10 @@
             "\\bsystem design\\b",
             "\\bdesign (a|an|the|our) (\\w+[ -]){0,3}(system|platform|architecture|backend)",
             "单体.{0,10}(拆|微服务)",
-            "整体架构|架构(图|方案)"
+            "整体架构|架构(图|方案)",
+            "\\b(split|break) (the |our )?(backend|app|system) into (micro)?services\\b|\\bmicroservices?\\b",
+            "\\bwhat (tech )?stack should (we|i) use\\b|\\b(tech|technology) stack\\b",
+            "\\bhow should (we|i) (architect|structure|design) (the|our|a|this) (backend|system|platform|app)\\b"
           ],
           "example": "设计一个在线教育平台的系统架构，并给出技术选型"
         },
@@ -547,12 +632,13 @@
             "高并发",
             "高可用",
             "(百万|千万|亿)级|\\bQPS\\b|日均.{0,8}(万|亿)|\\d+ ?亿次",
-            "容灾|多活|异地",
+            "容灾|多活|异地(多活|容灾|机房|部署)",
             "分片|分库分表",
             "一致性",
             "\\bdistributed\\b",
             "\\bhigh availability\\b|\\bfault-?toleran",
-            "\\bsharding\\b|\\breplication\\b|\\bconsensus\\b"
+            "\\bsharding\\b|\\breplication\\b|\\bconsensus\\b",
+            "\\b(multi-?region|active-?active|failover|leader election|eventual consistency|horizontal(ly)? scal(e|ing)|millions of (requests|users|qps)|\\d+k qps)\\b"
           ],
           "example": "设计一个支持百万 QPS 的分布式任务调度系统，保证高可用"
         },
@@ -570,7 +656,8 @@
             "覆盖率",
             "\\bunit tests?\\b",
             "\\btest cases?\\b",
-            "\\b(pytest|jest|vitest|junit)\\b"
+            "\\b(pytest|jest|vitest|junit)\\b",
+            "\\b(write|add) (some )?tests? (for|to cover)\\b|\\btest coverage\\b|\\bmock(s|ing)? (the|out)\\b"
           ],
           "example": "给 utils/date.ts 里的 formatDate 写单元测试"
         },
@@ -586,7 +673,8 @@
             "端到端",
             "\\be2e\\b",
             "\\bend-to-end tests?\\b|\\bintegration tests?\\b",
-            "\\b(playwright|cypress|selenium)\\b"
+            "\\b(playwright|cypress|selenium)\\b",
+            "\\b(test|tests|testing) the (whole|full|entire) (flow|stack|signup|checkout)\\b"
           ],
           "example": "用 Playwright 给登录流程写端到端测试"
         },
@@ -602,7 +690,8 @@
             "\\breview\\b",
             "\\bcode review\\b",
             "(看看|检查).{0,10}(函数|代码|实现).{0,6}(有没有|是否有|有什么)(问题|bug|隐患)",
-            "\\bPR\\b"
+            "\\bPR\\b",
+            "\\b(look over|look at|check) (my|this|the) (diff|pr|pull request|patch|changes|commit)\\b|\\bpull request\\b"
           ],
           "example": "帮我 review 一下这个 PR，就改了两个文件"
         },
@@ -639,7 +728,10 @@
             "渗透|\\bpentest",
             "威胁建模|\\bthreat model",
             "\\bsecurity (audit|review)\\b",
-            "\\bvulnerab"
+            "\\bvulnerab",
+            "\\b(xss|csrf|sql injection|ssrf|rce|path traversal|auth(entication)? bypass|privilege escalation|owasp|pentest|penetration test|exploit(able)?|attackers?)\\b",
+            "\\b(is|are) (this|my|our|the) (\\w+ ){0,3}(secure|safe from attack)\\b",
+            "\\b(secrets?|api keys?|credentials|passwords?|tokens?)\\b.{0,40}\\b(committed|leaked|exposed|hard-?coded|checked in)\\b"
           ],
           "example": "对整个代码库做一次安全审计，找出潜在漏洞"
         },
@@ -657,7 +749,9 @@
             "\\bselect\\b.{0,40}\\bfrom\\b",
             "\\b(mysql|postgres(ql)?|sqlite|oracle)\\b",
             "\\b(inner|left|right|outer|cross|full) join\\b|\\bjoin\\b.{0,30}\\bon\\b",
-            "\\bwrite (a|an|the) (\\w+ )?query\\b|\\bquery (that|to) (returns?|finds?|lists?|gets?|counts?)\\b|\\bgroup by\\b|查(询)?出.{0,10}(每个|所有|最高|最低|前\\s*\\d)"
+            "\\bwrite (a|an|the) (\\w+ )?query\\b|\\bquery (that|to) (returns?|finds?|lists?|gets?|counts?)\\b|\\bgroup by\\b|查(询)?出.{0,10}(每个|所有|最高|最低|前\\s*\\d)",
+            "\\b(write|give me) (a |the )?(query|queries)\\b|\\bgroup by\\b|\\border by\\b|\\bwindow function\\b",
+            "\\bquery (that|to) (returns?|finds?|gets?|lists?|counts?)\\b"
           ],
           "example": "写一条 SQL 查出每个用户最近一次下单的时间"
         },
@@ -674,7 +768,9 @@
             "部署|上线脚本",
             "\\bnginx\\b",
             "流水线",
-            "\\bterraform\\b|云服务器|服务器配置|运维"
+            "\\bterraform\\b|云服务器|服务器配置|运维",
+            "\\b(github actions|gitlab ci|ci/cd|ci pipeline|jenkins|terraform|ansible|aws|gcp|azure|ec2|s3 bucket|lambda|cloudformation|vercel|netlify|heroku|systemd|cron job)\\b",
+            "\\bdeploy(ing|ment)?\\b"
           ],
           "example": "写一个 GitHub Actions 流水线，自动跑测试并部署到服务器"
         },
@@ -691,7 +787,8 @@
             "\\brebase\\b|cherry-?pick",
             "提交记录|撤销.{0,6}(提交|commit)",
             "\\bmerge conflict",
-            "\\bcommit\\b"
+            "\\bcommit\\b",
+            "\\b(committed|pushed|merged) (to|into) (the )?(wrong|main|master|develop)\\b|\\b(undo|revert|squash|amend)\\b.{0,25}\\b(commits?|merge|push)\\b|\\bdetached head\\b|\\bforce[- ]push\\b"
           ],
           "example": "git 合并冲突了，怎么解决？"
         },
@@ -714,7 +811,10 @@
             "\\bparser\\b|\\bprecedence\\b|解析器|表达式求值|语法分析",
             "\\bsemaphore\\b|\\bconcurrently\\b|并发(数|控制|限制)",
             "(10\\^\\d|\\d{1,3}(,\\d{3})+|十万|百万).{0,40}(elements|integers|length|items|个元素|长度)|\\btime out\\b|会超时",
-            "\\basyncio\\b|\\basync\\b.{0,60}\\b(limit|semaphore|concurren)"
+            "\\basyncio\\b|\\basync\\b.{0,60}\\b(limit|semaphore|concurren)",
+            "\\b(longest|shortest|minimum|maximum) (common )?(substring|subsequence|subarray|path|spanning tree|window)\\b",
+            "\\b(two pointers|sliding window|binary search|bfs|dfs|dijkstra|topological sort|leetcode|backtracking|greedy)\\b",
+            "\\bin o\\((n|log n|n log n|1)\\)"
           ],
           "example": "用动态规划解最长公共子序列，要求 O(n*m) 的复杂度"
         },
@@ -760,7 +860,9 @@
             "百分之|\\d+ ?%",
             "\\bcalculate\\b|\\bconvert \\d",
             "\\bhow much is\\b",
-            "\\d+ ?[\\+\\-\\*/×÷] ?\\d+"
+            "\\d+ ?[\\+\\-\\*/×÷] ?\\d+",
+            "\\bwhat'?s \\d[\\d,.]*\\s*(%|percent) of\\b|\\b\\d[\\d,.]*\\s*(%|percent) of \\d",
+            "\\bhow many (\\w+ ){0,2}(in|per) (a|an|one) \\w+\\b|\\bconvert \\d[\\d,.]* ?\\w+ (to|into)\\b"
           ],
           "example": "算一下 1250 的 18% 是多少"
         },
@@ -780,7 +882,9 @@
             "\\bintegral\\b|\\bderivative\\b|\\bprobability\\b|\\beigen",
             "\\bsum of all\\b|\\bhow many (positive )?integers\\b|有多少个(整数|正整数)",
             "完全(平方|立方|六次方)数|\\bperfect (squares?|cubes?)\\b|\\bdivisible\\b|整除|\\bprimes?\\b|质数|素数|\\bautomorphic\\b",
-            "\\bdice\\b|骰子|\\bfraction\\b|分数形式"
+            "\\bdice\\b|骰子|\\bfraction\\b|分数形式",
+            "\\bsolve\\b|\\bequation\\b|\\brecurrence\\b|\\bsystem of equations\\b",
+            "\\bwhen (does|will) (the second|it|they) (catch up|meet|overtake)\\b|\\bhow long (will it take|until)\\b.{0,40}\\b(mph|km/h|rate|speed)\\b"
           ],
           "example": "求函数 f(x)=x³-3x 的极值"
         },
@@ -813,7 +917,8 @@
             "公式",
             "\\b(vlookup|xlookup|sumif|countif)\\b",
             "透视表|\\bpivot\\b",
-            "单元格|\\bspreadsheet\\b"
+            "单元格|\\bspreadsheet\\b",
+            "\\b(spreadsheet|formula|pivot table|conditional formatting|sheets? formula)\\b"
           ],
           "example": "Excel 里怎么用 VLOOKUP 把两张表按工号合并？"
         },
@@ -830,7 +935,9 @@
             "异常值",
             "格式(不统一|统一)",
             "\\bclean(ing)? (the |this |my )?data",
-            "\\bmissing values\\b|\\bdedup"
+            "\\bmissing values\\b|\\bdedup",
+            "\\b(normali[sz]e|standardi[sz]e|clean up|tidy up|fix up)\\b.{0,40}\\b(names|phone numbers|addresses|dates|columns?|rows|export|csv|dataset|entries)\\b",
+            "\\b(trailing|leading) (spaces|whitespace)\\b|\\binconsistent (formats?|capitali[sz]ation|casing)\\b|\\bduplicates? rows\\b|\\bduplicate rows\\b"
           ],
           "example": "这份 CSV 有很多缺失值和重复行，帮我清洗一下"
         },
@@ -849,7 +956,9 @@
             "相关性|置信区间|[pP] ?值",
             "\\bregression\\b|\\bstatistical\\b|\\bsignifican|\\banova\\b|\\bcorrelation\\b",
             "转化率|差异.{0,4}显著|显著.{0,4}差异",
-            "\\bconversion rate\\b|\\bstatistically\\b"
+            "\\bconversion rate\\b|\\bstatistically\\b",
+            "\\b(p-?value|confidence interval|t-?test|chi-?square(d)?|standard deviation|variance|median|is (that|this|the) difference (real|significant))\\b",
+            "\\b(a/b|ab) test (results?|shows?)\\b"
           ],
           "example": "这两组数据的差异显著吗？帮我做个 t 检验并解读结果"
         },
@@ -864,7 +973,8 @@
             "画(个|一个|一张)?.{0,6}(图|图表)",
             "柱状图|折线图|饼图|热力图|散点图",
             "\\b(matplotlib|plotly|echarts|seaborn|d3)\\b",
-            "\\bchart\\b|\\bplot\\b|\\bvisuali[sz]"
+            "\\bchart\\b|\\bplot\\b|\\bvisuali[sz]",
+            "\\b(line|bar|pie|scatter) (chart|graph|plot)\\b|\\bheat ?map\\b|\\bhistogram\\b|\\bdashboard\\b|\\bgraph (of|showing)\\b"
           ],
           "example": "用 matplotlib 画出每月销售额的折线图"
         },
@@ -880,7 +990,8 @@
             "特征工程",
             "过拟合|欠拟合",
             "\\b(xgboost|lightgbm|sklearn|scikit|pytorch|tensorflow|keras)\\b",
-            "\\bmachine learning\\b|\\btrain (a|the) model\\b|\\bfeature engineering\\b|\\boverfit"
+            "\\bmachine learning\\b|\\btrain (a|the) model\\b|\\bfeature engineering\\b|\\boverfit",
+            "\\b(predict|forecast|classify)\\b.{0,60}\\b(model|customers?|churn|cancel|fraud)\\b|\\bchurn\\b|\\b(classifier|neural net(work)?|random forest|gradient boost)\\b"
           ],
           "example": "用 XGBoost 训练一个用户流失预测模型，并做特征工程"
         }
@@ -908,7 +1019,11 @@
             "\\b(rewrite|edit) (this|my)\\b",
             "\\bfeedback on (my|this)\\b",
             "简洁|精简",
-            "\\btighten( it| this)?( up)?\\b|\\bmake (this|it) (more )?(concise|clear|readable|shorter|formal)\\b|\\bwordy\\b|\\bimprove (this|my) (paragraph|text|writing|essay|draft)\\b"
+            "\\btighten( it| this)?( up)?\\b|\\bmake (this|it) (more )?(concise|clear|readable|shorter|formal)\\b|\\bwordy\\b|\\bimprove (this|my) (paragraph|text|writing|essay|draft)\\b",
+            "\\b(sound|read|come across) (less|more|better|smoother|natural)\\b",
+            "\\b(it|this) (rambles|reads awkwardly|sounds (off|stiff|robotic|awkward))\\b",
+            "\\b(rephrase|reword|shorten|punch up|clean up) (this|my|the following)\\b",
+            "\\b(improve|fix|edit|polish) (the )?(flow|tone|wording)\\b"
           ],
           "example": "帮我润色一下这段自我介绍，让它更有感染力"
         },
@@ -926,7 +1041,10 @@
             "请假",
             "回复(他|她|客户|老板|领导)",
             "\\bemail\\b|\\bmessage to\\b|\\bthank-?you note\\b|\\bapology\\b",
-            "\\b(write|draft) (a |an )?(\\w+ ){0,2}(note|letter|card|text|reply) (to|for)\\b|\\bthank-?you (note|message|letter)\\b"
+            "\\b(write|draft) (a |an )?(\\w+ ){0,2}(note|letter|card|text|reply) (to|for)\\b|\\bthank-?you (note|message|letter)\\b",
+            "\\b(write|draft|compose) (a |an )?(short |quick |polite |brief )?(note|message|text|email|letter|card|reply|dm) (to|for|thanking|asking|telling|inviting|declining)\\b",
+            "\\b(thank|thanking) (my|our) (neighbou?r|friend|colleague|coworker|boss|teacher|host)\\b",
+            "\\b(reply|respond|write back) to (this|my|her|his|their|the) (\\w+ )?(email|message|text|landlord|boss|manager|teacher|client|neighbou?r|friend)\\b"
           ],
           "example": "帮我写一封邮件，跟客户说项目要延期一周"
         },
@@ -944,7 +1062,8 @@
             "要点",
             "\\btl;?dr\\b",
             "\\bsummar(y|i[sz]e)\\b",
-            "\\bkey points\\b"
+            "\\bkey points\\b",
+            "\\b(key )?takeaways\\b|\\b(condense|boil down|sum up|recap)\\b|\\bgist\\b|\\bin (\\w+ )?(\\d+|five|three|ten) (bullets|bullet points|sentences|words)\\b"
           ],
           "example": "帮我总结一下这篇文章的要点"
         },
@@ -980,7 +1099,8 @@
             "小红书|公众号|抖音|微博|朋友圈|知乎",
             "\\bSEO\\b",
             "\\bcopywriting\\b|\\bmarketing\\b|\\bad copy\\b|\\bsocial media post\\b|\\btweet\\b",
-            "\\b(linkedin|instagram|twitter|facebook|tiktok|threads) (post|caption|ad|bio)\\b|\\bannounc(e|ing|ement)\\b.{0,30}\\b(launch|funding|series [a-d]|release)\\b|\\bnewsletter\\b|\\bcaptions?\\b|\\bproduct launch\\b"
+            "\\b(linkedin|instagram|twitter|facebook|tiktok|threads) (post|caption|ad|bio)\\b|\\bannounc(e|ing|ement)\\b.{0,30}\\b(launch|funding|series [a-d]|release)\\b|\\bnewsletter\\b|\\bcaptions?\\b|\\bproduct launch\\b",
+            "\\b(ad|landing page|product|email) copy\\b|\\b(tagline|headline)s? for (our|my|a|the) (new )?(product|launch|campaign|brand)\\b|\\bblog post (for|to promote)\\b|\\bsubject lines?\\b|\\b(email|ad|marketing) campaign\\b"
           ],
           "example": "帮我写一篇小红书种草文案，推广新款保温杯"
         },
@@ -996,7 +1116,8 @@
             "方案书|策划书",
             "工作总结|述职|年终总结",
             "申请书|通知|请示|立项",
-            "\\bwhite paper\\b|\\bproposal\\b|\\breport (on|for)\\b"
+            "\\bwhite paper\\b|\\bproposal\\b|\\breport (on|for)\\b",
+            "\\b(quarterly|annual|monthly|board|progress|project|incident) report\\b|\\bexecutive summary\\b|\\bgrant proposal\\b|\\bofficial (letter|notice|memo)\\b|\\bmemo (to|for)\\b"
           ],
           "example": "写一份年度工作总结报告，突出三个重点项目"
         },
@@ -1010,7 +1131,9 @@
             "(写|生成|补充|完善|更新)(一份|一个)?.{0,6}README|README.{0,6}(怎么写|写)|\\bwrite (a |the )?readme\\b",
             "技术文档|接口文档|API ?文档|使用文档|开发文档|部署文档",
             "\\bdocstrings?\\b|\\bchangelog\\b",
-            "\\bdocumentation\\b|\\bdocs for\\b"
+            "\\bdocumentation\\b|\\bdocs for\\b",
+            "\\b(write|draft|create|generate) (a |an |the |our )?(\\w+ ){0,2}(readme|api docs|api reference|user guide|developer guide|how-?to guide|runbook)\\b|\\bopenapi\\b|\\bswagger\\b",
+            "\\bdocument (the|our|this|these|all) (\\w+ ){0,2}(api|endpoints?|functions?|module|cli|library|code|setup)\\b"
           ],
           "example": "给这个库写一份 README，包括安装和快速上手"
         },
@@ -1043,7 +1166,8 @@
             "情节|人物设定|世界观",
             "章节|续写",
             "\\bnovel\\b|\\bshort story\\b|\\bscreenplay\\b|\\bplot\\b|\\bfiction\\b",
-            "\\bstory about\\b|\\b(fantasy|sci-?fi|mystery|horror) (story|novel|tale)\\b"
+            "\\bstory about\\b|\\b(fantasy|sci-?fi|mystery|horror) (story|novel|tale)\\b",
+            "\\b(write|tell) (me )?(a |an )?(short |bedtime |funny |scary )?(story|tale|fable|scene|chapter)\\b"
           ],
           "example": "写一篇科幻短篇小说，主角是最后一个人类程序员"
         },
@@ -1059,7 +1183,8 @@
             "发言稿|讲话稿",
             "主持词|祝酒词|开场白",
             "\\bspeech\\b|\\btoast\\b|\\bkeynote\\b",
-            "\\b(wedding|retirement|farewell|graduation|best man|maid of honou?r) (speech|toast)\\b"
+            "\\b(wedding|retirement|farewell|graduation|best man|maid of honou?r) (speech|toast)\\b",
+            "\\b(best man|maid of honou?r|eulogy|commencement|wedding|retirement party|farewell)\\b.{0,60}\\b(speech|toast|remarks|words)\\b"
           ],
           "example": "帮我写一篇婚礼上的伴郎致辞，三分钟左右"
         }
@@ -1082,7 +1207,10 @@
             "译(成|为)|翻成",
             "用(英文|英语|日语|日文|中文)(怎么)?说",
             "\\btranslat",
-            "\\binto (english|chinese|japanese|french|german|korean|spanish)\\b"
+            "\\binto (english|chinese|japanese|french|german|korean|spanish)\\b",
+            "\\bhow (do you|do i|to|would you) say\\b.{0,60}\\bin (english|chinese|mandarin|japanese|french|german|korean|spanish|italian|portuguese|russian|arabic|hindi|vietnamese|thai)\\b",
+            "\\bwhat (is|does) .{1,40} (mean )?in (english|chinese|mandarin|japanese|french|german|korean|spanish|italian|portuguese)\\b",
+            "\\b(to|into) (english|chinese|mandarin|japanese|french|german|korean|spanish|italian|portuguese|russian|arabic)\\b"
           ],
           "example": "把这句话翻译成英文：会议推迟到明天下午三点"
         },
@@ -1113,7 +1241,9 @@
             "拼写",
             "这句(话)?.{0,6}(对吗|对不对|有问题吗|通顺吗)",
             "\\bgrammar\\b|\\btypos?\\b|\\bspelling\\b",
-            "有没有错别字|错字"
+            "有没有错别字|错字",
+            "\\bis it ['\\\"].{1,30}['\\\"] or ['\\\"].{1,30}['\\\"]|\\b(fewer|less) (people|items)\\b.{0,10}\\bor\\b|\\bwho or whom\\b|\\baffect or effect\\b",
+            "\\b(grammatically correct|correct (usage|grammar)|comma splice|punctuation)\\b"
           ],
           "example": "这句英文语法对吗：He go to school yesterday."
         },
@@ -1131,7 +1261,9 @@
             "雅思|托福|四六级|\\bJLPT\\b|\\bIELTS\\b|\\bTOEFL\\b",
             "\\bvocabulary\\b|\\bpractice (my )?(english|speaking)\\b",
             "(日语|英语|韩语|法语|德语|西班牙语|外语).{0,12}(语法|区别|用法|发音|练习)|在学(英语|日语|韩语|法语|德语|西班牙语|外语)",
-            "\\b(practice|learn(ing)?|studying) (my )?(spanish|french|german|japanese|korean|chinese|english|italian|portuguese)\\b|\\b(spanish|french|german|japanese|korean|chinese|italian) (grammar|conversation|vocabulary|practice)\\b"
+            "\\b(practice|learn(ing)?|studying) (my )?(spanish|french|german|japanese|korean|chinese|english|italian|portuguese)\\b|\\b(spanish|french|german|japanese|korean|chinese|italian) (grammar|conversation|vocabulary|practice)\\b",
+            "\\bquiz me\\b.{0,40}\\b(spanish|french|german|japanese|korean|chinese|italian|english|verbs?|vocab|words|conjugat)",
+            "\\b(conjugat(e|ion)|irregular verbs|flashcards?|pronunciation)\\b"
           ],
           "example": "陪我练习英语口语，模拟一场面试"
         }
@@ -1157,7 +1289,9 @@
             "多少|多高|多大|多远|多长|多重|几个",
             "在哪(里|儿)?",
             "\\bwhat is\\b|\\bwho is\\b|\\bwhen (did|was)\\b|\\bwhere is\\b|\\bhow (many|tall|far|big)\\b|\\bdefine\\b",
-            "(表示|代表|指|意味着)什么"
+            "(表示|代表|指|意味着)什么",
+            "\\bwhat'?s the (tallest|largest|biggest|longest|smallest|oldest|highest|deepest|capital|population)\\b",
+            "\\bwhen (did|was|were)\\b|\\bwho (invented|discovered|wrote|founded|painted)\\b"
           ],
           "example": "埃菲尔铁塔有多高？"
         },
@@ -1190,7 +1324,10 @@
             "性价比",
             "预算",
             "购买建议",
-            "\\bshould i buy\\b|\\bworth (it|buying)\\b|\\bbest .{0,20} to buy\\b"
+            "\\bshould i buy\\b|\\bworth (it|buying)\\b|\\bbest .{0,20} to buy\\b",
+            "\\b(which|what) (is|'s) (better|best) for (a|an|me|my)\\b|\\b(recommend|suggest) (a|an|some) (good )?(laptop|phone|headphones|camera|monitor|tv|mattress|stroller|car)\\b|\\bon a budget\\b",
+            "\\b(macbook|iphone|ipad|pixel|galaxy|thinkpad|airpods|kindle)\\b.{0,30}\\b(or|vs)\\b",
+            "\\bunder \\$\\d+|\\bbest (\\w+ ){1,2}(for|under) (a |my )?(budget|beginners?|students?|\\$|pet hair|small)"
           ],
           "example": "预算 5000，买 iPhone 还是小米 15，哪个性价比高？"
         },
@@ -1205,7 +1342,9 @@
             "(框架|数据库|语言|工具|库|中间件).{0,10}(对比|比较|哪个好|选哪个)",
             "选哪个|该选",
             "\\bvs\\.?\\b|\\bversus\\b",
-            "\\bcompare .{0,30}(framework|database|language|library|tool)"
+            "\\bcompare .{0,30}(framework|database|language|library|tool)",
+            "\\bshould (we|i) use \\w+ or \\w+\\b|\\b(which|what) (framework|database|library|language|queue|tool|orm|cloud) should (we|i)\\b",
+            "\\b(kafka|rabbitmq|redis|postgres|mongodb|mysql|react|vue|angular|svelte|django|flask|fastapi|rust|go|aws|gcp|azure|graphql|rest)\\b.{0,20}\\b(or|vs\\.?|versus)\\b.{0,20}\\b(kafka|rabbitmq|redis|postgres|mongodb|mysql|react|vue|angular|svelte|django|flask|fastapi|rust|go|aws|gcp|azure|graphql|rest|sqs|dynamodb|nats)\\b"
           ],
           "example": "React 和 Vue 对比，新项目该选哪个？"
         },
@@ -1221,7 +1360,8 @@
             "行业(报告|分析|研究)",
             "研究报告",
             "现状.{0,4}趋势",
-            "\\bmarket research\\b|\\bin-depth (research|analysis|report)\\b|\\bdeep dive\\b"
+            "\\bmarket research\\b|\\bin-depth (research|analysis|report)\\b|\\bdeep dive\\b",
+            "\\b(detailed|comprehensive|thorough|in-depth|full) (research )?report\\b"
           ],
           "example": "帮我做一份中国新能源汽车行业的调研报告，分析现状和趋势"
         }
@@ -1245,7 +1385,9 @@
             "原理",
             "为什么会",
             "帮我理解|教我|给我讲",
-            "\\bELI5\\b|\\bexplain (to me )?(how|why|what)\\b|\\bteach me\\b|\\bhelp me understand\\b|\\bin simple terms\\b"
+            "\\bELI5\\b|\\bexplain (to me )?(how|why|what)\\b|\\bteach me\\b|\\bhelp me understand\\b|\\bin simple terms\\b",
+            "\\b(like i'?m|as if i'?m|to a) (\\d+|five|ten|twelve|a beginner|a kid|a child)\\b|\\bexplain (how|why|what) .{0,40} works\\b|\\bhow does .{1,40} (work|happen)\\b",
+            "\\bwhat'?s the difference between\\b"
           ],
           "example": "通俗地讲讲区块链的原理"
         },
@@ -1264,7 +1406,8 @@
             "\\bhomework\\b|\\bexercise\\b|\\bproblem set\\b|\\bstep-?by-?step solution\\b",
             "这道.{0,6}题",
             "[初高小]?[一二三四五六]?(物理|化学|数学|生物|几何)题|写出(解题)?(步骤|过程)",
-            "\\bshow (your|the|all) (work|steps)\\b"
+            "\\bshow (your|the|all) (work|steps)\\b",
+            "\\b(assignment|my teacher|for class|worksheet question|textbook (problem|question))\\b"
           ],
           "example": "这道物理作业题怎么做：小球从 10 米高处自由落下，落地速度是多少？"
         },
@@ -1295,7 +1438,8 @@
             "备考|复习计划",
             "(怎么|如何)(学|入门)",
             "入门路线|零基础",
-            "\\bstudy plan\\b|\\blearning path\\b|\\broadmap to learn\\b|\\bhow to learn\\b"
+            "\\bstudy plan\\b|\\blearning path\\b|\\broadmap to learn\\b|\\bhow to learn\\b",
+            "\\b(learn|master|pick up) \\w+( \\w+)? in (\\d+|one|two|three|four|six|twelve) (weeks|months)\\b|\\b(study|learning) (plan|schedule)\\b"
           ],
           "example": "零基础想学 Python 做数据分析，给我一个三个月的学习计划"
         }
@@ -1316,7 +1460,9 @@
           "keywords": [
             "(怎么|如何)(设置|打开|关闭|开启|安装|卸载|连接|导出|恢复|删除)",
             "(Excel|Word|PPT|微信|手机|电脑|路由器|打印机|Windows|Mac|iPhone|安卓|Android).{0,12}(怎么|如何)",
-            "\\bhow (do i|to) (set up|install|turn on|turn off|export|connect|disable|enable)\\b"
+            "\\bhow (do i|to) (set up|install|turn on|turn off|export|connect|disable|enable)\\b",
+            "\\b(iphone|ipad|android|mac|macbook|windows|outlook|gmail|chrome|safari|zoom|slack|teams|spotify|whatsapp|photoshop|notion|airpods)\\b.{0,50}\\b(settings?|turn (on|off)|stop|disable|enable|auto-?\\w+|keeps?|won'?t|how do i)\\b",
+            "\\bhow (do i|to|can i) (stop|change|reset|sync|back up|restore|uninstall|update|share|find) (my|the)\\b"
           ],
           "example": "iPhone 怎么关闭自动更新？"
         },
@@ -1334,7 +1480,8 @@
             "手续",
             "\\bhow to apply for\\b|\\bvisa\\b|\\bpaperwork\\b",
             "(换|补|续|申请|更新)(办)?.{0,4}(护照|身份证|驾照|签证|居住证|社保卡)|(护照|身份证|驾照|签证|居住证|社保卡).{0,6}(过期|丢了|补办|换|续)|(需要|要)?带什么(材料|证件)",
-            "\\b(renew|replace|apply for) (my |a |an )?(passport|driver\\'?s license|license|visa|id card)\\b"
+            "\\b(renew|replace|apply for) (my |a |an )?(passport|driver\\'?s license|license|visa|id card)\\b",
+            "\\b(passport|driver'?s license|dmv|social security|green card|tax id|birth certificate|notari[sz]e|vehicle registration)\\b|\\bregister (a|my) (car|vehicle)\\b|\\bwhat (documents|papers|paperwork) do i need\\b"
           ],
           "example": "在上海办居住证需要准备什么材料？"
         },
@@ -1350,7 +1497,9 @@
             "\\bDIY\\b",
             "漏水|滴水|堵了",
             "装修",
-            "\\b(fix|repair) (my|a|the) (faucet|toilet|door|sink|washing machine)\\b"
+            "\\b(fix|repair) (my|a|the) (faucet|toilet|door|sink|washing machine)\\b",
+            "\\b(toilet|faucet|sink|drain|drywall|leak(ing|y)? (pipe|roof|tap)|circuit breaker|thermostat|garbage disposal|water heater|grout|caulk)\\b",
+            "\\bfix (it|this) myself\\b"
           ],
           "example": "水龙头一直滴水，自己怎么修？"
         },
@@ -1368,7 +1517,8 @@
             "(帮我)?(理一理|权衡一下)",
             "\\bhelp me decide\\b|\\bshould i (choose|pick|go with)\\b",
             "要不要|(该|应该)不应该",
-            "\\bshould i\\b.{0,60}\\bor\\b|\\bhelp me think (it|this) through\\b|\\bjob offer\\b|\\b(weigh|weighing) (my )?options\\b"
+            "\\bshould i\\b.{0,60}\\bor\\b|\\bhelp me think (it|this) through\\b|\\bjob offer\\b|\\b(weigh|weighing) (my )?options\\b",
+            "\\b(should i|whether to)\\b.{0,60}\\b(quit|move|switch|take|accept|leave|go back)\\b|\\b(pros and cons of|weighing whether)\\b.{0,40}\\b(job|moving|quitting)\\b"
           ],
           "example": "我在两个 offer 之间纠结，帮我理一理怎么选"
         }
@@ -1393,7 +1543,9 @@
             "训练计划",
             "跑步|马拉松",
             "饮食(计划|搭配)|卡路里|热量|营养|蛋白质",
-            "\\bworkout\\b|\\bfitness\\b|\\blose weight\\b|\\bdiet\\b|\\bcalorie|\\bnutrition\\b"
+            "\\bworkout\\b|\\bfitness\\b|\\blose weight\\b|\\bdiet\\b|\\bcalorie|\\bnutrition\\b",
+            "\\b(strength training|weight lifting|cardio|running plan|couch to 5k|protein intake|meal plan|build muscle|macros|push-?ups?|squats?)\\b",
+            "\\b(marathon|half[- ]marathon|5k|10k|triathlon) (training|plan)\\b|\\btraining (plan|program|schedule)\\b"
           ],
           "example": "给我制定一个每周 3 次的增肌训练计划"
         },
@@ -1426,7 +1578,9 @@
             "过敏",
             "不舒服",
             "是什么病|要不要去医院|挂什么科",
-            "\\bsymptoms?\\b|\\bheadache\\b|\\bfever\\b|\\bcough\\b|\\brash\\b|\\bdizzy\\b|\\bshould i see a doctor\\b"
+            "\\bsymptoms?\\b|\\bheadache\\b|\\bfever\\b|\\bcough\\b|\\brash\\b|\\bdizzy\\b|\\bshould i see a doctor\\b",
+            "\\b(ache|aches|aching|pain|sore|swollen|swelling|nausea|numb(ness)?|itch(y|ing)|dizziness|fatigue|shortness of breath|chest pain)\\b",
+            "\\bwhat could (cause|be causing) (that|this|it|my)\\b"
           ],
           "example": "最近总是头晕，早上起来更明显，可能是什么原因？"
         },
@@ -1443,7 +1597,8 @@
             "剂量|副作用",
             "布洛芬|对乙酰氨基酚|抗生素|阿莫西林|处方药",
             "能(不能)?一起吃",
-            "\\bmedication\\b|\\bdos(e|age)\\b|\\bside effects?\\b|\\bibuprofen\\b|\\bantibiotic"
+            "\\bmedication\\b|\\bdos(e|age)\\b|\\bside effects?\\b|\\bibuprofen\\b|\\bantibiotic",
+            "\\b(take|taking|mix|combine) (\\w+ ){0,3}(with|and) (\\w+ ){0,2}(pills?|tablets?|meds|medicine|alcohol)\\b|\\b(tylenol|advil|aspirin|acetaminophen|paracetamol|melatonin|antihistamine|prescription)\\b"
           ],
           "example": "布洛芬和对乙酰氨基酚能一起吃吗？"
         },
@@ -1507,7 +1662,9 @@
             "赔偿|维权|侵权",
             "劳动(法|合同|纠纷)|拖欠工资|辞退",
             "判(几|多少)年",
-            "\\blawsuit\\b|\\blegal\\b|\\bsue\\b|\\blawyer\\b|\\bliable\\b|\\billegal\\b"
+            "\\blawsuit\\b|\\blegal\\b|\\bsue\\b|\\blawyer\\b|\\bliable\\b|\\billegal\\b",
+            "\\bis (that|this|it) (legal|allowed|against the law)\\b|\\bmy (landlord|employer|tenant|ex)\\b.{0,60}\\b(deposit|evict|fired|custody|owe|refus)",
+            "\\b(my rights|can (they|he|she|my \\w+) (legally|really))\\b"
           ],
           "example": "公司拖欠工资三个月，我该怎么维权？"
         },
@@ -1521,7 +1678,8 @@
           "keywords": [
             "(起草|拟|写)(一份|一个)?.{0,8}(合同|协议)",
             "(合同|协议)模板",
-            "\\bdraft (a|an|the) (contract|agreement|nda)\\b"
+            "\\bdraft (a|an|the) (contract|agreement|nda)\\b",
+            "\\b(write|draft|create|put together) (me )?(a|an|the) (\\w+ ){0,2}(nda|non-disclosure agreement|contract|agreement|terms of service)\\b"
           ],
           "example": "帮我起草一份房屋租赁合同"
         },
@@ -1537,7 +1695,8 @@
             "(合同|协议).{0,10}(风险|漏洞|坑|问题|不利)",
             "条款",
             "\\breview (this|the|my) (\\w+ )?(contract|agreement|lease|terms)\\b",
-            "\\b(unfair|risky|one-sided) (clauses?|terms)\\b|\\bclauses?\\b"
+            "\\b(unfair|risky|one-sided) (clauses?|terms)\\b|\\bclauses?\\b",
+            "\\b(saas |service |employment |rental |lease |licen[cs]e |purchase )?(agreement|contract|terms of service|lease)\\b.{0,60}\\b(let|allow|lets|allows|anything|red flags?|watch out|catch)\\b"
           ],
           "example": "帮我审查这份劳动合同，看看有没有对我不利的条款"
         },
@@ -1582,7 +1741,8 @@
             "个税|退休金|养老金",
             "\\bpersonal finance\\b|\\bsavings\\b|\\bmortgage\\b|\\bcredit card\\b|\\binsurance\\b|\\bretire",
             "结余|存款|(每月|每个月).{0,6}(收入|工资|结余|存)|(怎么|如何)(分配|规划).{0,6}(钱|存款|收入|工资)",
-            "\\bemergency fund\\b|\\b401\\(?k\\)?|\\broth\\b|\\bIRA\\b|\\bstudent loans?\\b|\\bpay off (my|the)\\b|\\bdebt\\b|\\bmonthly budget\\b"
+            "\\bemergency fund\\b|\\b401\\(?k\\)?|\\broth\\b|\\bIRA\\b|\\bstudent loans?\\b|\\bpay off (my|the)\\b|\\bdebt\\b|\\bmonthly budget\\b",
+            "\\b(car loan|budget(ing)?|save money|saving for|high-?yield|checking account|credit score|pay off)\\b"
           ],
           "example": "月薪 1 万，怎么规划存钱和理财？"
         },
@@ -1600,7 +1760,9 @@
             "财报",
             "买入|卖出|持仓|仓位",
             "比特币|加密货币|\\bcrypto\\b",
-            "\\bstocks?\\b|\\binvest|\\bportfolio\\b|\\bvaluation\\b|\\bearnings\\b"
+            "\\bstocks?\\b|\\binvest|\\bportfolio\\b|\\bvaluation\\b|\\bearnings\\b",
+            "\\b(etfs?|index funds?|bonds?|gold|crypto|bitcoin|dividends?|s&p 500|treasur(y|ies))\\b",
+            "\\b(overvalued|undervalued|p/e|pe ratio|market cap|price target)\\b"
           ],
           "example": "帮我分析一下这家公司的财报，现在值得投资吗？"
         },
@@ -1658,7 +1820,8 @@
             "求职信",
             "作品集",
             "项目经历",
-            "\\bresume\\b|\\bcv\\b|\\bcover letter\\b"
+            "\\bresume\\b|\\bcv\\b|\\bcover letter\\b",
+            "\\b(resume|cv) bullet|\\blinkedin (profile|summary|headline)\\b|\\bjob application\\b"
           ],
           "example": "帮我优化一下简历里的项目经历"
         },
@@ -1672,7 +1835,8 @@
             "面试",
             "面经",
             "行为面试",
-            "\\binterview\\b|\\bbehavioral questions\\b"
+            "\\binterview\\b|\\bbehavioral questions\\b",
+            "\\bmock interview\\b|\\binterview (prep|questions)\\b|\\b(tell me about yourself|star method)\\b"
           ],
           "example": "明天有产品经理的面试，帮我准备常见问题"
         },
@@ -1703,7 +1867,8 @@
             "甘特图",
             "任务拆(解|分)|拆成(几个)?任务",
             "\\bWBS\\b|\\bOKR\\b|\\bKPI\\b",
-            "迭代计划|\\bsprint\\b|\\bmilestone\\b|\\bgantt\\b|\\bproject plan\\b"
+            "迭代计划|\\bsprint\\b|\\bmilestone\\b|\\bgantt\\b|\\bproject plan\\b",
+            "\\b(roadmap|milestones|gantt|sprint planning|project plan|timeline for the project|stakeholder)\\b"
           ],
           "example": "帮我把这个项目拆成任务并排一个两个月的排期"
         },
@@ -1735,7 +1900,8 @@
             "商业模式|盈利模式",
             "(商业|增长|定价|市场)(策略|战略)",
             "融资|\\bBP\\b|路演",
-            "\\bbusiness (plan|model|strategy)\\b|\\bgo-to-market\\b|\\bpricing strategy\\b|\\bfundrais|\\bpitch deck\\b"
+            "\\bbusiness (plan|model|strategy)\\b|\\bgo-to-market\\b|\\bpricing strategy\\b|\\bfundrais|\\bpitch deck\\b",
+            "\\b(grow|increase|double|boost) (our |my )?(revenue|sales|customers|profit)\\b|\\bgrowth strategy\\b|\\bexpand (our|my|the) business\\b|\\b(freemium|free trial|pricing model|monetiz(e|ation))\\b"
           ],
           "example": "帮我写一份 AI 教育创业项目的商业计划书"
         },
@@ -1767,7 +1933,8 @@
             "原型",
             "用户故事",
             "功能清单",
-            "\\bproduct requirements?\\b|\\buser stor(y|ies)\\b|\\bwireframe\\b|\\bprototype\\b|\\bfeature spec\\b"
+            "\\bproduct requirements?\\b|\\buser stor(y|ies)\\b|\\bwireframe\\b|\\bprototype\\b|\\bfeature spec\\b",
+            "\\b(product spec|requirements doc(ument)?|acceptance criteria|feature request doc)\\b"
           ],
           "example": "帮我写一份打卡小程序的 PRD"
         }
@@ -1790,7 +1957,8 @@
             "相关工作",
             "研究现状",
             "文献",
-            "\\brelated work\\b|\\bliterature review\\b|\\bsurvey of\\b|\\bstate of the art\\b"
+            "\\brelated work\\b|\\bliterature review\\b|\\bsurvey of\\b|\\bstate of the art\\b",
+            "\\b(survey|review) (of )?the literature\\b|\\bkey papers\\b|\\b(read|find|list) (the )?(main |seminal |key )?papers (on|about)\\b"
           ],
           "example": "帮我写一篇关于大模型幻觉问题的文献综述"
         },
@@ -1808,7 +1976,8 @@
             "研究方法|问卷设计",
             "\\bexperiment(al)? design\\b|\\bcontrol group\\b|\\bsample size\\b|\\bA/B test\\b|\\bmethodology\\b",
             "对照实验|(怎么|如何)设计.{0,8}实验",
-            "\\bdesign (a|an|the) (study|experiment|trial|survey)\\b|\\brandomi[sz]ed\\b|\\bcontrolled (trial|experiment)\\b"
+            "\\bdesign (a|an|the) (study|experiment|trial|survey)\\b|\\brandomi[sz]ed\\b|\\bcontrolled (trial|experiment)\\b",
+            "\\bhow many (participants|subjects|samples|users) do (i|we) need\\b|\\b(statistical )?power analysis\\b|\\beffect size\\b"
           ],
           "example": "我想验证新教学方法的效果，帮我设计实验方案和对照组"
         },
@@ -1879,7 +2048,8 @@
             "界面(设计)?",
             "可用性",
             "\\bUX\\b|\\bUI\\b",
-            "\\busability\\b|\\buser experience\\b|\\buser interface\\b"
+            "\\busability\\b|\\buser experience\\b|\\buser interface\\b",
+            "\\b(checkout|onboarding|signup|sign-up) (flow|funnel|process)\\b|\\bdrop[- ]off\\b|\\bredesign (the|our|this) (flow|page|screen|app|form)\\b|\\buser flow\\b"
           ],
           "example": "看看这个注册页面的交互设计有什么可以改进的"
         },
@@ -1896,7 +2066,8 @@
             "品牌(设计|形象|视觉|配色|调性|色)|\\bVI\\b",
             "视觉",
             "海报|排版",
-            "\\bcolor palette\\b|\\btypography\\b|\\bbranding\\b|\\bvisual identity\\b|\\bposter\\b"
+            "\\bcolor palette\\b|\\btypography\\b|\\bbranding\\b|\\bvisual identity\\b|\\bposter\\b",
+            "\\b(fonts?|colou?rs?|colou?r scheme|mood ?board|look and feel)\\b.{0,40}\\b(for|website|brand|site|app|logo)\\b"
           ],
           "example": "给我的咖啡店设计一套品牌配色和字体方案"
         },
@@ -1910,7 +2081,8 @@
             "(这张|这个|附件)?(图|图片|截图|照片).{0,10}(是什么|有什么|看看|分析|识别|里)",
             "看(一下|看)?(这张)?.{0,4}(图|截图|照片)",
             "识别图片|\\bOCR\\b",
-            "\\b(this|the attached) (image|screenshot|photo|picture)\\b|\\bwhat'?s in (this|the) (image|picture)\\b"
+            "\\b(this|the attached) (image|screenshot|photo|picture)\\b|\\bwhat'?s in (this|the) (image|picture)\\b",
+            "\\b(here'?s|here is|attached( is)?|i('ve)? (uploaded|attached)) (a |an |the |my )?(photo|picture|screenshot|image|pic)\\b"
           ],
           "example": "看看这张截图里的报错是什么"
         },
@@ -1924,7 +2096,8 @@
             "(画|生成)(一张|一幅|一只|一个|个)|做(一张|一幅).{0,6}(图|海报|插画)",
             "\\bmidjourney\\b|stable diffusion|\\bdall-?e\\b|文生图|\\bSDXL\\b",
             "(图片|绘画|画图).{0,6}提示词|提示词.{0,6}(画|图)",
-            "\\bimage prompt\\b|\\bgenerate (an )?image\\b|\\bdraw (a|an|me)\\b"
+            "\\bimage prompt\\b|\\bgenerate (an )?image\\b|\\bdraw (a|an|me)\\b",
+            "\\b(midjourney|dall-?e|stable diffusion|sdxl|flux|imagen)\\b"
           ],
           "example": "帮我写一段 Midjourney 提示词，画一只赛博朋克风格的猫"
         },
@@ -1965,7 +2138,8 @@
             "创意",
             "灵感",
             "有什么好玩的",
-            "\\bbrainstorm|\\bideas? for\\b|\\bcreative ideas\\b"
+            "\\bbrainstorm|\\bideas? for\\b|\\bcreative ideas\\b",
+            "\\b(\\d+|some|a few|ten|five|twenty) (fun |creative |unique |fresh )?ideas\\b|\\bcome up with\\b"
           ],
           "example": "公司年会有什么有创意的活动点子？"
         },
@@ -1981,7 +2155,8 @@
             "名字",
             "口号|\\bslogan\\b|\\btagline\\b",
             "\\bname (for|my|our)\\b",
-            "好听的|寓意"
+            "好听的|寓意",
+            "\\bname ideas\\b|\\b(names?|what to name|call) (for )?(my|our|a|the) (new )?(puppy|dog|cat|kitten|baby|startup|company|app|product|band|podcast|shop|store|cafe|boat)\\b|\\bsuggest (a )?names?\\b"
           ],
           "example": "给我的宠物猫起个好听的名字"
         },
@@ -2036,7 +2211,8 @@
             "(怎么|如何)做(才)?好吃",
             "(肉|鱼|鸡|蛋|面|饭|汤|饺子|蛋糕|排骨|豆腐).{0,6}(怎么|如何)(做|烧|炖|炒)",
             "烹饪",
-            "\\brecipe\\b|\\bhow to (cook|bake|make)\\b"
+            "\\brecipe\\b|\\bhow to (cook|bake|make)\\b",
+            "\\bwhat (can|should) i (make|cook|bake)\\b|\\bfor (dinner|lunch|breakfast)\\b|\\bmeal (idea|prep)\\b|\\bhow long (do i|should i|to) (bake|cook|boil|roast|grill)\\b"
           ],
           "example": "红烧肉怎么做好吃？"
         },
@@ -2052,7 +2228,8 @@
             "攻略",
             "景点",
             "酒店|机票|自驾",
-            "\\bitinerary\\b|\\btrip\\b|\\btravel\\b|\\bsightseeing\\b"
+            "\\bitinerary\\b|\\btrip\\b|\\btravel\\b|\\bsightseeing\\b",
+            "\\b(\\d+|two|three|four|five|seven|ten)-day (trip|visit|itinerary)\\b|\\b(weekend|days?) in (lisbon|paris|rome|tokyo|london|new york|barcelona|kyoto|\\w+)\\b.{0,30}\\b(plan|itinerary|what to (do|see))\\b|\\bvacation\\b|\\bwhere to stay\\b"
           ],
           "example": "五一去成都玩 4 天，帮我排个行程"
         },
@@ -2067,7 +2244,8 @@
             "孩子|宝宝|儿子|女儿",
             "(老人|父母|爸妈).{0,6}(照顾|相处|沟通)",
             "婆媳|夫妻|亲子",
-            "\\bparenting\\b|\\btoddler\\b|\\bmy (kid|son|daughter|child)\\b"
+            "\\bparenting\\b|\\btoddler\\b|\\bmy (kid|son|daughter|child)\\b",
+            "\\b(my|our) (\\d+|two|three|four|five)-year-old\\b|\\b(newborn|baby|infant|teenager|in-laws)\\b|\\bpotty train"
           ],
           "example": "三岁孩子总是发脾气，该怎么引导？"
         },
@@ -2081,7 +2259,8 @@
             "猫咪|狗狗|宠物",
             "(猫|狗).{0,6}(不吃|不喝|生病|掉毛|怎么办|吐)",
             "驱虫|绝育|疫苗",
-            "\\bpets?\\b|\\bpuppy\\b|\\bkitten\\b|\\bmy (cat|dog)\\b"
+            "\\bpets?\\b|\\bpuppy\\b|\\bkitten\\b|\\bmy (cat|dog)\\b",
+            "\\bmy (dog|cat|puppy|kitten|rabbit|hamster|parrot|bird)\\b|\\b(vet|veterinarian)\\b"
           ],
           "example": "猫咪不爱喝水怎么办？"
         }
@@ -2101,7 +2280,8 @@
           "tools": "read",
           "ceiling": "t1",
           "keywords": [
-            "^\\s*(hi|hello|hey|hiya|howdy|yo|你好|您好|嗨|哈喽|在吗|早上好|中午好|下午好|晚上好|早安|晚安|谢谢|多谢|再见|拜拜|thanks|thank you|thx|good (morning|afternoon|evening|night)|morning|bye|goodbye|see you|what'?s up|sup)[\\s!！。.,，~～]*$"
+            "^\\s*(hi|hello|hey|hiya|howdy|yo|你好|您好|嗨|哈喽|在吗|早上好|中午好|下午好|晚上好|早安|晚安|谢谢|多谢|再见|拜拜|thanks|thank you|thx|good (morning|afternoon|evening|night)|morning|bye|goodbye|see you|what'?s up|sup)[\\s!！。.,，~～]*$",
+            "^\\s*(hi|hey|hello|yo|hiya|good (morning|afternoon|evening)|sup)\\b[\\s!,.]*(there|claude)?[\\s!,.]*((how'?s it going|how are you|what'?s up|what'?s good)\\??)?\\s*$"
           ],
           "example": "你好"
         },
@@ -2117,7 +2297,9 @@
             "男朋友|女朋友|男友|女友|伴侣|老公|老婆|婚姻",
             "孤独|迷茫|人生意义|自我怀疑",
             "难受|伤心",
-            "\\brelationship\\b|\\bbreak ?up\\b|\\bboyfriend\\b|\\bgirlfriend\\b|\\blonely\\b|\\bfeel(ing)? lost\\b"
+            "\\brelationship\\b|\\bbreak ?up\\b|\\bboyfriend\\b|\\bgirlfriend\\b|\\blonely\\b|\\bfeel(ing)? lost\\b",
+            "\\b(crush on|falling for|in love with|my ex\\b|got dumped|dating)",
+            "\\b(best friend|my (friend|partner|husband|wife|mom|dad|sister|brother)|friendship)\\b.{0,80}\\b(distant|ignor|fight|argu|upset|hurt|drift|don'?t know how to|bring it up)\\b"
           ],
           "example": "和男朋友分手了，心里很难受"
         },
@@ -2131,7 +2313,8 @@
             "陪我聊|聊聊天|随便聊",
             "无聊",
             "\\bjust chat\\b|\\btalk to me\\b|\\bi'?m bored\\b",
-            "\\bkeep me company\\b|\\btalk to me\\b|\\bbored\\b"
+            "\\bkeep me company\\b|\\bbored\\b",
+            "\\bcan'?t sleep\\b.{0,40}\\b(tell me|talk|chat)\\b|\\btell me something (interesting|fun|random)\\b"
           ],
           "example": "好无聊啊，陪我聊聊天吧"
         }
