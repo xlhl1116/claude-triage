@@ -170,11 +170,22 @@ class Hook(unittest.TestCase):
         self.assertIn("<triage-slip>", text)
         self.assertIn('"agent": "claude-triage:triage-t7-code"', text)
         self.assertIn("--category <category-id>", text)
+        self.assertIn('"footer": "— 💻 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max"', text)
 
     def test_hook_skips_slash_commands_and_bad_input(self):
         for stdin in (json.dumps({"prompt": "/help"}), "not json", json.dumps({"prompt": "  "})):
             out = run("--hook", stdin=stdin)
             self.assertEqual((out.returncode, out.stdout), (0, ""), stdin)
+
+    def test_hook_skips_background_agent_results(self):
+        # Claude Code feeds a finished background agent back to the desk as a prompt; it is not a request.
+        note = "<task-notification>\n<status>completed</status>\n<summary>Agent finished</summary>\n</task-notification>"
+        out = run("--hook", stdin=json.dumps({"prompt": note}))
+        self.assertEqual((out.returncode, out.stdout), (0, ""))
+
+    def test_footer_omits_effort_for_models_without_one(self):
+        r = triage("Translate to French: see you on Thursday", RULES, TAX, PROVIDERS)
+        self.assertEqual(r["footer"], "— 🌐 Language › Everyday translation · Claude Haiku 4.5")
 
     def test_hook_can_be_switched_off(self):
         out = run("--hook", stdin=json.dumps({"prompt": "hi"}), env={**ENV, "CLAUDE_TRIAGE": "off"})

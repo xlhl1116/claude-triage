@@ -249,7 +249,15 @@ def triage(text: str, rules: dict, tax: dict, providers: dict | None = None, pro
             "saving_pct": round(100 * (1 - est / top)) if est is not None and top else None,
         },
     })
+    result["footer"] = footer(result)
     return result
+
+
+def footer(r: dict) -> str:
+    """The closing line the desk copies verbatim, so it never has to recall model or effort itself."""
+    label = r["category_zh"] if r["lang"] == "zh" else r["category_en"]
+    effort = f" · effort {r['effort']}" if r.get("effort") else ""
+    return f"— {label} · {r['model_name']}{effort}"
 
 
 CONF_LABEL = {
@@ -331,14 +339,15 @@ def hook_main(rules_path: Path, taxonomy_path: Path, providers_path: Path) -> in
         if os.environ.get("CLAUDE_TRIAGE", "").lower() in ("0", "off", "false", "no"):
             return 0
         prompt = json.loads(sys.stdin.read() or "{}").get("prompt", "")
-        if not prompt.strip() or prompt.lstrip().startswith("/"):
+        # Slash commands, and background-agent results that Claude Code feeds back as a prompt.
+        if not prompt.strip() or prompt.lstrip().startswith(("/", "<task-notification>")):
             return 0
         rules, tax, providers = load_rules(rules_path), load_taxonomy(taxonomy_path), load_providers(providers_path)
         provider = os.environ.get("CLAUDE_TRIAGE_PROVIDER") or detect_provider(providers)
         provider = provider if provider in providers else "claude"
         r = triage(prompt, rules, tax, providers, provider)
         brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
-                                       "model_name", "effort", "tier", "guidance", "provider")}
+                                       "model_name", "effort", "tier", "guidance", "provider", "footer")}
         rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
                  "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
         context = ("<triage-slip>\n"
