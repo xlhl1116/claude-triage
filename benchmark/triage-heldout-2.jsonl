@@ -1,0 +1,81 @@
+{"id": "h2-en-01", "expected_category": "software.explain-snippet", "prompt": "Can you walk me through what this regex-heavy Perl snippet is doing?"}
+{"id": "h2-en-02", "expected_category": "software.explain-error", "prompt": "What does 'segmentation fault (core dumped)' actually mean?"}
+{"id": "h2-en-03", "expected_category": "software.api-usage", "prompt": "What's the right way to use useEffect cleanup in React?"}
+{"id": "h2-en-04", "expected_category": "software.understand-codebase", "prompt": "I just joined the team. Give me a tour of this repo and how the services talk to each other"}
+{"id": "h2-en-05", "expected_category": "software.rename-format", "prompt": "Add docstrings to every function in utils.py"}
+{"id": "h2-en-06", "expected_category": "software.config-change", "prompt": "Bump the max upload size in nginx.conf to 50MB"}
+{"id": "h2-en-07", "expected_category": "software.one-liner", "prompt": "One-liner to find all files larger than 100MB in my home directory"}
+{"id": "h2-en-08", "expected_category": "software.write-function", "prompt": "Write a Python function that validates an IBAN"}
+{"id": "h2-en-09", "expected_category": "software.ui-component", "prompt": "Build a React date-range picker component with keyboard navigation"}
+{"id": "h2-en-10", "expected_category": "software.scaffold", "prompt": "Bootstrap a new FastAPI project with Docker, pytest and a Postgres connection"}
+{"id": "h2-en-11", "expected_category": "software.ai-app", "prompt": "Build a chatbot that calls the Claude API and uses tool calling to look up orders"}
+{"id": "h2-en-12", "expected_category": "software.logic-bug", "prompt": "The discount is applied twice for some users but nothing errors out. Where is the logic wrong?"}
+{"id": "h2-en-13", "expected_category": "software.performance", "prompt": "This endpoint takes 4 seconds. Help me speed it up"}
+{"id": "h2-en-14", "expected_category": "software.concurrency-bug", "prompt": "Two goroutines occasionally write to the same map and the program panics"}
+{"id": "h2-en-15", "expected_category": "software.migration", "prompt": "Migrate our codebase from JavaScript to TypeScript"}
+{"id": "h2-en-16", "expected_category": "software.db-schema", "prompt": "Design the tables for a hotel booking system"}
+{"id": "h2-en-17", "expected_category": "software.unit-tests", "prompt": "Write pytest tests for the discount calculator"}
+{"id": "h2-en-18", "expected_category": "software.git", "prompt": "How do I squash my last three commits?"}
+{"id": "h2-en-19", "expected_category": "software.algorithm", "prompt": "Implement Dijkstra's shortest path on a weighted graph"}
+{"id": "h2-en-20", "expected_category": "data.math-calc", "prompt": "What's 17% of 2,340?"}
+{"id": "h2-en-21", "expected_category": "data.math-solve", "prompt": "Find the derivative of x^3 * sin(x)"}
+{"id": "h2-en-22", "expected_category": "data.spreadsheet", "prompt": "Google Sheets formula to count cells that contain 'done'"}
+{"id": "h2-en-23", "expected_category": "data.stats", "prompt": "Is the correlation between these two variables statistically significant?"}
+{"id": "h2-en-24", "expected_category": "data.cleaning", "prompt": "Normalize the date formats and drop duplicate rows in this CSV"}
+{"id": "h2-en-25", "expected_category": "writing.personal", "prompt": "Write a thank-you note to my neighbor who watered my plants"}
+{"id": "h2-en-26", "expected_category": "writing.summary", "prompt": "TL;DR this article for me"}
+{"id": "h2-en-27", "expected_category": "writing.argument", "prompt": "Write an essay arguing that cities should ban cars from downtown"}
+{"id": "h2-en-28", "expected_category": "writing.fiction", "prompt": "Write a short story about a lighthouse keeper who finds a message in a bottle"}
+{"id": "h2-en-29", "expected_category": "writing.speech", "prompt": "Draft a retirement speech for my manager of 20 years"}
+{"id": "h2-en-30", "expected_category": "language.grammar", "prompt": "Is it 'fewer' or 'less' in this sentence: less people came than expected"}
+{"id": "h2-en-31", "expected_category": "language.learning", "prompt": "Help me practice Spanish conversation, correct my mistakes as we go"}
+{"id": "h2-en-32", "expected_category": "info.news", "prompt": "What happened in the latest EU AI Act negotiations?"}
+{"id": "h2-en-33", "expected_category": "info.shopping", "prompt": "Which robot vacuum is best for pet hair under $400?"}
+{"id": "h2-en-34", "expected_category": "education.teaching", "prompt": "Create a lesson plan for teaching photosynthesis to 7th graders"}
+{"id": "h2-en-35", "expected_category": "howto.software-usage", "prompt": "How do I turn off auto-updates on Windows 11?"}
+{"id": "h2-en-36", "expected_category": "howto.diy", "prompt": "How do I patch a hole in drywall?"}
+{"id": "h2-en-37", "expected_category": "health.symptoms", "prompt": "I've had a sore throat and fever for three days, should I be worried?"}
+{"id": "h2-en-38", "expected_category": "health.fitness", "prompt": "Design a 12-week marathon training plan for a beginner"}
+{"id": "h2-en-39", "expected_category": "law.consult", "prompt": "My landlord won't return my security deposit. What are my rights?"}
+{"id": "h2-en-40", "expected_category": "finance.personal", "prompt": "Should I pay off my student loans or invest in my 401k first?"}
+{"id": "h2-en-41", "expected_category": "finance.accounting", "prompt": "Can I deduct my home office on my taxes as a freelancer?"}
+{"id": "h2-en-42", "expected_category": "business.resume", "prompt": "Rewrite my resume bullet points to sound more impactful"}
+{"id": "h2-en-43", "expected_category": "business.minutes", "prompt": "Turn these standup notes into a weekly status update for leadership"}
+{"id": "h2-en-44", "expected_category": "research.lit-review", "prompt": "Survey the literature on sparse attention mechanisms from the last three years"}
+{"id": "h2-en-45", "expected_category": "design.ux", "prompt": "How can I make our onboarding flow less confusing for first-time users?"}
+{"id": "h2-en-46", "expected_category": "creative.naming", "prompt": "Suggest a catchy name for my podcast about urban gardening"}
+{"id": "h2-en-47", "expected_category": "life.cooking", "prompt": "What can I make for dinner with chicken, spinach and rice?"}
+{"id": "h2-en-48", "expected_category": "life.family", "prompt": "My teenager won't talk to me anymore. How do I reconnect?"}
+{"id": "h2-en-49", "expected_category": "life.pets", "prompt": "My dog keeps barking at night, how do I stop it?"}
+{"id": "h2-en-50", "expected_category": "chat.feelings", "prompt": "My best friend hasn't texted me back in weeks and I feel hurt"}
+{"id": "h2-en-51", "expected_category": "other.about", "prompt": "Which model are you and why did you pick it for my question?"}
+{"id": "h2-zh-01", "expected_category": "software.explain-snippet", "prompt": "这行 shell 命令 `find . -name '*.log' -mtime +7 -delete` 是干嘛的"}
+{"id": "h2-zh-02", "expected_category": "software.write-function", "prompt": "写一个 Go 函数，把驼峰命名转成下划线命名"}
+{"id": "h2-zh-03", "expected_category": "software.module-feature", "prompt": "给用户模块加一个手机号验证码登录功能"}
+{"id": "h2-zh-04", "expected_category": "software.leak", "prompt": "Java 服务跑几天后内存一直涨，最后 OOM，怎么排查"}
+{"id": "h2-zh-05", "expected_category": "software.devops", "prompt": "帮我写一个 docker-compose，包含 nginx、redis 和 mysql"}
+{"id": "h2-zh-06", "expected_category": "software.sql", "prompt": "写一条 SQL 查出每个部门工资最高的员工"}
+{"id": "h2-zh-07", "expected_category": "software.review-small", "prompt": "帮我看看这段代码写得怎么样，有没有可以改进的地方"}
+{"id": "h2-zh-08", "expected_category": "software.vague-feature", "prompt": "想给产品加点 AI 功能，但还没想好具体做什么"}
+{"id": "h2-zh-09", "expected_category": "data.viz", "prompt": "用 Python 画一个各月份销售额的柱状图"}
+{"id": "h2-zh-10", "expected_category": "data.math-proof", "prompt": "证明根号 2 是无理数"}
+{"id": "h2-zh-11", "expected_category": "writing.edit", "prompt": "帮我改写这段话，让它读起来更简洁"}
+{"id": "h2-zh-12", "expected_category": "writing.marketing", "prompt": "给我们的新款运动鞋写一段小红书种草文案"}
+{"id": "h2-zh-13", "expected_category": "writing.tech-docs", "prompt": "为这个接口写一份 API 文档，包含参数说明和返回示例"}
+{"id": "h2-zh-14", "expected_category": "language.translate", "prompt": "“好久不见”用法语怎么说"}
+{"id": "h2-zh-15", "expected_category": "info.fact", "prompt": "长城有多长"}
+{"id": "h2-zh-16", "expected_category": "info.tech-compare", "prompt": "Flutter 和 React Native 选哪个做跨平台 App"}
+{"id": "h2-zh-17", "expected_category": "education.explain", "prompt": "通俗地讲讲什么是量子纠缠"}
+{"id": "h2-zh-18", "expected_category": "howto.errands", "prompt": "在上海怎么办理居住证"}
+{"id": "h2-zh-19", "expected_category": "howto.planning", "prompt": "纠结要不要辞职去读研，帮我分析一下"}
+{"id": "h2-zh-20", "expected_category": "health.medication", "prompt": "布洛芬一天最多能吃几次"}
+{"id": "h2-zh-21", "expected_category": "health.mental", "prompt": "最近总是提不起劲，什么都不想做，是不是抑郁了"}
+{"id": "h2-zh-22", "expected_category": "law.contract-review", "prompt": "帮我看看这份劳动合同里的竞业限制条款有没有问题"}
+{"id": "h2-zh-23", "expected_category": "finance.investing", "prompt": "分析一下宁德时代现在的股价是否被低估"}
+{"id": "h2-zh-24", "expected_category": "business.strategy", "prompt": "我们是一家小咖啡品牌，想进入一线城市市场，该用什么策略"}
+{"id": "h2-zh-25", "expected_category": "business.negotiation", "prompt": "供应商要涨价 15%，我该怎么谈"}
+{"id": "h2-zh-26", "expected_category": "research.theory", "prompt": "推导一下简谐振子的量子能级公式"}
+{"id": "h2-zh-27", "expected_category": "design.visual", "prompt": "帮我给公司的新 logo 提几个配色方案"}
+{"id": "h2-zh-28", "expected_category": "creative.brainstorm", "prompt": "帮我想几个公司年会的节目创意"}
+{"id": "h2-zh-29", "expected_category": "life.travel", "prompt": "五一想去云南玩五天，怎么安排路线"}
+{"id": "h2-zh-30", "expected_category": "chat.companion", "prompt": "今天好无聊啊，陪我聊聊天吧"}
