@@ -1,0 +1,100 @@
+{"id": "ho-zh-01", "expected_category": "software.explain-error", "prompt": "Python 报 ModuleNotFoundError: No module named 'requests' 是什么意思"}
+{"id": "ho-zh-02", "expected_category": "software.api-usage", "prompt": "pandas 的 merge 和 join 有什么区别，什么时候用哪个"}
+{"id": "ho-zh-03", "expected_category": "software.understand-codebase", "prompt": "我刚接手一个老项目，帮我理清一下这个仓库的整体结构和各个目录是干嘛的"}
+{"id": "ho-zh-04", "expected_category": "software.config-change", "prompt": "把 config.yaml 里的超时时间从 30 秒改成 60 秒"}
+{"id": "ho-zh-05", "expected_category": "software.one-liner", "prompt": "写个正则匹配中国大陆手机号"}
+{"id": "ho-zh-06", "expected_category": "software.small-edit", "prompt": "这个函数里的循环少处理了最后一个元素，帮我改一下边界"}
+{"id": "ho-zh-07", "expected_category": "software.ui-component", "prompt": "用 Vue3 写一个带搜索和分页的下拉选择组件"}
+{"id": "ho-zh-08", "expected_category": "software.scaffold", "prompt": "帮我从零搭一个 Next.js + Prisma + Tailwind 的项目骨架"}
+{"id": "ho-zh-09", "expected_category": "software.ai-app", "prompt": "用 LangChain 做一个能回答公司内部文档的 RAG 问答机器人"}
+{"id": "ho-zh-10", "expected_category": "software.logic-bug", "prompt": "订单金额统计出来总是比实际少一点，也没有报错，帮我查一下哪里算错了"}
+{"id": "ho-zh-11", "expected_category": "software.performance", "prompt": "首页加载要 8 秒，帮我找出性能瓶颈并优化"}
+{"id": "ho-zh-12", "expected_category": "software.module-refactor", "prompt": "把支付模块内部重新组织一下，对外接口保持不变"}
+{"id": "ho-zh-13", "expected_category": "software.db-schema", "prompt": "设计一个在线教育平台的数据库表结构，包括课程、学生、订单"}
+{"id": "ho-zh-14", "expected_category": "software.tech-review", "prompt": "我们在用消息队列还是直接 HTTP 回调之间犹豫，帮我评审一下这两个方案的利弊"}
+{"id": "ho-zh-15", "expected_category": "software.integration-tests", "prompt": "用 Playwright 给登录和下单流程写端到端测试"}
+{"id": "ho-zh-16", "expected_category": "software.git", "prompt": "rebase 的时候出现冲突了，怎么解决"}
+{"id": "ho-zh-17", "expected_category": "software.algorithm", "prompt": "LeetCode 42 接雨水，给个 O(n) 的解法"}
+{"id": "ho-zh-18", "expected_category": "data.math-calc", "prompt": "3.5 英寸等于多少厘米"}
+{"id": "ho-zh-19", "expected_category": "data.math-solve", "prompt": "求解方程组 2x+3y=12, x-y=1"}
+{"id": "ho-zh-20", "expected_category": "data.spreadsheet", "prompt": "Excel 里怎么用 VLOOKUP 从另一个表里查价格"}
+{"id": "ho-zh-21", "expected_category": "data.cleaning", "prompt": "这份用户数据里有很多重复行和空值，帮我清洗一下"}
+{"id": "ho-zh-22", "expected_category": "data.stats", "prompt": "A/B 测试两组转化率分别是 3.2% 和 3.6%，差异显著吗"}
+{"id": "ho-zh-23", "expected_category": "data.ml", "prompt": "用 XGBoost 做一个用户流失预测模型，怎么选特征"}
+{"id": "ho-zh-24", "expected_category": "writing.personal", "prompt": "帮我写一封请假邮件给领导，家里有事要请三天假"}
+{"id": "ho-zh-25", "expected_category": "writing.argument", "prompt": "写一篇文章论述远程办公利大于弊"}
+{"id": "ho-zh-26", "expected_category": "writing.formal", "prompt": "帮我写一份关于办公室节能改造的项目申请报告"}
+{"id": "ho-zh-27", "expected_category": "writing.tech-docs", "prompt": "给这个 CLI 工具写一份 README，包括安装和使用示例"}
+{"id": "ho-zh-28", "expected_category": "writing.academic", "prompt": "帮我写论文的引言部分，主题是联邦学习中的隐私保护"}
+{"id": "ho-zh-29", "expected_category": "writing.fiction", "prompt": "写一个科幻短篇小说的开头，主角在火星上醒来发现基地空无一人"}
+{"id": "ho-zh-30", "expected_category": "writing.speech", "prompt": "我是伴郎，帮我准备一段婚礼上的致辞"}
+{"id": "ho-zh-31", "expected_category": "language.pro-translate", "prompt": "把这篇 20 页的医疗器械说明书翻译成英文，术语要准确"}
+{"id": "ho-zh-32", "expected_category": "language.learning", "prompt": "我在学日语，帮我解释一下は和が的区别，再出几道练习题"}
+{"id": "ho-zh-33", "expected_category": "info.news", "prompt": "最近美联储有什么新消息"}
+{"id": "ho-zh-34", "expected_category": "info.shopping", "prompt": "预算 3000 左右，买哪款降噪耳机比较好"}
+{"id": "ho-zh-35", "expected_category": "info.tech-compare", "prompt": "PostgreSQL 和 MySQL 哪个更适合我们这种小团队"}
+{"id": "ho-zh-36", "expected_category": "education.homework", "prompt": "初二物理题：一个物体从 20 米高处自由落下，落地需要多长时间？写出步骤"}
+{"id": "ho-zh-37", "expected_category": "education.teaching", "prompt": "帮我出一套小学四年级分数加减法的练习题，附答案"}
+{"id": "ho-zh-38", "expected_category": "education.study-plan", "prompt": "离考研还有半年，帮我制定一个复习计划"}
+{"id": "ho-zh-40", "expected_category": "howto.errands", "prompt": "护照过期了在哪里换，需要带什么材料"}
+{"id": "ho-zh-41", "expected_category": "howto.diy", "prompt": "卫生间水龙头一直滴水，自己怎么修"}
+{"id": "ho-zh-42", "expected_category": "health.fitness", "prompt": "想减脂增肌，一周练几次比较合适，饮食怎么安排"}
+{"id": "ho-zh-43", "expected_category": "health.symptoms", "prompt": "最近总是头晕，站起来的时候眼前发黑，是怎么回事"}
+{"id": "ho-zh-44", "expected_category": "health.report", "prompt": "体检报告里谷丙转氨酶偏高是什么意思"}
+{"id": "ho-zh-45", "expected_category": "law.consult", "prompt": "公司拖欠工资两个月了，我该怎么维权"}
+{"id": "ho-zh-46", "expected_category": "law.contract-draft", "prompt": "帮我起草一份软件外包开发合同"}
+{"id": "ho-zh-47", "expected_category": "finance.accounting", "prompt": "个人独资企业怎么交个税，能不能核定征收"}
+{"id": "ho-zh-48", "expected_category": "finance.personal", "prompt": "每月结余 5000，存款怎么分配比较稳妥"}
+{"id": "ho-zh-49", "expected_category": "business.interview", "prompt": "明天面试产品经理岗位，帮我准备一些可能被问到的问题"}
+{"id": "ho-zh-50", "expected_category": "business.minutes", "prompt": "把这段会议录音整理成会议纪要，列出待办事项"}
+{"id": "ho-zh-51", "expected_category": "business.market", "prompt": "分析一下国内新能源汽车市场的主要竞争对手"}
+{"id": "ho-zh-52", "expected_category": "business.prd", "prompt": "给我们的积分商城功能写一份产品需求文档"}
+{"id": "ho-zh-53", "expected_category": "research.experiment", "prompt": "我想验证新的教学方法能否提高成绩，怎么设计对照实验"}
+{"id": "ho-zh-54", "expected_category": "design.ux", "prompt": "我们 App 的注册流程用户流失很多，从交互上有什么改进建议"}
+{"id": "ho-zh-55", "expected_category": "design.image-prompt", "prompt": "帮我写一段 Midjourney 提示词：赛博朋克风格的雨夜街道"}
+{"id": "ho-zh-56", "expected_category": "creative.naming", "prompt": "给我的奶茶店起几个好听的名字"}
+{"id": "ho-zh-57", "expected_category": "creative.roleplay", "prompt": "我们来玩个游戏吧，你扮演一个侦探，我来当嫌疑人"}
+{"id": "ho-zh-58", "expected_category": "life.cooking", "prompt": "红烧肉怎么做才不腻"}
+{"id": "ho-zh-59", "expected_category": "life.family", "prompt": "孩子三岁了还不太爱说话，需要担心吗，平时怎么引导"}
+{"id": "ho-zh-60", "expected_category": "life.pets", "prompt": "猫咪最近不爱吃猫粮怎么办"}
+{"id": "ho-zh-61", "expected_category": "chat.feelings", "prompt": "和男朋友吵架了，他总觉得我太敏感，我是不是有问题"}
+{"id": "ho-zh-62", "expected_category": "other.about", "prompt": "你是什么模型？这次为什么给我分到这个档位"}
+{"id": "ho-en-01", "expected_category": "software.explain-snippet", "prompt": "What does this line do? `const [a, ...rest] = arr.filter(Boolean)`"}
+{"id": "ho-en-02", "expected_category": "software.api-usage", "prompt": "How do I set a timeout on a request with the Python requests library?"}
+{"id": "ho-en-03", "expected_category": "software.cross-module-feature", "prompt": "Add multi-currency support end to end: the pricing service, the checkout API and the admin dashboard all need changes"}
+{"id": "ho-en-04", "expected_category": "software.vague-feature", "prompt": "Make our app feel smarter somehow, maybe some kind of recommendations? Not sure what exactly"}
+{"id": "ho-en-05", "expected_category": "software.leak", "prompt": "File descriptors keep growing until the worker crashes with 'too many open files'"}
+{"id": "ho-en-06", "expected_category": "software.migration", "prompt": "Upgrade our Angular 12 app to Angular 18"}
+{"id": "ho-en-07", "expected_category": "software.module-design", "prompt": "Design the interface and data structures for a plugin system in our editor"}
+{"id": "ho-en-08", "expected_category": "software.review-large", "prompt": "Review this 2,000-line PR that rewrites our core scheduling engine"}
+{"id": "ho-en-09", "expected_category": "software.security-audit", "prompt": "Check our login endpoints for SQL injection, XSS and CSRF vulnerabilities"}
+{"id": "ho-en-10", "expected_category": "software.devops", "prompt": "Set up a GitHub Actions workflow that builds the Docker image and deploys it to Kubernetes"}
+{"id": "ho-en-11", "expected_category": "software.sql", "prompt": "Write a query that returns the top 5 customers by revenue per month"}
+{"id": "ho-en-12", "expected_category": "data.math-proof", "prompt": "Prove that there are infinitely many primes of the form 4k+3"}
+{"id": "ho-en-13", "expected_category": "data.viz", "prompt": "Plot monthly active users as a line chart with matplotlib"}
+{"id": "ho-en-14", "expected_category": "writing.edit", "prompt": "Can you tighten up this paragraph? It feels wordy."}
+{"id": "ho-en-15", "expected_category": "writing.marketing", "prompt": "Write a LinkedIn post announcing our Series A"}
+{"id": "ho-en-16", "expected_category": "info.research-report", "prompt": "Put together an in-depth report on the state of solid-state battery commercialization"}
+{"id": "ho-en-17", "expected_category": "info.fact", "prompt": "How tall is Mount Kilimanjaro?"}
+{"id": "ho-en-18", "expected_category": "education.explain", "prompt": "Explain how public-key cryptography works like I'm a high schooler"}
+{"id": "ho-en-19", "expected_category": "howto.planning", "prompt": "Should I accept the job offer in Berlin or stay at my current job? Help me think it through"}
+{"id": "ho-en-20", "expected_category": "health.medication", "prompt": "Can I take ibuprofen while on blood thinners?"}
+{"id": "ho-en-21", "expected_category": "health.mental", "prompt": "I've been feeling burned out and unmotivated for weeks"}
+{"id": "ho-en-23", "expected_category": "law.compliance", "prompt": "Does our analytics setup need to comply with GDPR if we only have a few EU users?"}
+{"id": "ho-en-24", "expected_category": "finance.modeling", "prompt": "Build a DCF model to value a SaaS company with 40% growth"}
+{"id": "ho-en-25", "expected_category": "business.strategy", "prompt": "Help me write a go-to-market strategy for our B2B analytics startup"}
+{"id": "ho-en-26", "expected_category": "business.negotiation", "prompt": "How should I negotiate a higher salary when I already have a competing offer?"}
+{"id": "ho-en-27", "expected_category": "business.project-management", "prompt": "Break this launch into milestones and assign owners in a Gantt-style plan"}
+{"id": "ho-en-28", "expected_category": "research.theory", "prompt": "Derive the backpropagation equations for a two-layer network with softmax output"}
+{"id": "ho-en-29", "expected_category": "research.paper-review", "prompt": "Act as reviewer 2 and give critical feedback on my NeurIPS submission"}
+{"id": "ho-en-30", "expected_category": "research.research-data", "prompt": "Analyze my qPCR results and run the statistics for the three treatment groups"}
+{"id": "ho-en-31", "expected_category": "design.visual", "prompt": "Suggest a color palette and typography for a calm meditation brand"}
+{"id": "ho-en-32", "expected_category": "design.image-analysis", "prompt": "What's wrong with the layout in this screenshot?"}
+{"id": "ho-en-33", "expected_category": "design.av-script", "prompt": "Write a 60-second YouTube intro script for a cooking channel"}
+{"id": "ho-en-34", "expected_category": "creative.brainstorm", "prompt": "Give me 10 ideas for a team-building event"}
+{"id": "ho-en-35", "expected_category": "creative.poetry", "prompt": "Write a haiku about autumn rain"}
+{"id": "ho-en-36", "expected_category": "life.travel", "prompt": "Plan a 5-day itinerary in Lisbon on a budget"}
+{"id": "ho-en-37", "expected_category": "chat.companion", "prompt": "I'm bored, just talk to me for a bit"}
+{"id": "ho-en-38", "expected_category": "chat.greeting", "prompt": "good morning!"}
+{"id": "ho-en-39", "expected_category": "other.unclear", "prompt": "the thing from before"}
+{"id": "ho-en-40", "expected_category": "software.debug-clear-error", "prompt": "Getting 'KeyError: user_id' on line 42 of views.py every time I load the profile page"}

@@ -3,7 +3,8 @@
 
 Checks two sets:
   - every category's own `example` in skills/triage/taxonomy.json
-  - the hand-labelled prompts in benchmark/triage-cases.jsonl
+  - the hand-labelled prompts in benchmark/triage-cases.jsonl, or the files given as arguments
+    (e.g. the held-out sets benchmark/triage-heldout*.jsonl, which must never be used to tune rules)
 """
 
 from __future__ import annotations
@@ -40,10 +41,11 @@ def check(rows: list[tuple[str, str, str, str | None]], rules: dict, tax: dict) 
     return ok_cat, ok_dom, misses
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    paths = [Path(p) for p in (sys.argv[1:] if argv is None else argv)] or [CASES]
     rules, tax = load_rules(), load_taxonomy()
     examples = [(c["id"], c["example"], c["id"], None) for c in tax["_by_id"].values() if c.get("example")]
-    cases = [(c["id"], c["prompt"], c["expected_category"], c.get("expected_tier")) for c in load_cases()]
+    cases = [(c["id"], c["prompt"], c["expected_category"], c.get("expected_tier")) for p in paths for c in load_cases(p)]
     failed = 0
     for name, rows in (("taxonomy examples", examples), ("labelled cases", cases)):
         ok_cat, ok_dom, misses = check(rows, rules, tax)
