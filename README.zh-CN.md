@@ -51,6 +51,8 @@
 /plugin install claude-triage@claude-triage
 ```
 
+需要 Claude Code 2.1.284 或更高版本（从这一版起支持 Claude Sonnet 5.5）。
+
 重启 Claude Code 后，**主会话就是导诊台**，像平时一样提问即可。
 
 **想先看看分诊效果？** 规则引擎是纯 Python，没有任何依赖：
@@ -73,7 +75,7 @@ echo "这段 Go 代码在高并发下会死锁，线上已经出现两次" | pyt
                   │  用 Agent 工具派单
                   ▼
    执行 agent = 精确型号 + 思考深度 + 工具权限，例如
-   Claude Haiku 4.5 · Claude Sonnet 5 low / medium / high · Claude Opus 5.5 medium / high / max · Claude Fable 5.1 max
+   Claude Haiku 4.5 · Claude Sonnet 5.5 low / medium / high · Claude Opus 5.5 medium / high / max · Claude Fable 5.1 max
                   │  回答（或 TRIAGE_ESCALATE → 转给更强的模型）
                   ▼
            导诊台转给你，并注明类别、型号和思考深度
@@ -94,22 +96,22 @@ echo "这段 Go 代码在高并发下会死锁，线上已经出现两次" | pyt
 
 | 大类 | 细类数 | 示例 → 默认模型 |
 |---|---:|---|
-| 💻 软件开发 | 40 | 改名 / 格式化 → Haiku 4.5 · UI 组件 → Sonnet 5 medium · 跨模块功能 → Opus 5.5 medium · 框架迁移 → Opus 5.5 high · 大型重构、偶发 bug、并发、安全审计、分布式架构 → Opus 5.5 max |
-| 📊 数据与数学 | 8 | 计算 → Haiku 4.5 · Excel 公式 → Sonnet 5 low · 统计分析 → Opus 5.5 medium · 数学证明 → Opus 5.5 max |
-| ✍️ 写作 | 10 | 润色、邮件、摘要 → Sonnet 5 low · 公文报告、小说 → Opus 5.5 medium · 学术论文 → Opus 5.5 high |
+| 💻 软件开发 | 40 | 改名 / 格式化 → Haiku 4.5 · UI 组件 → Sonnet 5.5 medium · 跨模块功能 → Opus 5.5 medium · 框架迁移 → Opus 5.5 high · 大型重构、偶发 bug、并发、安全审计、分布式架构 → Opus 5.5 max |
+| 📊 数据与数学 | 8 | 计算 → Haiku 4.5 · Excel 公式 → Sonnet 5.5 low · 统计分析 → Opus 5.5 medium · 数学证明 → Opus 5.5 max |
+| ✍️ 写作 | 10 | 润色、邮件、摘要 → Sonnet 5.5 low · 公文报告、小说 → Opus 5.5 medium · 学术论文 → Opus 5.5 high |
 | 🌐 语言 | 4 | 日常翻译、语法 → Haiku 4.5 · 法律 / 医学 / 长文翻译 → Opus 5.5 medium |
-| 🔎 信息查询 | 5 | 常识 → Haiku 4.5 · 产品比较 → Sonnet 5 medium · 深度调研报告 → Opus 5.5 high |
-| 🎓 教育学习 | 4 | 概念讲解、作业辅导 → Sonnet 5 medium |
-| 🧭 实用建议 | 4 | 设备设置、办事流程、家居维修 → Sonnet 5 low |
+| 🔎 信息查询 | 5 | 常识 → Haiku 4.5 · 产品比较 → Sonnet 5.5 medium · 深度调研报告 → Opus 5.5 high |
+| 🎓 教育学习 | 4 | 概念讲解、作业辅导 → Sonnet 5.5 medium |
+| 🧭 实用建议 | 4 | 设备设置、办事流程、家居维修 → Sonnet 5.5 low |
 | 🩺 健康 | 6 | 症状、心理健康 → Opus 5.5 medium · 用药、检查报告 → Opus 5.5 high（最低 Opus 5.5 medium） |
 | ⚖️ 法律 | 4 | 法律咨询、合同起草 → Opus 5.5 medium · 合同审查、合规 → Opus 5.5 high（最低 Opus 5.5 medium） |
-| 💰 金融财务 | 4 | 个人理财 → Sonnet 5 medium · 投资分析、财务建模 → Opus 5.5 high（最低 Opus 5.5 medium） |
-| 💼 职场与商业 | 8 | 会议纪要 → Sonnet 5 low · 简历、面试 → Sonnet 5 medium · 商业计划 → Opus 5.5 high |
+| 💰 金融财务 | 4 | 个人理财 → Sonnet 5.5 medium · 投资分析、财务建模 → Opus 5.5 high（最低 Opus 5.5 medium） |
+| 💼 职场与商业 | 8 | 会议纪要 → Sonnet 5.5 low · 简历、面试 → Sonnet 5.5 medium · 商业计划 → Opus 5.5 high |
 | 🔬 科研 | 5 | 文献综述、实验设计 → Opus 5.5 high · 理论推导 → Opus 5.5 max |
-| 🎨 设计与多媒体 | 5 | 生图提示词 → Haiku 4.5 · UX、品牌、视频脚本 → Sonnet 5 medium |
-| 💡 创意与娱乐 | 4 | 起名、角色扮演 → Sonnet 5 low · 头脑风暴、诗词 → Sonnet 5 medium |
-| 🏠 生活 | 4 | 菜谱 → Haiku 4.5 · 旅行、育儿 → Sonnet 5 medium |
-| 💬 闲聊与情感 | 3 | 寒暄 → Haiku 4.5 · 情感关系 → Sonnet 5 medium |
+| 🎨 设计与多媒体 | 5 | 生图提示词 → Haiku 4.5 · UX、品牌、视频脚本 → Sonnet 5.5 medium |
+| 💡 创意与娱乐 | 4 | 起名、角色扮演 → Sonnet 5.5 low · 头脑风暴、诗词 → Sonnet 5.5 medium |
+| 🏠 生活 | 4 | 菜谱 → Haiku 4.5 · 旅行、育儿 → Sonnet 5.5 medium |
+| 💬 闲聊与情感 | 3 | 寒暄 → Haiku 4.5 · 情感关系 → Sonnet 5.5 medium |
 | 🗂️ 其他 | 2 | 询问分诊本身（导诊台直接回答） · 需求不清 |
 
 </details>
@@ -127,7 +129,7 @@ Claude Code 同一时间只连一家的 Anthropic 兼容接口。切换到其他
 | Claude | DeepSeek | 月之暗面 Kimi | 智谱 GLM | 小米 MiMo |
 |---|---|---|---|---|
 | Claude Haiku 4.5（导诊台） | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.7 Code HighSpeed `kimi-k2.7-code-highspeed` | GLM-5.3-Flash `glm-5.3-flash` | MiMo V2.5 `mimo-v2.5` |
-| Claude Sonnet 5 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 / K2.7 Code | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
+| Claude Sonnet 5.5 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 / K2.7 Code | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 | Claude Opus 5.5 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 | Claude Fable 5.1 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 

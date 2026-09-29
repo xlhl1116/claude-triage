@@ -25,8 +25,8 @@
         }
       },
       "t2": {
-        "id": "claude-sonnet-5",
-        "name": "Claude Sonnet 5",
+        "id": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5",
         "effort": "low",
         "supports_effort": true,
         "pricing": {
@@ -37,8 +37,8 @@
         }
       },
       "t3": {
-        "id": "claude-sonnet-5",
-        "name": "Claude Sonnet 5",
+        "id": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5",
         "effort": "medium",
         "supports_effort": true,
         "pricing": {
@@ -49,8 +49,8 @@
         }
       },
       "t4": {
-        "id": "claude-sonnet-5",
-        "name": "Claude Sonnet 5",
+        "id": "claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5",
         "effort": "high",
         "supports_effort": true,
         "pricing": {

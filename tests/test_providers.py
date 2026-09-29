@@ -43,9 +43,9 @@ class Registry(unittest.TestCase):
         got = {t: (m["id"], m.get("effort")) for t, m in PROVIDERS["claude"]["models"].items()}
         self.assertEqual(got, {
             "t1": ("claude-haiku-4-5", None),
-            "t2": ("claude-sonnet-5", "low"),
-            "t3": ("claude-sonnet-5", "medium"),
-            "t4": ("claude-sonnet-5", "high"),
+            "t2": ("claude-sonnet-5-5", "low"),
+            "t3": ("claude-sonnet-5-5", "medium"),
+            "t4": ("claude-sonnet-5-5", "high"),
             "t5": ("claude-opus-5-5", "medium"),
             "t6": ("claude-opus-5-5", "high"),
             "t7": ("claude-opus-5-5", "max"),

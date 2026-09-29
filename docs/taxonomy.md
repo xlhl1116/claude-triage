@@ -36,28 +36,28 @@
 
 | 小组 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|---|
-| 理解问答 | 代码片段解释<br><sub>Explain a code snippet</sub> | Claude Sonnet 5 · low | 只读 |  | `software.explain-snippet` |
-|  | 报错信息解读<br><sub>Explain an error message</sub> | Claude Sonnet 5 · low | 只读 |  | `software.explain-error` |
-|  | API / 库用法问答<br><sub>Library / API usage question</sub> | Claude Sonnet 5 · low | 只读 |  | `software.api-usage` |
+| 理解问答 | 代码片段解释<br><sub>Explain a code snippet</sub> | Claude Sonnet 5.5 · low | 只读 |  | `software.explain-snippet` |
+|  | 报错信息解读<br><sub>Explain an error message</sub> | Claude Sonnet 5.5 · low | 只读 |  | `software.explain-error` |
+|  | API / 库用法问答<br><sub>Library / API usage question</sub> | Claude Sonnet 5.5 · low | 只读 |  | `software.api-usage` |
 |  | 读懂陌生代码库<br><sub>Understand an unfamiliar codebase</sub> | Claude Opus 5.5 · medium | 只读 |  | `software.understand-codebase` |
 | 小改动 | 改名 / 格式化 / 加注释<br><sub>Rename, format, add comments</sub> | Claude Haiku 4.5 | 代码 |  | `software.rename-format` |
 |  | 改配置、常量、文案<br><sub>Change config, constants, copy</sub> | Claude Haiku 4.5 | 代码 |  | `software.config-change` |
 |  | 正则、Shell 一行命令<br><sub>Regex or shell one-liner</sub> | Claude Haiku 4.5 | 代码 |  | `software.one-liner` |
-|  | 单个函数内的小修改<br><sub>Small edit inside one function</sub> | Claude Sonnet 5 · low | 代码 |  | `software.small-edit` |
-| 新功能 | 写单个函数 / 脚本<br><sub>Write a single function or script</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.write-function` |
-|  | UI 组件开发<br><sub>UI component development</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.ui-component` |
-|  | 单模块功能<br><sub>Feature within one module</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.module-feature` |
+|  | 单个函数内的小修改<br><sub>Small edit inside one function</sub> | Claude Sonnet 5.5 · low | 代码 |  | `software.small-edit` |
+| 新功能 | 写单个函数 / 脚本<br><sub>Write a single function or script</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.write-function` |
+|  | UI 组件开发<br><sub>UI component development</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.ui-component` |
+|  | 单模块功能<br><sub>Feature within one module</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.module-feature` |
 |  | 跨模块功能<br><sub>Feature across modules</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.cross-module-feature` |
 |  | 从零搭建项目 / 脚手架<br><sub>Scaffold a new project</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.scaffold` |
 |  | 需求模糊的功能<br><sub>Feature with unclear requirements</sub> | Claude Opus 5.5 · high | 代码 |  | `software.vague-feature` |
 |  | AI / LLM 应用开发<br><sub>AI / LLM application development</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.ai-app` |
-| 调试排错 | 明确报错、可复现<br><sub>Bug with a clear error</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.debug-clear-error` |
+| 调试排错 | 明确报错、可复现<br><sub>Bug with a clear error</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.debug-clear-error` |
 |  | 逻辑错误（结果不对但不报错）<br><sub>Logic bug: wrong result, no error</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.logic-bug` |
 |  | 内存 / 资源泄漏<br><sub>Memory or resource leak</sub> | Claude Opus 5.5 · high | 代码 |  | `software.leak` |
 |  | 性能定位与优化<br><sub>Performance profiling and tuning</sub> | Claude Opus 5.5 · high | 代码 |  | `software.performance` |
 |  | 偶发 / 只在线上出现<br><sub>Intermittent or production-only bug</sub> | Claude Opus 5.5 · max | 代码 |  | `software.hard-debug` |
 |  | 并发、竞态、死锁<br><sub>Concurrency, race or deadlock bug</sub> | Claude Opus 5.5 · max | 代码 |  | `software.concurrency-bug` |
-| 重构 | 局部重构（单函数 / 单文件）<br><sub>Local refactor (one function or file)</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.local-refactor` |
+| 重构 | 局部重构（单函数 / 单文件）<br><sub>Local refactor (one function or file)</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.local-refactor` |
 |  | 模块级重构（接口不变）<br><sub>Module-level refactor (same interface)</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.module-refactor` |
 |  | 框架、语言或大版本迁移<br><sub>Framework, language or major-version migration</sub> | Claude Opus 5.5 · high | 代码 |  | `software.migration` |
 |  | 大型项目重构（跨模块、会改接口）<br><sub>Large refactor across modules</sub> | Claude Opus 5.5 · max | 代码 |  | `software.large-refactor` |
@@ -66,14 +66,14 @@
 |  | 技术方案评审、方案权衡<br><sub>Design review and trade-offs</sub> | Claude Opus 5.5 · high | 只读 |  | `software.tech-review` |
 |  | 系统架构设计（技术选型、服务拆分）<br><sub>System architecture and tech selection</sub> | Claude Opus 5.5 · high | 只读 |  | `software.system-architecture` |
 |  | 分布式、高并发、高可用架构<br><sub>Distributed, high-concurrency, high-availability architecture</sub> | Claude Opus 5.5 · max | 只读 |  | `software.distributed-architecture` |
-| 质量保障 | 写单元测试<br><sub>Write unit tests</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.unit-tests` |
+| 质量保障 | 写单元测试<br><sub>Write unit tests</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.unit-tests` |
 |  | 集成 / 端到端测试<br><sub>Integration and end-to-end tests</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.integration-tests` |
-|  | 代码审查：小 PR<br><sub>Code review: small PR</sub> | Claude Sonnet 5 · medium | 只读 |  | `software.review-small` |
+|  | 代码审查：小 PR<br><sub>Code review: small PR</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `software.review-small` |
 |  | 代码审查：大 PR 或核心模块<br><sub>Code review: large PR or core module</sub> | Claude Opus 5.5 · high | 只读 |  | `software.review-large` |
 |  | 安全审计、漏洞排查<br><sub>Security audit and vulnerability hunting</sub> | Claude Opus 5.5 · max | 只读 |  | `software.security-audit` |
-| 专项 | SQL 编写与优化<br><sub>Write and optimize SQL</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.sql` |
-|  | DevOps：CI、Docker、云与部署<br><sub>DevOps: CI, Docker, cloud and deployment</sub> | Claude Sonnet 5 · medium | 代码 |  | `software.devops` |
-|  | Git 操作、合并冲突<br><sub>Git operations and merge conflicts</sub> | Claude Sonnet 5 · low | 代码 |  | `software.git` |
+| 专项 | SQL 编写与优化<br><sub>Write and optimize SQL</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.sql` |
+|  | DevOps：CI、Docker、云与部署<br><sub>DevOps: CI, Docker, cloud and deployment</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `software.devops` |
+|  | Git 操作、合并冲突<br><sub>Git operations and merge conflicts</sub> | Claude Sonnet 5.5 · low | 代码 |  | `software.git` |
 |  | 算法与数据结构题<br><sub>Algorithms and data structures</sub> | Claude Opus 5.5 · medium | 代码 |  | `software.algorithm` |
 |  | 算法正确性证明、复杂度分析<br><sub>Algorithm correctness proof and complexity analysis</sub> | Claude Opus 5.5 · max | 只读 |  | `software.algorithm-proof` |
 
@@ -84,12 +84,12 @@
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
 | 数学计算<br><sub>Arithmetic and unit conversion</sub> | Claude Haiku 4.5 | 代码 |  | `data.math-calc` |
-| 数学解题<br><sub>Solve a math problem</sub> | Claude Sonnet 5 · high | 代码 |  | `data.math-solve` |
+| 数学解题<br><sub>Solve a math problem</sub> | Claude Sonnet 5.5 · high | 代码 |  | `data.math-solve` |
 | 数学证明 / 竞赛题<br><sub>Math proof or competition problem</sub> | Claude Opus 5.5 · max | 代码 |  | `data.math-proof` |
-| 表格 / Excel 公式<br><sub>Spreadsheet and Excel formulas</sub> | Claude Sonnet 5 · low | 文件 |  | `data.spreadsheet` |
-| 数据清洗与整理<br><sub>Data cleaning</sub> | Claude Sonnet 5 · medium | 代码 |  | `data.cleaning` |
+| 表格 / Excel 公式<br><sub>Spreadsheet and Excel formulas</sub> | Claude Sonnet 5.5 · low | 文件 |  | `data.spreadsheet` |
+| 数据清洗与整理<br><sub>Data cleaning</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `data.cleaning` |
 | 统计分析与解读<br><sub>Statistical analysis</sub> | Claude Opus 5.5 · medium | 代码 |  | `data.stats` |
-| 数据可视化<br><sub>Data visualization</sub> | Claude Sonnet 5 · medium | 代码 |  | `data.viz` |
+| 数据可视化<br><sub>Data visualization</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `data.viz` |
 | 机器学习建模<br><sub>Machine-learning modelling</sub> | Claude Opus 5.5 · high | 代码 |  | `data.ml` |
 
 <a id="writing"></a>
@@ -98,16 +98,16 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 润色、改写、点评用户给的文本<br><sub>Edit, rewrite or critique provided text</sub> | Claude Sonnet 5 · low | 文件 |  | `writing.edit` |
-| 个人沟通：邮件、消息、贺词<br><sub>Personal messages and emails</sub> | Claude Sonnet 5 · low | 只读 |  | `writing.personal` |
-| 摘要、提炼要点<br><sub>Summaries and key points</sub> | Claude Sonnet 5 · low | 文件 |  | `writing.summary` |
-| 议论与观点文章<br><sub>Opinion and argumentative writing</sub> | Claude Sonnet 5 · medium | 只读 |  | `writing.argument` |
-| 营销文案、SEO、社媒内容<br><sub>Marketing copy, SEO and social posts</sub> | Claude Sonnet 5 · medium | 只读 |  | `writing.marketing` |
+| 润色、改写、点评用户给的文本<br><sub>Edit, rewrite or critique provided text</sub> | Claude Sonnet 5.5 · low | 文件 |  | `writing.edit` |
+| 个人沟通：邮件、消息、贺词<br><sub>Personal messages and emails</sub> | Claude Sonnet 5.5 · low | 只读 |  | `writing.personal` |
+| 摘要、提炼要点<br><sub>Summaries and key points</sub> | Claude Sonnet 5.5 · low | 文件 |  | `writing.summary` |
+| 议论与观点文章<br><sub>Opinion and argumentative writing</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `writing.argument` |
+| 营销文案、SEO、社媒内容<br><sub>Marketing copy, SEO and social posts</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `writing.marketing` |
 | 公文、报告、方案书<br><sub>Formal documents and reports</sub> | Claude Opus 5.5 · medium | 文件 |  | `writing.formal` |
-| 技术文档、README、API 文档<br><sub>Technical docs, README, API docs</sub> | Claude Sonnet 5 · medium | 文件 |  | `writing.tech-docs` |
+| 技术文档、README、API 文档<br><sub>Technical docs, README, API docs</sub> | Claude Sonnet 5.5 · medium | 文件 |  | `writing.tech-docs` |
 | 学术论文写作<br><sub>Academic paper writing</sub> | Claude Opus 5.5 · high | 文件 |  | `writing.academic` |
 | 小说、剧本、创意写作<br><sub>Fiction, scripts and creative writing</sub> | Claude Opus 5.5 · medium | 文件 |  | `writing.fiction` |
-| 演讲稿、致辞<br><sub>Speeches and toasts</sub> | Claude Sonnet 5 · medium | 只读 |  | `writing.speech` |
+| 演讲稿、致辞<br><sub>Speeches and toasts</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `writing.speech` |
 
 <a id="language"></a>
 
@@ -118,7 +118,7 @@
 | 日常翻译<br><sub>Everyday translation</sub> | Claude Haiku 4.5 | 只读 |  | `language.translate` |
 | 专业 / 长文翻译<br><sub>Professional or long-form translation</sub> | Claude Opus 5.5 · medium | 文件 |  | `language.pro-translate` |
 | 语法纠错<br><sub>Grammar check</sub> | Claude Haiku 4.5 | 只读 |  | `language.grammar` |
-| 外语学习与练习<br><sub>Foreign-language learning</sub> | Claude Sonnet 5 · low | 只读 |  | `language.learning` |
+| 外语学习与练习<br><sub>Foreign-language learning</sub> | Claude Sonnet 5.5 · low | 只读 |  | `language.learning` |
 
 <a id="info"></a>
 
@@ -127,9 +127,9 @@
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
 | 常识与具体事实<br><sub>Facts and general knowledge</sub> | Claude Haiku 4.5 | 只读 |  | `info.fact` |
-| 时事新闻<br><sub>Current events</sub> | Claude Sonnet 5 · low | 只读 |  | `info.news` |
-| 产品与购物比较<br><sub>Product and shopping comparison</sub> | Claude Sonnet 5 · medium | 只读 |  | `info.shopping` |
-| 技术 / 工具选型比较<br><sub>Technology and tool comparison</sub> | Claude Sonnet 5 · medium | 只读 |  | `info.tech-compare` |
+| 时事新闻<br><sub>Current events</sub> | Claude Sonnet 5.5 · low | 只读 |  | `info.news` |
+| 产品与购物比较<br><sub>Product and shopping comparison</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `info.shopping` |
+| 技术 / 工具选型比较<br><sub>Technology and tool comparison</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `info.tech-compare` |
 | 深度调研报告<br><sub>In-depth research report</sub> | Claude Opus 5.5 · high | 只读 |  | `info.research-report` |
 
 <a id="education"></a>
@@ -138,10 +138,10 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 概念讲解、辅导<br><sub>Explain a concept, tutoring</sub> | Claude Sonnet 5 · medium | 只读 |  | `education.explain` |
-| 作业解题（带步骤）<br><sub>Homework help with steps</sub> | Claude Sonnet 5 · medium | 代码 |  | `education.homework` |
-| 出题、备课、教案<br><sub>Teaching materials</sub> | Claude Sonnet 5 · medium | 文件 |  | `education.teaching` |
-| 学习规划与备考<br><sub>Study plan and exam prep</sub> | Claude Sonnet 5 · low | 只读 |  | `education.study-plan` |
+| 概念讲解、辅导<br><sub>Explain a concept, tutoring</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `education.explain` |
+| 作业解题（带步骤）<br><sub>Homework help with steps</sub> | Claude Sonnet 5.5 · medium | 代码 |  | `education.homework` |
+| 出题、备课、教案<br><sub>Teaching materials</sub> | Claude Sonnet 5.5 · medium | 文件 |  | `education.teaching` |
+| 学习规划与备考<br><sub>Study plan and exam prep</sub> | Claude Sonnet 5.5 · low | 只读 |  | `education.study-plan` |
 
 <a id="howto"></a>
 
@@ -149,10 +149,10 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 软件与设备使用<br><sub>Using software and devices</sub> | Claude Sonnet 5 · low | 只读 |  | `howto.software-usage` |
-| 办事流程、生活常识<br><sub>Paperwork and everyday procedures</sub> | Claude Sonnet 5 · low | 只读 |  | `howto.errands` |
-| 家居维修与 DIY<br><sub>Home repair and DIY</sub> | Claude Sonnet 5 · low | 只读 |  | `howto.diy` |
-| 计划与决策<br><sub>Planning and decisions</sub> | Claude Sonnet 5 · medium | 只读 |  | `howto.planning` |
+| 软件与设备使用<br><sub>Using software and devices</sub> | Claude Sonnet 5.5 · low | 只读 |  | `howto.software-usage` |
+| 办事流程、生活常识<br><sub>Paperwork and everyday procedures</sub> | Claude Sonnet 5.5 · low | 只读 |  | `howto.errands` |
+| 家居维修与 DIY<br><sub>Home repair and DIY</sub> | Claude Sonnet 5.5 · low | 只读 |  | `howto.diy` |
+| 计划与决策<br><sub>Planning and decisions</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `howto.planning` |
 
 <a id="health"></a>
 
@@ -162,8 +162,8 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 健身与营养<br><sub>Fitness and nutrition</sub> | Claude Sonnet 5 · medium | 只读 | 最低 Claude Sonnet 5 · medium | `health.fitness` |
-| 美容与护理<br><sub>Beauty and self-care</sub> | Claude Sonnet 5 · low | 只读 |  | `health.beauty` |
+| 健身与营养<br><sub>Fitness and nutrition</sub> | Claude Sonnet 5.5 · medium | 只读 | 最低 Claude Sonnet 5.5 · medium | `health.fitness` |
+| 美容与护理<br><sub>Beauty and self-care</sub> | Claude Sonnet 5.5 · low | 只读 |  | `health.beauty` |
 | 症状咨询<br><sub>Symptoms</sub> | Claude Opus 5.5 · medium | 只读 | 最低 Claude Opus 5.5 · medium | `health.symptoms` |
 | 用药咨询<br><sub>Medication</sub> | Claude Opus 5.5 · high | 只读 | 最低 Claude Opus 5.5 · medium | `health.medication` |
 | 检查报告解读<br><sub>Medical test results</sub> | Claude Opus 5.5 · high | 文件 | 最低 Claude Opus 5.5 · medium | `health.report` |
@@ -190,7 +190,7 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 个人理财常识<br><sub>Personal finance</sub> | Claude Sonnet 5 · medium | 只读 | 最低 Claude Sonnet 5 · medium | `finance.personal` |
+| 个人理财常识<br><sub>Personal finance</sub> | Claude Sonnet 5.5 · medium | 只读 | 最低 Claude Sonnet 5.5 · medium | `finance.personal` |
 | 投资分析<br><sub>Investment analysis</sub> | Claude Opus 5.5 · high | 代码 | 最低 Claude Opus 5.5 · medium | `finance.investing` |
 | 会计与税务<br><sub>Accounting and tax</sub> | Claude Opus 5.5 · medium | 只读 | 最低 Claude Opus 5.5 · medium | `finance.accounting` |
 | 财务建模、估值<br><sub>Financial modelling and valuation</sub> | Claude Opus 5.5 · high | 代码 | 最低 Claude Opus 5.5 · medium | `finance.modeling` |
@@ -201,10 +201,10 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 简历、求职信<br><sub>Resume and cover letter</sub> | Claude Sonnet 5 · medium | 文件 |  | `business.resume` |
-| 面试准备<br><sub>Interview preparation</sub> | Claude Sonnet 5 · medium | 只读 |  | `business.interview` |
-| 会议纪要、周报整理<br><sub>Meeting notes and status reports</sub> | Claude Sonnet 5 · low | 文件 |  | `business.minutes` |
-| 项目管理与计划<br><sub>Project management</sub> | Claude Sonnet 5 · medium | 文件 |  | `business.project-management` |
+| 简历、求职信<br><sub>Resume and cover letter</sub> | Claude Sonnet 5.5 · medium | 文件 |  | `business.resume` |
+| 面试准备<br><sub>Interview preparation</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `business.interview` |
+| 会议纪要、周报整理<br><sub>Meeting notes and status reports</sub> | Claude Sonnet 5.5 · low | 文件 |  | `business.minutes` |
+| 项目管理与计划<br><sub>Project management</sub> | Claude Sonnet 5.5 · medium | 文件 |  | `business.project-management` |
 | 市场与竞品分析<br><sub>Market and competitor analysis</sub> | Claude Opus 5.5 · medium | 只读 |  | `business.market` |
 | 商业计划、商业策略<br><sub>Business plan and strategy</sub> | Claude Opus 5.5 · high | 只读 |  | `business.strategy` |
 | 谈判与沟通策略<br><sub>Negotiation and communication strategy</sub> | Claude Opus 5.5 · medium | 只读 |  | `business.negotiation` |
@@ -228,11 +228,11 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| UI / UX 设计建议<br><sub>UI / UX design advice</sub> | Claude Sonnet 5 · medium | 只读 |  | `design.ux` |
-| 视觉与品牌<br><sub>Visual design and branding</sub> | Claude Sonnet 5 · medium | 只读 |  | `design.visual` |
-| 图片 / 截图分析<br><sub>Analyze an image or screenshot</sub> | Claude Sonnet 5 · medium | 只读 |  | `design.image-analysis` |
+| UI / UX 设计建议<br><sub>UI / UX design advice</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `design.ux` |
+| 视觉与品牌<br><sub>Visual design and branding</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `design.visual` |
+| 图片 / 截图分析<br><sub>Analyze an image or screenshot</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `design.image-analysis` |
 | 生成图片的提示词<br><sub>Prompts for image generation</sub> | Claude Haiku 4.5 | 只读 |  | `design.image-prompt` |
-| 视频 / 音频脚本<br><sub>Video and audio scripts</sub> | Claude Sonnet 5 · medium | 只读 |  | `design.av-script` |
+| 视频 / 音频脚本<br><sub>Video and audio scripts</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `design.av-script` |
 
 <a id="creative"></a>
 
@@ -240,10 +240,10 @@
 
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
-| 头脑风暴、点子<br><sub>Brainstorming</sub> | Claude Sonnet 5 · medium | 只读 |  | `creative.brainstorm` |
-| 起名、口号<br><sub>Naming and slogans</sub> | Claude Sonnet 5 · low | 只读 |  | `creative.naming` |
-| 诗词、歌词<br><sub>Poems and lyrics</sub> | Claude Sonnet 5 · medium | 只读 |  | `creative.poetry` |
-| 游戏、角色扮演<br><sub>Games and role play</sub> | Claude Sonnet 5 · low | 只读 |  | `creative.roleplay` |
+| 头脑风暴、点子<br><sub>Brainstorming</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `creative.brainstorm` |
+| 起名、口号<br><sub>Naming and slogans</sub> | Claude Sonnet 5.5 · low | 只读 |  | `creative.naming` |
+| 诗词、歌词<br><sub>Poems and lyrics</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `creative.poetry` |
+| 游戏、角色扮演<br><sub>Games and role play</sub> | Claude Sonnet 5.5 · low | 只读 |  | `creative.roleplay` |
 
 <a id="life"></a>
 
@@ -252,9 +252,9 @@
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
 | 烹饪与菜谱<br><sub>Cooking and recipes</sub> | Claude Haiku 4.5 | 只读 |  | `life.cooking` |
-| 旅行规划<br><sub>Travel planning</sub> | Claude Sonnet 5 · medium | 只读 |  | `life.travel` |
-| 家庭与育儿<br><sub>Family and parenting</sub> | Claude Sonnet 5 · medium | 只读 |  | `life.family` |
-| 宠物<br><sub>Pets</sub> | Claude Sonnet 5 · low | 只读 |  | `life.pets` |
+| 旅行规划<br><sub>Travel planning</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `life.travel` |
+| 家庭与育儿<br><sub>Family and parenting</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `life.family` |
+| 宠物<br><sub>Pets</sub> | Claude Sonnet 5.5 · low | 只读 |  | `life.pets` |
 
 <a id="chat"></a>
 
@@ -263,8 +263,8 @@
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
 | 寒暄、闲聊<br><sub>Greetings and small talk</sub> | Claude Haiku 4.5 | 只读 | 最高 Claude Haiku 4.5 | `chat.greeting` |
-| 情感关系、自我反思<br><sub>Relationships and personal reflection</sub> | Claude Sonnet 5 · medium | 只读 |  | `chat.feelings` |
-| 陪伴聊天<br><sub>Companionship chat</sub> | Claude Sonnet 5 · low | 只读 |  | `chat.companion` |
+| 情感关系、自我反思<br><sub>Relationships and personal reflection</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `chat.feelings` |
+| 陪伴聊天<br><sub>Companionship chat</sub> | Claude Sonnet 5.5 · low | 只读 |  | `chat.companion` |
 
 <a id="other"></a>
 
@@ -273,7 +273,7 @@
 | 细类 | 默认模型 · 深度 | 工具 | 最低 / 最高 | id |
 |---|---|---|---|---|
 | 询问助手或分诊本身<br><sub>Questions about the assistant or the triage</sub> | 导诊台直接回答 | 只读 |  | `other.about` |
-| 无法判断、需求不清<br><sub>Unclear request</sub> | Claude Sonnet 5 · medium | 只读 |  | `other.unclear` |
+| 无法判断、需求不清<br><sub>Unclear request</sub> | Claude Sonnet 5.5 · medium | 只读 |  | `other.unclear` |
 
 ## 后台微调 / Background adjustments
 
@@ -296,9 +296,9 @@
 | 档位 | Anthropic Claude | DeepSeek 深度求索 | 月之暗面 Kimi | 智谱 GLM | 小米 MiMo |
 |---|---|---|---|---|---|
 | `t1` | Claude Haiku 4.5 `claude-haiku-4-5` | DeepSeek V4.1 Flash `deepseek-flash` · low | Kimi K2.7 Code HighSpeed `kimi-k2.7-code-highspeed` · low | GLM-5.3-Flash `glm-5.3-flash` · low | MiMo V2.5 `mimo-v2.5` · low |
-| `t2` | Claude Sonnet 5 `claude-sonnet-5` · low | DeepSeek V4.1 Flash `deepseek-flash` · low | Kimi K2.6 `kimi-k2.6` · low | GLM-5.3-Flash `glm-5.3-flash` · low | MiMo V2.5 `mimo-v2.5` · low |
-| `t3` | Claude Sonnet 5 `claude-sonnet-5` · medium | DeepSeek V4.1 Flash `deepseek-flash` · medium | Kimi K2.6 `kimi-k2.6` · medium | GLM-5.3 `glm-5.3` · medium | MiMo V2.6 Pro `mimo-v2.6-pro` · medium |
-| `t4` | Claude Sonnet 5 `claude-sonnet-5` · high | DeepSeek V4.1 Flash `deepseek-flash` · high | Kimi K2.7 Code `kimi-k2.7-code` · high | GLM-5.3 `glm-5.3` · high | MiMo V2.6 Pro `mimo-v2.6-pro` · high |
+| `t2` | Claude Sonnet 5.5 `claude-sonnet-5-5` · low | DeepSeek V4.1 Flash `deepseek-flash` · low | Kimi K2.6 `kimi-k2.6` · low | GLM-5.3-Flash `glm-5.3-flash` · low | MiMo V2.5 `mimo-v2.5` · low |
+| `t3` | Claude Sonnet 5.5 `claude-sonnet-5-5` · medium | DeepSeek V4.1 Flash `deepseek-flash` · medium | Kimi K2.6 `kimi-k2.6` · medium | GLM-5.3 `glm-5.3` · medium | MiMo V2.6 Pro `mimo-v2.6-pro` · medium |
+| `t4` | Claude Sonnet 5.5 `claude-sonnet-5-5` · high | DeepSeek V4.1 Flash `deepseek-flash` · high | Kimi K2.7 Code `kimi-k2.7-code` · high | GLM-5.3 `glm-5.3` · high | MiMo V2.6 Pro `mimo-v2.6-pro` · high |
 | `t5` | Claude Opus 5.5 `claude-opus-5-5` · medium | DeepSeek V4 Pro `deepseek-v4-pro` · medium | Kimi K3 `kimi-k3` · medium | GLM-5.3 `glm-5.3` · medium | MiMo V2.6 Pro `mimo-v2.6-pro` · medium |
 | `t6` | Claude Opus 5.5 `claude-opus-5-5` · high | DeepSeek V4 Pro `deepseek-v4-pro` · high | Kimi K3 `kimi-k3` · high | GLM-5.3 `glm-5.3` · high | MiMo V2.6 Pro `mimo-v2.6-pro` · high |
 | `t7` | Claude Opus 5.5 `claude-opus-5-5` · max | DeepSeek V4 Pro `deepseek-v4-pro` · max | Kimi K3 `kimi-k3` · max | GLM-5.3 `glm-5.3` · max | MiMo V2.6 Pro `mimo-v2.6-pro` · max |
@@ -311,7 +311,7 @@
 | 口令 | 模型 |
 |---|---|
 | `@haiku` `--haiku` `@quick` `--quick` `用haiku` `用 haiku` `快速回答` | Claude Haiku 4.5 |
-| `@sonnet` `--sonnet` `@standard` `--standard` `用sonnet` `用 sonnet` | Claude Sonnet 5 · medium |
+| `@sonnet` `--sonnet` `@standard` `--standard` `用sonnet` `用 sonnet` | Claude Sonnet 5.5 · medium |
 | `@opus` `--opus` `@deep` `--deep` `用opus` `用 opus` `深度思考` `think hard` | Claude Opus 5.5 · medium |
 | `@opus-max` `--opus-max` `@deep-max` `--deep-max` `ultrathink` | Claude Opus 5.5 · max |
 | `@fable` `--fable` `@frontier` `--frontier` `用fable` `用 fable` | Claude Fable 5.1 · max |

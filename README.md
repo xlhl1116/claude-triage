@@ -51,6 +51,8 @@ Override    add @haiku / @sonnet / @opus / @opus-max / @fable to pick the model 
 /plugin install claude-triage@claude-triage
 ```
 
+Needs Claude Code 2.1.284 or later (the first release that knows Claude Sonnet 5.5).
+
 Restart Claude Code. From then on the **triage desk is your main conversation**: just type as usual.
 
 **Just want to see the routing first?** The rule engine is plain Python with no dependencies:
@@ -73,7 +75,7 @@ your message ──► hook: rule engine recognises the category, attaches a <tr
                      │  dispatches with the Agent tool
                      ▼
      executor = exact model + effort + tool access, e.g.
-     Claude Haiku 4.5 · Claude Sonnet 5 low / medium / high · Claude Opus 5.5 medium / high / max · Claude Fable 5.1 max
+     Claude Haiku 4.5 · Claude Sonnet 5.5 low / medium / high · Claude Opus 5.5 medium / high / max · Claude Fable 5.1 max
                      │  answer (or TRIAGE_ESCALATE → a stronger model)
                      ▼
               desk relays it to you, naming the category, model and effort
@@ -94,22 +96,22 @@ Pick the model yourself any time by adding `@haiku`, `@sonnet`, `@opus`, `@opus-
 
 | Domain | Categories | Examples → default model |
 |---|---:|---|
-| 💻 Software development | 40 | rename / format → Haiku 4.5 · UI component → Sonnet 5 medium · cross-module feature → Opus 5.5 medium · migration → Opus 5.5 high · large refactor, intermittent bug, concurrency, security audit, distributed architecture → Opus 5.5 max |
-| 📊 Data and math | 8 | arithmetic → Haiku 4.5 · spreadsheet formulas → Sonnet 5 low · statistics → Opus 5.5 medium · proofs → Opus 5.5 max |
-| ✍️ Writing | 10 | edit my text, emails, summaries → Sonnet 5 low · formal reports, fiction → Opus 5.5 medium · academic papers → Opus 5.5 high |
+| 💻 Software development | 40 | rename / format → Haiku 4.5 · UI component → Sonnet 5.5 medium · cross-module feature → Opus 5.5 medium · migration → Opus 5.5 high · large refactor, intermittent bug, concurrency, security audit, distributed architecture → Opus 5.5 max |
+| 📊 Data and math | 8 | arithmetic → Haiku 4.5 · spreadsheet formulas → Sonnet 5.5 low · statistics → Opus 5.5 medium · proofs → Opus 5.5 max |
+| ✍️ Writing | 10 | edit my text, emails, summaries → Sonnet 5.5 low · formal reports, fiction → Opus 5.5 medium · academic papers → Opus 5.5 high |
 | 🌐 Language | 4 | everyday translation, grammar → Haiku 4.5 · legal / medical / long-form translation → Opus 5.5 medium |
-| 🔎 Information lookup | 5 | facts → Haiku 4.5 · product comparison → Sonnet 5 medium · in-depth research report → Opus 5.5 high |
-| 🎓 Education | 4 | concept explanations, homework → Sonnet 5 medium |
-| 🧭 How-to guidance | 4 | device settings, paperwork, DIY → Sonnet 5 low |
+| 🔎 Information lookup | 5 | facts → Haiku 4.5 · product comparison → Sonnet 5.5 medium · in-depth research report → Opus 5.5 high |
+| 🎓 Education | 4 | concept explanations, homework → Sonnet 5.5 medium |
+| 🧭 How-to guidance | 4 | device settings, paperwork, DIY → Sonnet 5.5 low |
 | 🩺 Health | 6 | symptoms, mental health → Opus 5.5 medium · medication, test results → Opus 5.5 high (floor: Opus 5.5 medium) |
 | ⚖️ Legal | 4 | legal questions, contract drafting → Opus 5.5 medium · contract review, compliance → Opus 5.5 high (floor: Opus 5.5 medium) |
-| 💰 Finance | 4 | personal finance → Sonnet 5 medium · investing, modelling → Opus 5.5 high (floor: Opus 5.5 medium) |
-| 💼 Work and business | 8 | meeting notes → Sonnet 5 low · resume, interview → Sonnet 5 medium · business plan → Opus 5.5 high |
+| 💰 Finance | 4 | personal finance → Sonnet 5.5 medium · investing, modelling → Opus 5.5 high (floor: Opus 5.5 medium) |
+| 💼 Work and business | 8 | meeting notes → Sonnet 5.5 low · resume, interview → Sonnet 5.5 medium · business plan → Opus 5.5 high |
 | 🔬 Research | 5 | literature review, experiment design → Opus 5.5 high · theoretical derivation → Opus 5.5 max |
-| 🎨 Design and media | 5 | image prompts → Haiku 4.5 · UX, branding, video scripts → Sonnet 5 medium |
-| 💡 Creative and fun | 4 | naming, role play → Sonnet 5 low · brainstorming, poems → Sonnet 5 medium |
-| 🏠 Everyday life | 4 | recipes → Haiku 4.5 · travel, parenting → Sonnet 5 medium |
-| 💬 Chat and feelings | 3 | greetings → Haiku 4.5 · relationships → Sonnet 5 medium |
+| 🎨 Design and media | 5 | image prompts → Haiku 4.5 · UX, branding, video scripts → Sonnet 5.5 medium |
+| 💡 Creative and fun | 4 | naming, role play → Sonnet 5.5 low · brainstorming, poems → Sonnet 5.5 medium |
+| 🏠 Everyday life | 4 | recipes → Haiku 4.5 · travel, parenting → Sonnet 5.5 medium |
+| 💬 Chat and feelings | 3 | greetings → Haiku 4.5 · relationships → Sonnet 5.5 medium |
 | 🗂️ Other | 2 | questions about the triage (answered by the desk) · unclear requests |
 
 </details>
@@ -127,7 +129,7 @@ Claude Code talks to one Anthropic-compatible endpoint at a time. For another pr
 | Claude | DeepSeek | Moonshot Kimi | Zhipu GLM | Xiaomi MiMo |
 |---|---|---|---|---|
 | Claude Haiku 4.5 (desk) | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.7 Code HighSpeed `kimi-k2.7-code-highspeed` | GLM-5.3-Flash `glm-5.3-flash` | MiMo V2.5 `mimo-v2.5` |
-| Claude Sonnet 5 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 / K2.7 Code | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
+| Claude Sonnet 5.5 | DeepSeek V4.1 Flash `deepseek-flash` | Kimi K2.6 / K2.7 Code | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 | Claude Opus 5.5 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 | Claude Fable 5.1 | DeepSeek V4 Pro `deepseek-v4-pro` | Kimi K3 `kimi-k3` | GLM-5.3 `glm-5.3` | MiMo V2.6 Pro `mimo-v2.6-pro` |
 

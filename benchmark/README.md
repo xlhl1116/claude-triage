@@ -39,7 +39,7 @@ Things to know:
 
 - **Model-written code is executed** by the unit-test graders, in a subprocess with a timeout in a temp directory. That is not a security sandbox; run it where executing model output is acceptable.
 - Every strategy gets the same neutral system prompt, so differences come from the model and the routing only. Escalation (`TRIAGE_ESCALATE`) is not modelled yet.
-- Claude tiers send `output_config.effort` (Sonnet 5 low / medium / high, Opus 5.5 medium / high / max, Fable 5.1 max). Third-party tiers express depth through `extra_body` in `skills/triage/providers.json` (e.g. DeepSeek `thinking` + `reasoning_effort`), because their parameters differ.
+- Claude tiers send `output_config.effort` (Sonnet 5.5 low / medium / high, Opus 5.5 medium / high / max, Fable 5.1 max). Third-party tiers express depth through `extra_body` in `skills/triage/providers.json` (e.g. DeepSeek `thinking` + `reasoning_effort`), because their parameters differ.
 - Routing keywords were partly tuned while looking at these 30 task prompts, so triage results on this set are optimistic; judge routing on prompts it has not seen.
 - Cost is only reported for models with `pricing` in `providers.json` (Claude for now); others show "—".
 - 30 tasks is small. Treat differences of one or two tasks as noise, and use `--repeats` before drawing conclusions.
