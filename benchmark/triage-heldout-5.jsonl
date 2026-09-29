@@ -1,0 +1,94 @@
+{"id": "h5-en-01", "expected_category": "software.explain-error", "prompt": "Getting 'TypeError: Cannot read properties of undefined (reading 'map')' in my React component. What does it mean?"}
+{"id": "h5-en-02", "expected_category": "software.explain-snippet", "prompt": "Can you walk me through what this bash snippet does? `find . -name '*.log' -mtime +7 -exec rm {} +`"}
+{"id": "h5-en-03", "expected_category": "software.api-usage", "prompt": "What's the right way to make a POST request with a JSON body using Python requests?"}
+{"id": "h5-en-04", "expected_category": "software.understand-codebase", "prompt": "I just joined this team. Give me a tour of how this repo is organized and how a request flows through it."}
+{"id": "h5-en-05", "expected_category": "software.rename-format", "prompt": "Add docstrings to every public function in utils.py"}
+{"id": "h5-en-06", "expected_category": "software.config-change", "prompt": "Bump the default timeout in config.yaml from 30 to 60 seconds"}
+{"id": "h5-en-07", "expected_category": "software.one-liner", "prompt": "I need a regex that matches US zip codes, 5 digits with an optional -4 suffix"}
+{"id": "h5-en-08", "expected_category": "software.small-edit", "prompt": "In parse_date(), make it also accept dates like 2024/03/15"}
+{"id": "h5-en-09", "expected_category": "software.write-function", "prompt": "Write a Python script that renames all the photos in a folder by the date they were taken"}
+{"id": "h5-en-10", "expected_category": "software.ui-component", "prompt": "Build a React dropdown that supports keyboard navigation and search"}
+{"id": "h5-en-11", "expected_category": "software.module-feature", "prompt": "Add rate limiting to the login endpoint in our auth service"}
+{"id": "h5-en-12", "expected_category": "software.cross-module-feature", "prompt": "We need to add multi-tenant support: every table, the API layer and the admin UI have to know which org a user belongs to"}
+{"id": "h5-en-13", "expected_category": "software.scaffold", "prompt": "Set up a new FastAPI project with Postgres, Alembic migrations, and a Dockerfile"}
+{"id": "h5-en-14", "expected_category": "software.ai-app", "prompt": "I want to build a chatbot that answers questions from our internal PDF docs using embeddings"}
+{"id": "h5-en-15", "expected_category": "software.debug-clear-error", "prompt": "My Flask app crashes on startup with ImportError: cannot import name 'url_quote' from 'werkzeug.urls'. How do I fix it?"}
+{"id": "h5-en-16", "expected_category": "software.logic-bug", "prompt": "My shopping cart total is off by a few cents on some orders, but nothing throws. Can you figure out why?"}
+{"id": "h5-en-17", "expected_category": "software.leak", "prompt": "Our Node service's memory keeps growing for days until the container gets OOM-killed"}
+{"id": "h5-en-18", "expected_category": "software.performance", "prompt": "This page takes 8 seconds to load; figure out what's slow and speed it up"}
+{"id": "h5-en-19", "expected_category": "software.hard-debug", "prompt": "Users occasionally get logged out at random, we can't reproduce it locally and it only happens in prod"}
+{"id": "h5-en-20", "expected_category": "software.concurrency-bug", "prompt": "Sometimes two workers pick up the same job from the queue and process it twice"}
+{"id": "h5-en-21", "expected_category": "software.local-refactor", "prompt": "This 200-line function is a mess, split it into smaller pieces without changing behavior"}
+{"id": "h5-en-22", "expected_category": "software.migration", "prompt": "Help me move our app from Vue 2 to Vue 3"}
+{"id": "h5-en-23", "expected_category": "software.db-schema", "prompt": "Design the tables for a booking system with rooms, reservations and cancellations"}
+{"id": "h5-en-24", "expected_category": "software.tech-review", "prompt": "Here's our plan to replace REST with GraphQL for the mobile app. Poke holes in it."}
+{"id": "h5-en-25", "expected_category": "software.system-architecture", "prompt": "We're starting a food delivery app. How should we split the backend into services and what stack should we use?"}
+{"id": "h5-en-26", "expected_category": "software.unit-tests", "prompt": "Write pytest tests for the discount calculation function, including edge cases"}
+{"id": "h5-en-27", "expected_category": "software.integration-tests", "prompt": "Add end-to-end tests with Playwright that cover signup, login and checkout"}
+{"id": "h5-en-28", "expected_category": "software.review-small", "prompt": "Can you review this small PR that adds input validation to the signup form?"}
+{"id": "h5-en-29", "expected_category": "software.security-audit", "prompt": "Check our file upload handler for vulnerabilities an attacker could exploit"}
+{"id": "h5-en-30", "expected_category": "software.sql", "prompt": "Write a query that returns the top 5 customers by total spend in the last 90 days"}
+{"id": "h5-en-31", "expected_category": "software.devops", "prompt": "Set up a GitHub Actions workflow that runs tests and deploys to AWS on every push to main"}
+{"id": "h5-en-32", "expected_category": "software.git", "prompt": "I accidentally committed to main instead of my feature branch. How do I move the commit?"}
+{"id": "h5-en-33", "expected_category": "software.algorithm", "prompt": "Find the longest substring without repeating characters, in O(n)"}
+{"id": "h5-en-34", "expected_category": "data.math-calc", "prompt": "What's 15% of 2,340?"}
+{"id": "h5-en-35", "expected_category": "data.math-solve", "prompt": "A train leaves at 3pm going 60 mph, another at 4pm going 80 mph on the same track. When does the second catch up?"}
+{"id": "h5-en-36", "expected_category": "data.spreadsheet", "prompt": "In Google Sheets, how do I count the rows where column B says 'paid' and column C is over 100?"}
+{"id": "h5-en-37", "expected_category": "data.stats", "prompt": "My A/B test shows 4.1% vs 4.6% conversion with 3,000 users each. Is that difference real?"}
+{"id": "h5-en-38", "expected_category": "data.viz", "prompt": "Plot monthly revenue for the last two years as a line chart with matplotlib"}
+{"id": "h5-en-39", "expected_category": "data.ml", "prompt": "Build a model to predict which customers will cancel their subscription next month"}
+{"id": "h5-en-40", "expected_category": "writing.edit", "prompt": "Tighten up this paragraph from my blog post, it rambles"}
+{"id": "h5-en-41", "expected_category": "writing.personal", "prompt": "Write a short note thanking my neighbor for watching our cat last week"}
+{"id": "h5-en-42", "expected_category": "writing.summary", "prompt": "Give me the key takeaways from this 30-page report in five bullets"}
+{"id": "h5-en-43", "expected_category": "writing.marketing", "prompt": "Write three Instagram captions for our new cold brew coffee"}
+{"id": "h5-en-44", "expected_category": "writing.formal", "prompt": "Draft a quarterly report for the board covering revenue, hiring and risks"}
+{"id": "h5-en-45", "expected_category": "writing.tech-docs", "prompt": "Write a README for this CLI tool explaining install and usage"}
+{"id": "h5-en-46", "expected_category": "writing.fiction", "prompt": "Write a short story about a lighthouse keeper who finds a message in a bottle"}
+{"id": "h5-en-47", "expected_category": "writing.speech", "prompt": "I'm the best man at my brother's wedding. Help me write a 3-minute toast."}
+{"id": "h5-en-48", "expected_category": "language.translate", "prompt": "How do you say 'where is the train station' in Japanese?"}
+{"id": "h5-en-49", "expected_category": "language.grammar", "prompt": "Is it 'fewer people' or 'less people'?"}
+{"id": "h5-en-50", "expected_category": "language.learning", "prompt": "Quiz me on Spanish irregular verbs in the past tense"}
+{"id": "h5-en-51", "expected_category": "info.fact", "prompt": "What's the tallest mountain in Africa?"}
+{"id": "h5-en-52", "expected_category": "info.shopping", "prompt": "Which is better for a student on a budget, a MacBook Air or a ThinkPad?"}
+{"id": "h5-en-53", "expected_category": "info.tech-compare", "prompt": "Should we use Kafka or RabbitMQ for our event pipeline?"}
+{"id": "h5-en-54", "expected_category": "education.explain", "prompt": "Explain how public key cryptography works like I'm 12"}
+{"id": "h5-en-55", "expected_category": "howto.software-usage", "prompt": "How do I stop my iPhone from auto-brightening the screen?"}
+{"id": "h5-en-56", "expected_category": "howto.diy", "prompt": "The toilet keeps running after I flush. How do I fix it myself?"}
+{"id": "h5-en-57", "expected_category": "howto.errands", "prompt": "How do I renew my US passport by mail?"}
+{"id": "h5-en-58", "expected_category": "health.symptoms", "prompt": "I've had a dull headache behind my eyes every afternoon for a week. What could cause that?"}
+{"id": "h5-en-59", "expected_category": "health.fitness", "prompt": "Make me a 3-day-a-week beginner strength training plan"}
+{"id": "h5-en-60", "expected_category": "law.consult", "prompt": "My landlord is keeping my whole deposit for normal wear and tear. Is that legal?"}
+{"id": "h5-en-61", "expected_category": "finance.personal", "prompt": "Should I pay off my car loan early or put the money in my 401k?"}
+{"id": "h5-en-62", "expected_category": "business.resume", "prompt": "Rewrite my resume bullet points so they show impact, not just duties"}
+{"id": "h5-en-63", "expected_category": "business.interview", "prompt": "I have a product manager interview on Friday. Run a mock interview with me."}
+{"id": "h5-en-64", "expected_category": "business.strategy", "prompt": "We run a small bakery. How could we grow revenue 30% next year?"}
+{"id": "h5-en-65", "expected_category": "business.prd", "prompt": "Write a PRD for adding dark mode to our mobile app"}
+{"id": "h5-en-66", "expected_category": "design.ux", "prompt": "Our checkout has 5 steps and people drop off at step 3. How would you redesign the flow?"}
+{"id": "h5-en-67", "expected_category": "design.image-prompt", "prompt": "Give me a Midjourney prompt for a cozy cabin in the snow at dusk"}
+{"id": "h5-en-68", "expected_category": "creative.brainstorm", "prompt": "Give me 10 ideas for a team-building activity for remote engineers"}
+{"id": "h5-en-69", "expected_category": "creative.poetry", "prompt": "Write a haiku about Monday mornings"}
+{"id": "h5-en-70", "expected_category": "life.cooking", "prompt": "What can I make for dinner with chicken thighs, rice and spinach?"}
+{"id": "h5-en-71", "expected_category": "life.travel", "prompt": "Plan a 5-day trip to Lisbon for two people who love food and walking"}
+{"id": "h5-en-72", "expected_category": "life.pets", "prompt": "My dog keeps scratching his ears and shaking his head. Should I be worried?"}
+{"id": "h5-en-73", "expected_category": "chat.feelings", "prompt": "My best friend has been distant since she got a new job and I don't know how to bring it up"}
+{"id": "h5-en-74", "expected_category": "chat.greeting", "prompt": "hey, how's it going?"}
+{"id": "h5-zh-01", "expected_category": "software.explain-error", "prompt": "启动时报 ModuleNotFoundError: No module named 'cv2'，这是什么意思"}
+{"id": "h5-zh-02", "expected_category": "software.write-function", "prompt": "写个脚本，把一个文件夹里所有 CSV 合并成一个"}
+{"id": "h5-zh-03", "expected_category": "software.logic-bug", "prompt": "分页接口第二页总会重复第一页最后一条数据，也没报错"}
+{"id": "h5-zh-04", "expected_category": "software.devops", "prompt": "帮我写个 Dockerfile，把这个 Node 项目打包成镜像"}
+{"id": "h5-zh-05", "expected_category": "software.db-schema", "prompt": "设计一个在线考试系统的表结构，要有题库、试卷和成绩"}
+{"id": "h5-zh-06", "expected_category": "data.cleaning", "prompt": "这份 Excel 里手机号格式乱七八糟，有的带空格有的带 +86，帮我统一一下"}
+{"id": "h5-zh-07", "expected_category": "writing.personal", "prompt": "帮我写条微信，跟老板请两天假回老家"}
+{"id": "h5-zh-08", "expected_category": "writing.marketing", "prompt": "给我们新开的奶茶店写一段小红书文案"}
+{"id": "h5-zh-09", "expected_category": "language.translate", "prompt": "把“期待与您合作”翻成英文"}
+{"id": "h5-zh-10", "expected_category": "info.fact", "prompt": "长城有多长"}
+{"id": "h5-zh-11", "expected_category": "education.explain", "prompt": "用通俗的话讲讲什么是通货膨胀"}
+{"id": "h5-zh-12", "expected_category": "health.medication", "prompt": "感冒药和头孢能一起吃吗"}
+{"id": "h5-zh-13", "expected_category": "law.consult", "prompt": "公司拖欠工资三个月了，我该怎么维权"}
+{"id": "h5-zh-14", "expected_category": "finance.investing", "prompt": "现在买黄金还是买国债比较合适，帮我分析一下"}
+{"id": "h5-zh-15", "expected_category": "business.minutes", "prompt": "把下面这段会议录音转写整理成会议纪要"}
+{"id": "h5-zh-16", "expected_category": "life.cooking", "prompt": "红烧肉怎么做才不腻"}
+{"id": "h5-zh-17", "expected_category": "life.family", "prompt": "孩子三岁了还不太愿意说话，要不要担心"}
+{"id": "h5-zh-18", "expected_category": "creative.naming", "prompt": "给我的咖啡店起几个有文艺感的名字"}
+{"id": "h5-zh-19", "expected_category": "chat.feelings", "prompt": "工作压力好大，每天都不想起床"}
+{"id": "h5-zh-20", "expected_category": "howto.planning", "prompt": "纠结要不要辞职去读研，帮我理一理"}
