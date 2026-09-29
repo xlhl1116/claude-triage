@@ -39,7 +39,7 @@ Show the slip to the user before any work starts. If you re-routed, show the new
 
 ## 4. Dispatch / 派发
 
-Dispatch with the Agent tool to the slip's `agent` (for Claude: `claude-triage:triage-<tier>-<tools>`):
+Dispatch with the Agent tool to the slip's `agent` (for Claude: `claude-triage:triage-<tier>-<tools>`), in the foreground (`run_in_background: false`) so the answer comes back in this turn:
 
 - Pass the user's request verbatim, minus any override token such as `@opus-max`.
 - Include the slip's `guidance` if there is one.
@@ -49,4 +49,4 @@ Dispatch with the Agent tool to the slip's `agent` (for Claude: `claude-triage:t
 
 - Relay the executor's answer faithfully and completely.
 - If it starts with `TRIAGE_ESCALATE:`, tell the user in one line and dispatch once to the next stronger model with the same tool profile (the next tier up in the agent name), at most two transfers.
-- End with one line naming who handled it, e.g. `— 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max`.
+- End with the JSON's `footer` line from the run you dispatched with (the `--category` rerun if you re-routed), copied verbatim, e.g. `— 💻 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max`. Never write it yourself.
