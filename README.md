@@ -68,7 +68,7 @@ your message ──► hook: rule engine recognises the category, attaches a <tr
                      ▼
               Triage desk (Claude Haiku 4.5, main thread)
               · never answers anything itself
-              · unsure? picks the category itself (may glance at the repo, read-only)
+              · checks the category on every slip and re-routes when it's wrong
               · shows the slip
                      │  dispatches with the Agent tool
                      ▼
@@ -82,7 +82,7 @@ your message ──► hook: rule engine recognises the category, attaches a <tr
 1. **Recognise the request, not a difficulty level.** Most people can't tell whether their question needs a "standard" or a "specialist" model, so nobody has to choose. A hook matches every message against **120 categories in 17 domains** (from "rename a variable" to "distributed architecture", "contract review" or "medication question") and attaches a slip. No model call, no tokens.
 2. **The category sets the model.** Each category has a default model, effort and tool access: a translation goes to Claude Haiku 4.5, a large cross-module refactor to Claude Opus 5.5 at max. Health, legal and finance categories have a floor, so they never drop to a cheap model, and carry category-specific instructions (for example, recommend seeing a doctor).
 3. **Background adjustments.** Signals such as the whole repo, production or payments, an open-ended ask, very long input or hard complexity limits move the choice up; explicit step-by-step instructions move it down. The strongest model, Claude Fable 5.1, is only reached when several such signals stack up.
-4. **The desk runs on one cheap model** (Claude Haiku 4.5). It never answers anything itself. When the rules aren't confident it picks the category itself, and can take a quick read-only look at the repo to judge scope.
+4. **The desk runs on one cheap model** (Claude Haiku 4.5). It never answers anything itself. It checks the rules' category on every request, not just the uncertain ones, and re-routes when the rules got it wrong.
 5. **Executors escalate** to a stronger model if the task turns out harder than it looked.
 
 Pick the model yourself any time by adding `@haiku`, `@sonnet`, `@opus`, `@opus-max` or `@fable` to a message (the old `@quick` / `@deep` tokens still work).
