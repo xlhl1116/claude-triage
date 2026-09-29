@@ -30,7 +30,7 @@ python3 benchmark/run_bench.py --backend mock --providers claude,deepseek,kimi,z
 # real run: set the keys for the providers you test
 export ANTHROPIC_API_KEY=...  DEEPSEEK_API_KEY=...  MOONSHOT_API_KEY=...  ZHIPU_API_KEY=...  MIMO_API_KEY=...
 pip install anthropic          # only needed for Claude
-python3 benchmark/run_bench.py --backend live --providers deepseek,kimi --judge deepseek/deep --run-id first --yes
+python3 benchmark/run_bench.py --backend live --providers deepseek,kimi --judge deepseek/t5 --run-id first --yes
 ```
 
 Useful flags: `--strategies claude:t5,claude:t7,claude:triage`, `--difficulty hard`, `--tasks id1,id2`, `--repeats 3` (variance), `--region intl` (moonshot.ai / z.ai endpoints), `--no-second-opinion`, `--judge <provider>/<tier>` (the one judge-graded task defaults to `claude/t5`, Claude Opus 5.5 medium). Runs are cached in `benchmark/results/<run-id>/`; re-running the same id resumes. The report is `summary.md` + `summary.json`.
@@ -50,7 +50,7 @@ Things to know:
 
 - `run_bench.py --check-references`：先验证所有标准答案都能通过打分器，保证题目本身没错。
 - `--backend mock`：离线假数据，只用来检查流程，**数字没有任何意义**。
-- `--backend live --yes`：真实调用 API，需要对应厂商的 key；可用 `--judge deepseek/deep` 把评委换成非 Claude 模型。
+- `--backend live --yes`：真实调用 API，需要对应厂商的 key；可用 `--judge deepseek/t5` 把评委换成非 Claude 模型。
 - 每家厂商都和“全部用自己最强的模型”比，看分诊能省多少、质量掉多少；每一行都标明精确型号和思考深度。
 - 分诊关键词调整时参考过这 30 道题，所以分诊在这套题上的表现偏乐观，要用没见过的题来评估。
 - 单元测试会执行模型写的代码，只有超时和临时目录隔离，不是安全沙箱。
