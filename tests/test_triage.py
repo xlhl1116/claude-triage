@@ -173,6 +173,11 @@ class Hook(unittest.TestCase):
         self.assertIn("--category <category-id>", text)
         self.assertIn('"footer": "— 💻 软件开发 › 并发、竞态、死锁 · Claude Opus 5.5 · effort max"', text)
 
+    def test_hook_tells_desk_to_decide_uncertain_slips(self):
+        note = "That does not make it unclear"
+        self.assertIn(note, self.context("hey there, can you split this function up")["additionalContext"])
+        self.assertNotIn(note, self.context("这段 Go 代码在高并发下会死锁")["additionalContext"])
+
     def test_hook_skips_slash_commands_and_bad_input(self):
         for stdin in (json.dumps({"prompt": "/help"}), "not json", json.dumps({"prompt": "  "})):
             out = run("--hook", stdin=stdin)
