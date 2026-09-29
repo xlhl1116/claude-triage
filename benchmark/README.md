@@ -5,6 +5,7 @@ Two things live here:
 | File | What it checks | Calls models? |
 |---|---|---|
 | `triage-cases.jsonl` + `eval_rules.py` | Does the rule engine put each request in the expected category? (routing regression) | No |
+| `triage-heldout.jsonl`, `triage-heldout-2.jsonl` | Same check on requests the rules were not written for (`python3 benchmark/eval_rules.py benchmark/triage-heldout-2.jsonl`). `triage-heldout.jsonl` has since been used to tune the rules; `triage-heldout-2.jsonl` has not, so keep it that way and write a new set for the next honest check | No |
 | `tasks.py` + `run_bench.py` | Does routing keep quality while cutting cost? (quality vs. cost) | Yes, or mock |
 
 ## Quality vs. cost
