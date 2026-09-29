@@ -1,0 +1,80 @@
+{"id": "h3-en-01", "expected_category": "software.explain-error", "prompt": "Why am I getting 'CORS policy: No Access-Control-Allow-Origin header' in the browser console?"}
+{"id": "h3-en-02", "expected_category": "software.api-usage", "prompt": "How do I paginate results with the Stripe Python SDK?"}
+{"id": "h3-en-03", "expected_category": "software.rename-format", "prompt": "Run black on the whole src folder and fix the import order"}
+{"id": "h3-en-04", "expected_category": "software.config-change", "prompt": "Change the default log level from DEBUG to INFO in settings.py"}
+{"id": "h3-en-05", "expected_category": "software.one-liner", "prompt": "awk command to sum the third column of a CSV"}
+{"id": "h3-en-06", "expected_category": "software.write-function", "prompt": "Write a small Node script that renames all .jpeg files in a folder to .jpg"}
+{"id": "h3-en-07", "expected_category": "software.module-feature", "prompt": "Add rate limiting to the login route in our auth service"}
+{"id": "h3-en-08", "expected_category": "software.debug-clear-error", "prompt": "npm install fails with ERESOLVE unable to resolve dependency tree, how do I fix it?"}
+{"id": "h3-en-09", "expected_category": "software.hard-debug", "prompt": "Users sometimes get logged out randomly and we can't reproduce it on staging"}
+{"id": "h3-en-10", "expected_category": "software.local-refactor", "prompt": "This 200-line function is a mess, split it into smaller helpers"}
+{"id": "h3-en-11", "expected_category": "software.tech-review", "prompt": "Here's my design doc for moving session storage to Redis. Poke holes in it."}
+{"id": "h3-en-12", "expected_category": "software.unit-tests", "prompt": "Get test coverage for the billing package above 80%"}
+{"id": "h3-en-13", "expected_category": "software.security-audit", "prompt": "Are there any secrets or API keys accidentally committed in this repo?"}
+{"id": "h3-en-14", "expected_category": "software.ai-app", "prompt": "Write a system prompt and eval harness for a customer-support agent that uses our order lookup tool"}
+{"id": "h3-en-15", "expected_category": "data.math-calc", "prompt": "How many seconds are in a leap year?"}
+{"id": "h3-en-16", "expected_category": "data.stats", "prompt": "Run a t-test comparing the two groups' response times and tell me what it means"}
+{"id": "h3-en-17", "expected_category": "data.ml", "prompt": "My image classifier gets 99% train accuracy but 60% on validation. What should I try?"}
+{"id": "h3-en-18", "expected_category": "writing.summary", "prompt": "Give me the three main takeaways from this 40-page report"}
+{"id": "h3-en-19", "expected_category": "writing.formal", "prompt": "Draft a grant proposal section describing our community garden project's budget and impact"}
+{"id": "h3-en-20", "expected_category": "writing.academic", "prompt": "Help me write the methods section of my thesis on soil microbiomes"}
+{"id": "h3-en-21", "expected_category": "language.pro-translate", "prompt": "Translate our 30-page employee handbook into Spanish, keeping the legal wording precise"}
+{"id": "h3-en-22", "expected_category": "info.fact", "prompt": "Who wrote One Hundred Years of Solitude?"}
+{"id": "h3-en-23", "expected_category": "info.research-report", "prompt": "Research the global lithium supply chain and write a detailed report with sources"}
+{"id": "h3-en-24", "expected_category": "education.study-plan", "prompt": "I want to learn Rust in three months while working full time. Make me a schedule."}
+{"id": "h3-en-25", "expected_category": "howto.software-usage", "prompt": "How do I share my screen in Zoom on a Mac?"}
+{"id": "h3-en-26", "expected_category": "health.medication", "prompt": "Is it safe to drink alcohol while taking antibiotics?"}
+{"id": "h3-en-27", "expected_category": "health.report", "prompt": "My blood test says LDL 180 mg/dL. Is that bad?"}
+{"id": "h3-en-28", "expected_category": "law.contract-draft", "prompt": "Write an NDA between my startup and a freelance designer"}
+{"id": "h3-en-29", "expected_category": "finance.investing", "prompt": "Is Nvidia overvalued at its current P/E?"}
+{"id": "h3-en-30", "expected_category": "business.interview", "prompt": "Mock interview me for a senior backend engineer role"}
+{"id": "h3-en-31", "expected_category": "business.prd", "prompt": "Write the product spec for a dark mode feature, including user stories and acceptance criteria"}
+{"id": "h3-en-32", "expected_category": "research.lit-review", "prompt": "What are the key papers on retrieval-augmented generation I should read?"}
+{"id": "h3-en-33", "expected_category": "design.image-analysis", "prompt": "Here's a photo of my living room. What would you change about the furniture layout?"}
+{"id": "h3-en-34", "expected_category": "design.image-prompt", "prompt": "Give me a Stable Diffusion prompt for a watercolor fox in a snowy forest"}
+{"id": "h3-en-35", "expected_category": "creative.roleplay", "prompt": "Let's play a text adventure set in a haunted castle. You're the narrator."}
+{"id": "h3-en-36", "expected_category": "life.cooking", "prompt": "How long should I roast a 5 lb chicken at 400F?"}
+{"id": "h3-en-37", "expected_category": "life.travel", "prompt": "Best way to get from Tokyo to Kyoto, and should I buy a JR pass?"}
+{"id": "h3-en-38", "expected_category": "chat.feelings", "prompt": "I think I'm falling for my coworker and I don't know what to do"}
+{"id": "h3-en-39", "expected_category": "chat.greeting", "prompt": "hey there"}
+{"id": "h3-en-40", "expected_category": "other.unclear", "prompt": "can you do the same for the other one"}
+{"id": "h3-zh-01", "expected_category": "software.explain-snippet", "prompt": "这个 TypeScript 泛型 `type Partial<T> = { [P in keyof T]?: T[P] }` 是什么意思，怎么理解"}
+{"id": "h3-zh-02", "expected_category": "software.understand-codebase", "prompt": "帮我搞清楚这个项目里一个请求从进来到写库经过了哪些文件"}
+{"id": "h3-zh-03", "expected_category": "software.small-edit", "prompt": "把 getUser 函数里的默认分页大小从 10 改成 20，再加个上限 100"}
+{"id": "h3-zh-04", "expected_category": "software.ui-component", "prompt": "做一个带拖拽排序的待办列表组件，用 React"}
+{"id": "h3-zh-05", "expected_category": "software.cross-module-feature", "prompt": "给系统加一个消息通知功能，后端要存消息、推送，前端要有小红点和消息列表"}
+{"id": "h3-zh-06", "expected_category": "software.logic-bug", "prompt": "排序结果偶尔会把同分的人顺序搞反，没有报错，帮我看看比较函数"}
+{"id": "h3-zh-07", "expected_category": "software.performance", "prompt": "这个接口 QPS 一上去 CPU 就打满，帮我定位是哪里耗 CPU"}
+{"id": "h3-zh-08", "expected_category": "software.large-refactor", "prompt": "把整个项目的数据访问层从手写 SQL 换成 ORM，所有 service 的接口都会跟着改"}
+{"id": "h3-zh-09", "expected_category": "software.module-design", "prompt": "帮我设计一个支付模块的接口，要支持微信、支付宝和后续扩展新渠道"}
+{"id": "h3-zh-10", "expected_category": "software.system-architecture", "prompt": "我们要做一个 SaaS 电商后台，技术栈和服务怎么划分比较合理"}
+{"id": "h3-zh-11", "expected_category": "software.integration-tests", "prompt": "给下单流程写集成测试，要真的连测试数据库"}
+{"id": "h3-zh-12", "expected_category": "software.git", "prompt": "不小心把 .env 提交到 git 了，怎么从历史里彻底删掉"}
+{"id": "h3-zh-13", "expected_category": "software.algorithm-proof", "prompt": "为什么 Dijkstra 在有负权边的时候会出错？给个严格的证明"}
+{"id": "h3-zh-14", "expected_category": "data.math-solve", "prompt": "一个袋子里有 3 红 5 白球，不放回摸两次，两次都是红球的概率是多少"}
+{"id": "h3-zh-15", "expected_category": "data.spreadsheet", "prompt": "WPS 表格里怎么把一列日期按月份汇总金额"}
+{"id": "h3-zh-16", "expected_category": "data.viz", "prompt": "帮我把这组用户年龄分布画成直方图"}
+{"id": "h3-zh-17", "expected_category": "writing.personal", "prompt": "帮我给客户回一条微信，说发货要延迟两天，语气客气点"}
+{"id": "h3-zh-18", "expected_category": "writing.fiction", "prompt": "续写这个武侠故事，主角刚刚在客栈遇到了仇人"}
+{"id": "h3-zh-19", "expected_category": "writing.speech", "prompt": "公司十周年庆典，我作为 CEO 要讲五分钟，帮我写个稿子"}
+{"id": "h3-zh-20", "expected_category": "language.grammar", "prompt": "“他们对这个问题进行了深入的探讨和研究了”这句话有语病吗"}
+{"id": "h3-zh-21", "expected_category": "info.news", "prompt": "这周 A 股发生了什么大事"}
+{"id": "h3-zh-22", "expected_category": "info.shopping", "prompt": "五千块以内的笔记本电脑，主要写代码用，推荐哪款"}
+{"id": "h3-zh-23", "expected_category": "education.explain", "prompt": "用高中生能懂的话讲讲什么是边际效用递减"}
+{"id": "h3-zh-24", "expected_category": "education.homework", "prompt": "这道高一化学题怎么做：配制 500mL 0.1mol/L 的氯化钠溶液需要多少克氯化钠"}
+{"id": "h3-zh-25", "expected_category": "howto.diy", "prompt": "家里墙上想挂一个 30 斤的电视，石膏板墙用什么螺丝"}
+{"id": "h3-zh-26", "expected_category": "howto.planning", "prompt": "买房还是继续租房，我在杭州，月薪两万，帮我理一理"}
+{"id": "h3-zh-27", "expected_category": "health.fitness", "prompt": "每天坐办公室，腰不太好，有什么适合在家做的锻炼"}
+{"id": "h3-zh-28", "expected_category": "health.symptoms", "prompt": "孩子发烧 39 度，手脚冰凉，需要马上去医院吗"}
+{"id": "h3-zh-29", "expected_category": "law.compliance", "prompt": "我们 App 要收集用户手机号和位置，按个人信息保护法需要做哪些合规工作"}
+{"id": "h3-zh-30", "expected_category": "finance.modeling", "prompt": "帮我搭一个奶茶店的三年财务预测模型，包括收入、成本和回本周期"}
+{"id": "h3-zh-31", "expected_category": "business.project-management", "prompt": "新版本上线还有六周，帮我把开发、测试、发布拆成任务并排期"}
+{"id": "h3-zh-32", "expected_category": "business.market", "prompt": "分析一下国内在线教育行业的主要玩家和他们的差异"}
+{"id": "h3-zh-33", "expected_category": "research.research-data", "prompt": "我有三组小鼠的体重实验数据，帮我做方差分析并画图"}
+{"id": "h3-zh-34", "expected_category": "research.paper-review", "prompt": "以审稿人的角度看看我这篇投稿，指出方法上的漏洞"}
+{"id": "h3-zh-35", "expected_category": "design.ux", "prompt": "我们后台的表单字段太多，用户老是填错，交互上怎么改"}
+{"id": "h3-zh-36", "expected_category": "design.av-script", "prompt": "帮我写一个 3 分钟的产品介绍短视频脚本，包括画面和旁白"}
+{"id": "h3-zh-37", "expected_category": "creative.poetry", "prompt": "以中秋为题写一首七言绝句"}
+{"id": "h3-zh-38", "expected_category": "life.family", "prompt": "老人不愿意去养老院，子女又都在外地，有什么办法"}
+{"id": "h3-zh-39", "expected_category": "life.pets", "prompt": "刚领养了一只流浪猫，要做哪些检查和准备"}
+{"id": "h3-zh-40", "expected_category": "chat.companion", "prompt": "睡不着，随便跟我说说话吧"}
