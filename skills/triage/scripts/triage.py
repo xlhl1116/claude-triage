@@ -330,33 +330,99 @@ def render_slip(r: dict, rules: dict, lang: str) -> str:
 
 # --------------------------------------------------------------------------- entry points
 
-def hook_main(rules_path: Path, taxonomy_path: Path, providers_path: Path) -> int:
-    """UserPromptSubmit hook: attach a <triage-slip> for the triage desk to every prompt.
+DISPATCH_TOOLS = ("Agent", "Task")
 
-    Never blocks the prompt: any problem means no slip, and the desk falls back to the skill.
+
+def is_desk(event: dict) -> bool:
+    return str(event.get("agent_type", "")).split(":")[-1] == "triage-desk"
+
+
+def last_request(transcript: Path) -> tuple[str | None, bool]:
+    """The user's latest request in a transcript, and whether the desk dispatched it since."""
+    prompt, dispatched = None, False
+    with open(transcript, encoding="utf-8") as f:
+        for line in f:
+            try:
+                e = json.loads(line)
+            except ValueError:
+                continue
+            content = (e.get("message") or {}).get("content")
+            if e.get("type") == "user" and not e.get("isMeta") and isinstance(content, str) \
+                    and not content.lstrip().startswith(("<", "/")):
+                prompt, dispatched = content, False
+            elif e.get("type") == "assistant" and isinstance(content, list):
+                dispatched = dispatched or any(c.get("type") == "tool_use" and c.get("name") in DISPATCH_TOOLS
+                                               for c in content)
+    return prompt, dispatched
+
+
+def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: str) -> dict | None:
+    """UserPromptSubmit: attach a <triage-slip> for the triage desk to every prompt."""
+    prompt = event.get("prompt", "")
+    # Slash commands, and background-agent results that Claude Code feeds back as a prompt.
+    if not prompt.strip() or prompt.lstrip().startswith(("/", "<task-notification>")):
+        return None
+    r = triage(prompt, rules, tax, providers, provider)
+    brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
+                                   "model_name", "effort", "tier", "guidance", "provider", "footer")}
+    rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
+             "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
+    context = ("<triage-slip>\n"
+               "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
+               f"{json.dumps(brief, ensure_ascii=False)}\n\n{render_slip(r, rules, r['lang'])}\n\n"
+               f"To route under a different category: {rerun}\n"
+               "</triage-slip>")
+    return {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": context}}
+
+
+def hook_bash(event: dict) -> dict | None:
+    """PreToolUse on Bash: the desk may only run the triage script; looking into the repo is the executor's job."""
+    command = str((event.get("tool_input") or {}).get("command", "")).replace("\\", "/")
+    if not is_desk(event) or "scripts/triage.py" in command:
+        return None
+    return {"hookSpecificOutput": {
+        "hookEventName": "PreToolUse", "permissionDecision": "deny",
+        "permissionDecisionReason": "The triage desk only runs the triage script. Dispatch the request to the "
+                                    "slip's executor with the Agent tool; it can read and search the repo."}}
+
+
+def hook_stop(event: dict, rules: dict, tax: dict, providers: dict, provider: str) -> dict | None:
+    """Stop: the desk may not end a turn that answered a request without dispatching it."""
+    if not is_desk(event) or event.get("stop_hook_active") or not event.get("transcript_path"):
+        return None
+    prompt, dispatched = last_request(Path(event["transcript_path"]))
+    if prompt is None or dispatched:
+        return None
+    r = triage(prompt, rules, tax, providers, provider)
+    if r["handler"] == "desk" or "agent" not in r:
+        return None
+    return {"decision": "block",
+            "reason": f"The triage desk never answers a request itself, not even to ask what the user means. "
+                      f"Dispatch the user's latest request to `{r['agent']}` (or the executor of the category "
+                      "you re-routed to) with the Agent tool, run_in_background: false, then relay its answer "
+                      "and end with the slip's footer."}
+
+
+def hook_main(rules_path: Path, taxonomy_path: Path, providers_path: Path) -> int:
+    """Claude Code hooks for the triage desk (UserPromptSubmit, PreToolUse on Bash, Stop).
+
+    Never breaks the session: any problem means no output, and Claude Code carries on as usual.
     """
     try:
         if os.environ.get("CLAUDE_TRIAGE", "").lower() in ("0", "off", "false", "no"):
             return 0
-        prompt = json.loads(sys.stdin.read() or "{}").get("prompt", "")
-        # Slash commands, and background-agent results that Claude Code feeds back as a prompt.
-        if not prompt.strip() or prompt.lstrip().startswith(("/", "<task-notification>")):
-            return 0
-        rules, tax, providers = load_rules(rules_path), load_taxonomy(taxonomy_path), load_providers(providers_path)
-        provider = os.environ.get("CLAUDE_TRIAGE_PROVIDER") or detect_provider(providers)
-        provider = provider if provider in providers else "claude"
-        r = triage(prompt, rules, tax, providers, provider)
-        brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
-                                       "model_name", "effort", "tier", "guidance", "provider", "footer")}
-        rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
-                 "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
-        context = ("<triage-slip>\n"
-                   "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
-                   f"{json.dumps(brief, ensure_ascii=False)}\n\n{render_slip(r, rules, r['lang'])}\n\n"
-                   f"To route under a different category: {rerun}\n"
-                   "</triage-slip>")
-        print(json.dumps({"hookSpecificOutput": {"hookEventName": "UserPromptSubmit",
-                                                 "additionalContext": context}}, ensure_ascii=False))
+        event = json.loads(sys.stdin.read() or "{}")
+        name = event.get("hook_event_name", "UserPromptSubmit")
+        if name == "PreToolUse":
+            out = hook_bash(event)
+        else:
+            rules, tax, providers = load_rules(rules_path), load_taxonomy(taxonomy_path), load_providers(providers_path)
+            provider = os.environ.get("CLAUDE_TRIAGE_PROVIDER") or detect_provider(providers)
+            provider = provider if provider in providers else "claude"
+            handler = hook_stop if name == "Stop" else hook_prompt
+            out = handler(event, rules, tax, providers, provider)
+        if out:
+            print(json.dumps(out, ensure_ascii=False))
     except Exception:
         pass
     return 0
@@ -374,7 +440,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--rules", type=Path, default=DEFAULT_RULES)
     ap.add_argument("--taxonomy", type=Path, default=DEFAULT_TAXONOMY)
     ap.add_argument("--providers", type=Path, default=DEFAULT_PROVIDERS)
-    ap.add_argument("--hook", action="store_true", help="run as a Claude Code UserPromptSubmit hook")
+    ap.add_argument("--hook", action="store_true", help="run as a Claude Code hook (UserPromptSubmit, PreToolUse, Stop)")
     args = ap.parse_args(argv)
     if args.hook:
         return hook_main(args.rules, args.taxonomy, args.providers)

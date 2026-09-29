@@ -197,6 +197,19 @@
         "\\bfollow (these|the following) steps\\b",
         "\\bexactly as (follows|below)\\b"
       ]
+    },
+    {
+      "id": "hypothetical",
+      "label_zh": "只问有没有问题",
+      "label_en": "Asks whether a problem exists",
+      "delta": -1,
+      "patterns": [
+        "会不会(有|出现|存在|导致|引起)",
+        "是否(有|存在|会)",
+        "有没有.{0,12}(问题|风险|隐患|漏洞|bug)",
+        "\\b(is|are) (it|this|that|there|these|those)\\b.{0,40}\\b(thread-safe|safe|race|leak|bug|problem|vulnerab)",
+        "\\b(could|might|would|can) (this|it|there)\\b.{0,30}\\b(cause|have|be|lead to)\\b.{0,40}\\b(issue|problem|bug|race|leak|deadlock|vulnerab)"
+      ]
     }
   ],
   "computed_modifiers": {

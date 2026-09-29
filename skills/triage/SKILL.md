@@ -31,7 +31,7 @@ The provider (Claude, DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo) is detected from `
 
 ## 2. Second opinion when unsure / 拿不准时复核
 
-Only when `confidence` is `low` (or the category is plainly wrong): choose the right category yourself. `python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --list-categories` prints them all. Then rerun step 1 with `--category <id>` added. Never change a `manual` slip.
+Only when `confidence` is `low` (or the category is plainly wrong): choose the right category yourself. `python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --list-categories` prints them all. Then rerun step 1 with `--category <id>` added. A `manual` slip means the user picked the model: never change its model; to correct only its category, rerun with the request **including** its override token.
 
 ## 3. Show the slip / 出挂号单
 
