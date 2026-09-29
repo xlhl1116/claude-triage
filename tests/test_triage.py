@@ -229,6 +229,7 @@ class DeskGuard(unittest.TestCase):
 
     def test_desk_may_only_run_the_triage_script(self):
         self.assertIsNone(self.bash("python3 /x/skills/triage/scripts/triage.py --category data.stats"))
+        self.assertIsNone(self.bash('sh "C:/Users/me/.claude/plugins/claude-triage/skills/triage/scripts/triage.sh" --category data.stats'))
         denied = self.bash("grep -n detect_lang tests/test_triage.py")
         self.assertEqual(denied["hookSpecificOutput"]["permissionDecision"], "deny")
         self.assertIsNone(self.bash("grep -n detect_lang tests/test_triage.py", agent="claude-triage:triage-t3-code"))
@@ -265,6 +266,55 @@ class DeskGuard(unittest.TestCase):
         out = self.hook({"hook_event_name": "Stop", "agent_type": "general-purpose", "transcript_path": "/nonexistent"})
         self.assertIsNone(out)
 
+
+LAUNCHER = SCRIPT.parent / "triage.sh"
+
+
+@unittest.skipIf(os.name == "nt", "POSIX shell test")
+class Launcher(unittest.TestCase):
+    """triage.sh must find a working Python 3 on any machine, including Windows (Git Bash)."""
+
+    def fake_bin(self, python3_works: bool, python_present: bool) -> str:
+        d = tempfile.mkdtemp()
+        self.addCleanup(__import__("shutil").rmtree, d)
+        stub = Path(d, "python3")
+        # Windows' "python3" is often the Microsoft Store stub: it exists but fails.
+        stub.write_text(f"#!/bin/sh\nexec {sys.executable} \"$@\"\n" if python3_works else "#!/bin/sh\nexit 9009\n")
+        stub.chmod(0o755)
+        if python_present:
+            Path(d, "python").symlink_to(sys.executable)
+        return d
+
+    def launch(self, path: str, stdin: str = "你好"):
+        return subprocess.run(["/bin/sh", str(LAUNCHER), "--format", "json"], input=stdin, capture_output=True,
+                              text=True, encoding="utf-8", env={**ENV, "PATH": path})
+
+    def test_uses_python3_when_it_works(self):
+        out = self.launch(self.fake_bin(python3_works=True, python_present=False))
+        self.assertEqual(json.loads(out.stdout)["category"], "chat.greeting")
+
+    def test_skips_a_broken_python3_and_falls_back_to_python(self):
+        out = self.launch(self.fake_bin(python3_works=False, python_present=True))
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(json.loads(out.stdout)["category"], "chat.greeting")
+
+    def test_reports_when_no_python_is_found(self):
+        out = self.launch(self.fake_bin(python3_works=False, python_present=False))
+        self.assertEqual(out.returncode, 1)
+        self.assertIn("Python 3.9 or later not found", out.stderr)
+
+    def test_hooks_and_skill_go_through_the_launcher(self):
+        hooks = json.loads((ROOT / "hooks" / "hooks.json").read_text())["hooks"]
+        commands = [h["command"] for entries in hooks.values() for e in entries for h in e["hooks"]]
+        self.assertTrue(commands)
+        for c in commands:
+            self.assertTrue(c.startswith('sh "${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.sh"'), c)
+        skill = (ROOT / "skills" / "triage" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertNotIn("scripts/triage.py", skill)
+
+    def test_launcher_keeps_lf_line_endings(self):
+        self.assertNotIn(b"\r", LAUNCHER.read_bytes())
+        self.assertIn("*.sh text eol=lf", (ROOT / ".gitattributes").read_text())
 
 
 if __name__ == "__main__":

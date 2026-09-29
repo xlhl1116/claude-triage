@@ -51,7 +51,7 @@
 /plugin install claude-triage@claude-triage
 ```
 
-需要 Claude Code 2.1.284 或更高版本（从这一版起支持 Claude Sonnet 5.5）。
+需要 Claude Code 2.1.284 或更高版本（从这一版起支持 Claude Sonnet 5.5），以及 Python 3.9+（`python3`、`python` 或 Windows 的 `py` 启动器都可以，插件会自动找能用的那个）。Windows 用户还需要安装 [Git for Windows](https://git-scm.com/download/win)：Claude Code 在 Git Bash 里运行插件的 hook 和导诊台的 Bash 工具。
 
 重启 Claude Code 后，**主会话就是导诊台**，像平时一样提问即可。
 

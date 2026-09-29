@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.py\" --hook",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.sh\" --hook",
             "timeout": 10
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.py\" --hook",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.sh\" --hook",
             "timeout": 10
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.py\" --hook",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/triage.sh\" --hook",
             "timeout": 10
           }
         ]

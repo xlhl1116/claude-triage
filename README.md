@@ -51,7 +51,7 @@ Override    add @haiku / @sonnet / @opus / @opus-max / @fable to pick the model 
 /plugin install claude-triage@claude-triage
 ```
 
-Needs Claude Code 2.1.284 or later (the first release that knows Claude Sonnet 5.5).
+Needs Claude Code 2.1.284 or later (the first release that knows Claude Sonnet 5.5) and Python 3.9+ (`python3`, `python` or the Windows `py` launcher; the plugin finds whichever works). On Windows, install [Git for Windows](https://git-scm.com/download/win): Claude Code runs the plugin's hooks and the desk's Bash tool in Git Bash.
 
 Restart Claude Code. From then on the **triage desk is your main conversation**: just type as usual.
 

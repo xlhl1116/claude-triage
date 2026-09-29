@@ -2,7 +2,7 @@
 name: triage
 description: Triage desk — classify a request into one of ~120 fine-grained categories (code, writing, research, health, law, finance, …), pick the exact model and thinking effort that category needs (e.g. Claude Opus 5.5 at max), show an explainable slip, then dispatch the request to that executor. Use when the user runs /claude-triage:triage, asks to "triage", "route", "分诊" or "挂号" a request, or when the triage desk has no <triage-slip> for a message.
 argument-hint: "[@haiku|@sonnet|@opus|@opus-max|@fable] <your request>"
-allowed-tools: Bash(python3 *) Bash(python *)
+allowed-tools: Bash(sh *) Bash(python3 *) Bash(python *)
 ---
 
 # Triage desk / 分诊台
@@ -20,18 +20,18 @@ If the request above is empty, ask the user what they want triaged and stop. Do 
 Run the rule engine on the request **verbatim**, on stdin through a quoted heredoc so nothing in it is interpreted by the shell:
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --format both <<'CLAUDE_TRIAGE_EOF'
+sh "${CLAUDE_SKILL_DIR}/scripts/triage.sh" --format both <<'CLAUDE_TRIAGE_EOF'
 <the request, verbatim>
 CLAUDE_TRIAGE_EOF
 ```
 
-If `python3` is missing, try `python`. The JSON gives the `category`, the `confidence` and top `candidates`, the executor `agent` to dispatch to, the exact `model_id` / `model_name` and `effort`, any background `modifiers` (scope, risk, clarity, input size), any manual `override`, and category `guidance`; the slip below it is the same result rendered for the user. If `handler` is `desk`, the request is about the triage itself: answer it directly from the slip and stop.
+`triage.sh` runs the engine with whichever Python 3.9+ it finds (`python3`, `python` or `py -3`). The JSON gives the `category`, the `confidence` and top `candidates`, the executor `agent` to dispatch to, the exact `model_id` / `model_name` and `effort`, any background `modifiers` (scope, risk, clarity, input size), any manual `override`, and category `guidance`; the slip below it is the same result rendered for the user. If `handler` is `desk`, the request is about the triage itself: answer it directly from the slip and stop.
 
 The provider (Claude, DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo) is detected from `ANTHROPIC_BASE_URL`; add `--provider <name>` if the user reaches a provider through their own proxy.
 
 ## 2. Check the category / 复核类别
 
-Always check the category, whatever the `confidence`: the rules match keywords and can be confidently wrong. Pick the category that fits what the user wants done; use the unclear fallback only when you cannot tell (a request about code or a document the user has not pasted is not unclear: route it by its task). `python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --list-categories` prints them all. If yours differs from the slip's, rerun step 1 with `--category <id>` added. A `manual` slip means the user picked the model: never change its model; to correct only its category, rerun with the request **including** its override token.
+Always check the category, whatever the `confidence`: the rules match keywords and can be confidently wrong. Pick the category that fits what the user wants done; use the unclear fallback only when you cannot tell (a request about code or a document the user has not pasted is not unclear: route it by its task). `sh "${CLAUDE_SKILL_DIR}/scripts/triage.sh" --list-categories` prints them all. If yours differs from the slip's, rerun step 1 with `--category <id>` added. A `manual` slip means the user picked the model: never change its model; to correct only its category, rerun with the request **including** its override token.
 
 ## 3. Show the slip / 出挂号单
 

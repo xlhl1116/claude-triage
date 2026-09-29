@@ -8,6 +8,7 @@ Tiers are internal: the user only sees the category, the model and the reason. R
 request from stdin (or --text) and prints JSON and/or a triage slip. Standard library only.
 
     echo "线上服务偶发 502，帮我找根因" | python3 triage.py --format slip
+    echo "线上服务偶发 502，帮我找根因" | sh triage.sh --format slip   # finds python3 / python / py -3
 """
 
 from __future__ import annotations
@@ -365,7 +366,8 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
     r = triage(prompt, rules, tax, providers, provider)
     brief = {k: r.get(k) for k in ("category", "confidence", "candidates", "handler", "agent", "model_id",
                                    "model_name", "effort", "tier", "guidance", "provider", "footer")}
-    rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
+    launcher = (Path(__file__).resolve().parent / "triage.sh").as_posix()
+    rerun = (f"sh \"{launcher}\" --provider {provider} --category <category-id> "
              "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
     unsure = ("The rules could not place this request. That does not make it unclear: decide the category "
               "from what the user wants done.\n") if r["confidence"] == "low" else ""
@@ -380,7 +382,7 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
 def hook_bash(event: dict) -> dict | None:
     """PreToolUse on Bash: the desk may only run the triage script; looking into the repo is the executor's job."""
     command = str((event.get("tool_input") or {}).get("command", "")).replace("\\", "/")
-    if not is_desk(event) or "scripts/triage.py" in command:
+    if not is_desk(event) or any(f"scripts/triage.{ext}" in command for ext in ("sh", "py")):
         return None
     return {"hookSpecificOutput": {
         "hookEventName": "PreToolUse", "permissionDecision": "deny",
