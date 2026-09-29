@@ -367,10 +367,12 @@ def hook_prompt(event: dict, rules: dict, tax: dict, providers: dict, provider: 
                                    "model_name", "effort", "tier", "guidance", "provider", "footer")}
     rerun = (f"python3 \"{Path(__file__).resolve()}\" --provider {provider} --category <category-id> "
              "--format both <<'CLAUDE_TRIAGE_EOF' (the user's message on stdin, then CLAUDE_TRIAGE_EOF)")
+    unsure = ("The rules could not place this request. That does not make it unclear: decide the category "
+              "from what the user wants done.\n") if r["confidence"] == "low" else ""
     context = ("<triage-slip>\n"
                "Computed by the claude-triage rule engine for the triage desk; other agents can ignore it.\n"
                f"{json.dumps(brief, ensure_ascii=False)}\n\n{render_slip(r, rules, r['lang'])}\n\n"
-               f"To route under a different category: {rerun}\n"
+               f"{unsure}To route under a different category: {rerun}\n"
                "</triage-slip>")
     return {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": context}}
 

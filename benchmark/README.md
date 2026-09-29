@@ -5,7 +5,7 @@ Two things live here:
 | File | What it checks | Calls models? |
 |---|---|---|
 | `triage-cases.jsonl` + `eval_rules.py` | Does the rule engine put each request in the expected category? (routing regression) | No |
-| `triage-heldout.jsonl`, `triage-heldout-2.jsonl` | Same check on requests the rules were not written for (`python3 benchmark/eval_rules.py benchmark/triage-heldout-2.jsonl`). `triage-heldout.jsonl` has since been used to tune the rules; `triage-heldout-2.jsonl` has not, so keep it that way and write a new set for the next honest check | No |
+| `triage-heldout*.jsonl` | Same check on requests the rules were not written for (`python3 benchmark/eval_rules.py benchmark/triage-heldout-4.jsonl`). Each set was written and pushed before the change it measures. Sets 1 and 3 were then used to develop changes (set 1 the rules, set 3 the desk prompt), so they are development sets now. Set 2 measured the rules and set 4 the desk; neither has been used to tune anything. Write a new set for the next honest check | No |
 | `tasks.py` + `run_bench.py` | Does routing keep quality while cutting cost? (quality vs. cost) | Yes, or mock |
 
 ## Quality vs. cost

@@ -29,9 +29,9 @@ If `python3` is missing, try `python`. The JSON gives the `category`, the `confi
 
 The provider (Claude, DeepSeek, Kimi, Zhipu GLM, Xiaomi MiMo) is detected from `ANTHROPIC_BASE_URL`; add `--provider <name>` if the user reaches a provider through their own proxy.
 
-## 2. Second opinion when unsure / 拿不准时复核
+## 2. Check the category / 复核类别
 
-Only when `confidence` is `low` (or the category is plainly wrong): choose the right category yourself. `python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --list-categories` prints them all. Then rerun step 1 with `--category <id>` added. A `manual` slip means the user picked the model: never change its model; to correct only its category, rerun with the request **including** its override token.
+Always check the category, whatever the `confidence`: the rules match keywords and can be confidently wrong. Pick the category that fits what the user wants done; use the unclear fallback only when you cannot tell (a request about code or a document the user has not pasted is not unclear: route it by its task). `python3 "${CLAUDE_SKILL_DIR}/scripts/triage.py" --list-categories` prints them all. If yours differs from the slip's, rerun step 1 with `--category <id>` added. A `manual` slip means the user picked the model: never change its model; to correct only its category, rerun with the request **including** its override token.
 
 ## 3. Show the slip / 出挂号单
 

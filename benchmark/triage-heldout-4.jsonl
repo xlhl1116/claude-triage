@@ -1,0 +1,80 @@
+{"id": "h4-en-01", "expected_category": "software.explain-error", "prompt": "What does 'ECONNREFUSED 127.0.0.1:5432' mean when my app starts?"}
+{"id": "h4-en-02", "expected_category": "software.api-usage", "prompt": "How do I upload a file to S3 with boto3 and set the content type?"}
+{"id": "h4-en-03", "expected_category": "software.understand-codebase", "prompt": "Where in this project is the user's password actually checked? Trace it for me."}
+{"id": "h4-en-04", "expected_category": "software.rename-format", "prompt": "Rename the `data` variable to something meaningful across this file"}
+{"id": "h4-en-05", "expected_category": "software.small-edit", "prompt": "Make parseDate return null instead of throwing when the input is empty"}
+{"id": "h4-en-06", "expected_category": "software.write-function", "prompt": "I need a Python helper that retries an HTTP call with exponential backoff"}
+{"id": "h4-en-07", "expected_category": "software.ui-component", "prompt": "Create a responsive pricing table with three plans using Tailwind"}
+{"id": "h4-en-08", "expected_category": "software.scaffold", "prompt": "Set up a new monorepo with a Next.js frontend and an Express API, with shared TypeScript types"}
+{"id": "h4-en-09", "expected_category": "software.debug-clear-error", "prompt": "My Django migration fails with 'relation already exists'. Help me get past it."}
+{"id": "h4-en-10", "expected_category": "software.leak", "prompt": "The browser tab's memory climbs to 2GB after an hour on our dashboard page"}
+{"id": "h4-en-11", "expected_category": "software.concurrency-bug", "prompt": "Two requests updating the same account balance sometimes lose one of the updates"}
+{"id": "h4-en-12", "expected_category": "software.module-refactor", "prompt": "Clean up the internals of the notifications module without changing how other code calls it"}
+{"id": "h4-en-13", "expected_category": "software.db-schema", "prompt": "How should I model tags and many-to-many relationships for blog posts in Postgres?"}
+{"id": "h4-en-14", "expected_category": "software.review-small", "prompt": "Take a look at my diff before I push, it's just a few lines in the cart service"}
+{"id": "h4-en-15", "expected_category": "software.devops", "prompt": "Our Kubernetes pods keep getting OOMKilled, how do I set sensible resource limits?"}
+{"id": "h4-en-16", "expected_category": "software.algorithm", "prompt": "Find the longest palindromic substring in a string efficiently"}
+{"id": "h4-en-17", "expected_category": "data.math-solve", "prompt": "Solve the recurrence T(n) = 2T(n/2) + n with initial condition T(1)=1"}
+{"id": "h4-en-18", "expected_category": "data.spreadsheet", "prompt": "In Excel, how do I highlight rows where the due date has passed?"}
+{"id": "h4-en-19", "expected_category": "data.cleaning", "prompt": "The customer names in this export have random capitalization and trailing spaces, tidy them up"}
+{"id": "h4-en-20", "expected_category": "writing.edit", "prompt": "Make my cover paragraph sound less robotic"}
+{"id": "h4-en-21", "expected_category": "writing.personal", "prompt": "Help me reply to my landlord asking to renew the lease for another year"}
+{"id": "h4-en-22", "expected_category": "writing.marketing", "prompt": "Write three subject lines for our Black Friday email campaign"}
+{"id": "h4-en-23", "expected_category": "writing.tech-docs", "prompt": "Document the endpoints of our REST API in OpenAPI format"}
+{"id": "h4-en-24", "expected_category": "language.translate", "prompt": "How do you say 'where is the train station' in German?"}
+{"id": "h4-en-25", "expected_category": "info.tech-compare", "prompt": "Should we use Kafka or RabbitMQ for our order events?"}
+{"id": "h4-en-26", "expected_category": "education.teaching", "prompt": "Make a 10-question multiple choice quiz on the French Revolution for my class"}
+{"id": "h4-en-27", "expected_category": "howto.errands", "prompt": "What documents do I need to register a car after moving to a new state?"}
+{"id": "h4-en-28", "expected_category": "health.mental", "prompt": "I get panic attacks before every presentation at work"}
+{"id": "h4-en-29", "expected_category": "law.contract-review", "prompt": "Check this SaaS agreement for anything that lets them raise prices without notice"}
+{"id": "h4-en-30", "expected_category": "finance.personal", "prompt": "How big should my emergency fund be if I'm a freelancer?"}
+{"id": "h4-en-31", "expected_category": "business.resume", "prompt": "Tailor my CV for a product designer role at a fintech company"}
+{"id": "h4-en-32", "expected_category": "business.strategy", "prompt": "We're a two-person SaaS. Should we go freemium or free trial, and how should we price?"}
+{"id": "h4-en-33", "expected_category": "research.experiment", "prompt": "How many participants do I need for my user study to detect a medium effect?"}
+{"id": "h4-en-34", "expected_category": "design.visual", "prompt": "Pick fonts and colors for a kids' bookstore website"}
+{"id": "h4-en-35", "expected_category": "creative.brainstorm", "prompt": "Throw me some ideas for a science fair project about plants"}
+{"id": "h4-en-36", "expected_category": "creative.naming", "prompt": "Name ideas for a golden retriever puppy?"}
+{"id": "h4-en-37", "expected_category": "life.family", "prompt": "How do I explain to my 6-year-old that grandpa passed away?"}
+{"id": "h4-en-38", "expected_category": "chat.companion", "prompt": "It's late and I can't sleep, tell me something interesting"}
+{"id": "h4-en-39", "expected_category": "chat.greeting", "prompt": "yo what's good"}
+{"id": "h4-en-40", "expected_category": "other.unclear", "prompt": "ok and now?"}
+{"id": "h4-zh-01", "expected_category": "software.explain-snippet", "prompt": "看不懂这段 Python 装饰器代码，帮我逐行讲一下"}
+{"id": "h4-zh-02", "expected_category": "software.config-change", "prompt": "把 docker-compose 里 redis 的端口从 6379 改成 6380"}
+{"id": "h4-zh-03", "expected_category": "software.one-liner", "prompt": "Linux 下怎么一条命令查看哪个进程占用了 8080 端口"}
+{"id": "h4-zh-04", "expected_category": "software.module-feature", "prompt": "在订单服务里加一个按时间范围导出订单的接口"}
+{"id": "h4-zh-05", "expected_category": "software.vague-feature", "prompt": "老板说要让系统更智能一点，我也不知道具体该做啥"}
+{"id": "h4-zh-06", "expected_category": "software.hard-debug", "prompt": "生产环境每天凌晨会有几分钟接口超时，其他时间都正常，日志也看不出来"}
+{"id": "h4-zh-07", "expected_category": "software.migration", "prompt": "项目要从 Vue 2 升到 Vue 3，帮我规划一下步骤"}
+{"id": "h4-zh-08", "expected_category": "software.distributed-architecture", "prompt": "秒杀系统怎么设计才能扛住十万并发，还不超卖"}
+{"id": "h4-zh-09", "expected_category": "software.unit-tests", "prompt": "给这个金额计算工具类补上测试，边界情况都要覆盖"}
+{"id": "h4-zh-10", "expected_category": "software.sql", "prompt": "统计每个用户最近一次下单的时间，查询语句怎么写"}
+{"id": "h4-zh-11", "expected_category": "data.math-calc", "prompt": "100 美元按 7.2 的汇率换成人民币是多少"}
+{"id": "h4-zh-12", "expected_category": "data.stats", "prompt": "问卷里满意度和年龄有没有关系，用什么方法分析"}
+{"id": "h4-zh-13", "expected_category": "data.ml", "prompt": "用 PyTorch 训练一个文本分类模型，数据只有两千条，怎么避免过拟合"}
+{"id": "h4-zh-14", "expected_category": "writing.summary", "prompt": "把这篇长文章压缩成 200 字"}
+{"id": "h4-zh-15", "expected_category": "writing.argument", "prompt": "写一篇评论，谈谈短视频对青少年阅读习惯的影响"}
+{"id": "h4-zh-16", "expected_category": "writing.formal", "prompt": "帮我写一份部门年度工作总结，要正式一些"}
+{"id": "h4-zh-17", "expected_category": "language.learning", "prompt": "我英语口语很差，每天有半小时，怎么练比较有效"}
+{"id": "h4-zh-18", "expected_category": "info.fact", "prompt": "月球离地球大概多远"}
+{"id": "h4-zh-19", "expected_category": "info.research-report", "prompt": "帮我做一份国内储能行业的深度调研，包括政策、主要企业和技术路线"}
+{"id": "h4-zh-20", "expected_category": "education.explain", "prompt": "什么是区块链，能不能打个比方讲清楚"}
+{"id": "h4-zh-21", "expected_category": "education.study-plan", "prompt": "零基础想转行做数据分析，应该按什么顺序学"}
+{"id": "h4-zh-22", "expected_category": "howto.software-usage", "prompt": "微信聊天记录怎么迁移到新手机"}
+{"id": "h4-zh-23", "expected_category": "health.beauty", "prompt": "换季皮肤干到起皮，该怎么护理"}
+{"id": "h4-zh-24", "expected_category": "health.medication", "prompt": "感冒药和退烧药能同时吃吗"}
+{"id": "h4-zh-25", "expected_category": "law.consult", "prompt": "网购收到假货，商家拒绝退款，我能怎么办"}
+{"id": "h4-zh-26", "expected_category": "finance.accounting", "prompt": "小规模纳税人开专票要交多少增值税"}
+{"id": "h4-zh-27", "expected_category": "finance.investing", "prompt": "黄金现在还值得配置吗，占资产多少比例合适"}
+{"id": "h4-zh-28", "expected_category": "business.minutes", "prompt": "把今天产品评审会的讨论整理一下，列出结论和负责人"}
+{"id": "h4-zh-29", "expected_category": "business.negotiation", "prompt": "想跟领导提加薪，怎么开口比较好"}
+{"id": "h4-zh-30", "expected_category": "business.prd", "prompt": "帮我写一个会员积分功能的需求文档，包括用户故事和验收标准"}
+{"id": "h4-zh-31", "expected_category": "research.theory", "prompt": "从麦克斯韦方程组推导出电磁波的波动方程"}
+{"id": "h4-zh-32", "expected_category": "research.lit-review", "prompt": "整理一下近五年大模型推理加速方向的主要论文"}
+{"id": "h4-zh-33", "expected_category": "design.image-analysis", "prompt": "帮我看看这张海报截图，排版有什么问题"}
+{"id": "h4-zh-34", "expected_category": "design.av-script", "prompt": "给我的美食探店 vlog 写一段开场口播"}
+{"id": "h4-zh-35", "expected_category": "creative.roleplay", "prompt": "你来扮演一个古代的算命先生，给我算一卦"}
+{"id": "h4-zh-36", "expected_category": "creative.poetry", "prompt": "帮我写几句歌词，主题是毕业和离别"}
+{"id": "h4-zh-37", "expected_category": "life.cooking", "prompt": "空气炸锅烤鸡翅要多少度多长时间"}
+{"id": "h4-zh-38", "expected_category": "life.travel", "prompt": "带父母去西安玩三天，节奏慢一点，怎么安排"}
+{"id": "h4-zh-39", "expected_category": "chat.feelings", "prompt": "异地恋三年了，最近总觉得越来越远，很累"}
+{"id": "h4-zh-40", "expected_category": "health.symptoms", "prompt": "最近吃完饭胃就胀痛，还老打嗝，是胃炎吗"}
